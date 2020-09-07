@@ -4,7 +4,7 @@ const About = ({ title, description, ...props }) => {
   return (
     <>
       <Layout pageTitle={`Nim Privacy Policy`} description={description}>
-        <h1 className="title">Nim Privacy Policy</h1>
+        <h1 className="title">Nim And Bookmakr & History Search Privacy Policy</h1>
 
         <p>
         This privacy policy will help you understand what information we collect and use, which is nothing. When we refer to ” “we,” “our,” or “us” in this policy, we are referring to Brad Barrows.
@@ -24,8 +24,9 @@ const About = ({ title, description, ...props }) => {
         Security
         </p>
         <p>
-        There should be no security concerns inherit with the use of this extension. This extension will take terms searched for using the chrome omnibar though and inject javascript into the Nim documentation web page to search for those terms. But again, there should be no security concerns.
+        There should be no security concerns inherit with the use of these extensions. The Nim extension will take terms searched for using the chrome omnibar though and inject javascript into the Nim documentation web page to search for those terms. But again, there should be no security concerns.
         </p>
+        <p>The Bookmark & History extension will search your Bookmarks and History but only using the official Google API and no data is ever collected or transmitted anywhere.</p>
       </Layout>
     </>
   )

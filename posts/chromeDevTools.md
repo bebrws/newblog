@@ -4,14 +4,14 @@ author: 'Brad Barrows'
 date: '2020-9-06'
 # hero_image: ../static/niceday.png
 ---
-# Keep your Chrome Dev Tools Debugger on top of all windows on OSX Catalina
+## Keep your Chrome Dev Tools Debugger on top of all windows on OSX Catalina
 
 I was getting tired of having to search for my Chrome Dev Tools Debugger window and thought I would see how hard it would be to write a dylib I could
 add as a dylib load instruction eventually to my Google Chrome binary.
 
 I eventually will make a script and dylib that does all this but for now I wrote a quick frida-cycript script to take care of this.
 
-## Issues I encountered
+### Issues I encountered
 
 So for some reason.. sometimes.. I can't use 
 ```[NSApplication shared]```
@@ -74,10 +74,11 @@ devToolWindows.forEach((w) => {
     w.setLevel_(9);
 });
 
-
-
-# To use:
 ```
+
+### To use:
+
+
 Run:
 
 ```
