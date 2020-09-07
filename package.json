@@ -1,0 +1,25 @@
+{
+  "name": "next-netlify-blog-starter",
+  "version": "0.1.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "css-mediaquery": "^0.1.2",
+    "gray-matter": "^4.0.2",
+    "next": "^9.5.0",
+    "raw-loader": "^4.0.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-markdown": "^4.3.1",
+    "react-spring": "^8.0.27",
+    "react-useragent": "^1.1.2",
+    "ua-parser-js": "^0.7.21"
+  }
+}
