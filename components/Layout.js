@@ -152,34 +152,36 @@ function FuzzySearchPopover({ }) {
     document.addEventListener('keydown', function(event) {
       // https://css-tricks.com/snippets/javascript/javascript-keycodes/
       // for event.which
-      if (event.which == 38) {
-        if (typeof window !== 'undefined') {
+      if (!('msgMeWindowOpen' in window && window.msgMeWindowOpen)) {
+        if (event.which == 38) {
+          if (typeof window !== 'undefined') {
+            event.preventDefault()
+            if (!window.sel) window.sel = 0;
+            window.sel -= 1
+            setSel(window.sel)
+          }
+        } else if (event.which == 40) {
+          if (typeof window !== 'undefined') {
+            event.preventDefault()
+            if (!window.sel) window.sel = 0;
+            window.sel += 1;
+            setSel(window.sel)
+          }
+        } else if (event.which == 13) {
+          if (typeof window !== 'undefined') {
+            window.location.pathname = `/post/${window.selectedPost.slug}`
+          }
+        } else if (event.key == " ") {
           event.preventDefault()
-          if (!window.sel) window.sel = 0;
-          window.sel -= 1
-          setSel(window.sel)
-        }
-      } else if (event.which == 40) {
-        if (typeof window !== 'undefined') {
-          event.preventDefault()
-          if (!window.sel) window.sel = 0;
-          window.sel += 1;
-          setSel(window.sel)
-        }
-      } else if (event.which == 13) {
-        if (typeof window !== 'undefined') {
-          window.location.pathname = `/post/${window.selectedPost.slug}`
-        }
-      } else if (event.key == " ") {
-        event.preventDefault()
-        if (window.isShown) {  
-          setAnchorEl(null);
-          window.isShown = false;
-        } else {
-          setAnchorEl(buttonRef.current);
-          window.isShown = true;
-        }
-      } 
+          if (window.isShown) {  
+            setAnchorEl(null);
+            window.isShown = false;
+          } else {
+            setAnchorEl(buttonRef.current);
+            window.isShown = true;
+          }
+        } 
+      }
     });
   }
 
