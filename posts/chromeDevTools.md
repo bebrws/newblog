@@ -6,6 +6,8 @@ date: '2020-9-06'
 ---
 ## Keep your Chrome Dev Tools Debugger on top of all windows on OSX Catalina
 
+![An animated gif of the usage of these scripts](/static/ChromeDevToolsOnTop.gif)
+
 I was getting tired of having to search for my Chrome Dev Tools Debugger window and thought I would see how hard it would be to write a dylib I could
 add as a dylib load instruction eventually to my Google Chrome binary.
 
@@ -92,9 +94,3 @@ NOTE:
 * Requires SIP be disabled
 * [frida-cycript](https://github.com/nowsecure/frida-cycript/releases) installed 
 
-
-
-
-Here is an image showing the tail end of the output:
-
-![An animated gif of the usage of these scripts](/static/ChromeDevToolsOnTop.gif)
