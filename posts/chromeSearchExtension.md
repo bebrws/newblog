@@ -19,3 +19,7 @@ The fuxxy string search algorithm weighs characters in a row and showing up earl
 ### Usage:
 
 ![An animated gif of the usage of the chrome extension](/static/chrome-bookmark-history-search-ex-usage.gif)
+
+### Install
+
+The extension can be downloaded [from the Google Web Store](https://chrome.google.com/webstore/detail/bookmark-history-fuzzy-se/ahckmbemdipobmogmbpmbailnhfpjnbm?hl=en&authuser=0)
