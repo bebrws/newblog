@@ -1,0 +1,50 @@
+<html>
+   <head>
+   
+      <style>
+         .brain { 
+            background-image: url(JustBrain.svg); 
+            background-repeat: no-repeat;
+            background-position: left top; 
+            padding-top:95px;
+            margin-bottom:60px;
+            animation-duration: 4s; 
+            animation-fill-mode: both; 
+            /* animation-timing-function: cubic-bezier(0.44, 0.4, 0, 1.54); */
+         }
+
+         .eye {
+            background-image: url(JustEye.svg); 
+            background-repeat: no-repeat;
+            background-position: left top; 
+            position: relative;
+            bottom: 50px;
+            left: 59px;
+            padding-top:95px;
+            margin-bottom:60px;
+            animation-duration: 4s; 
+            animation-fill-mode: both; 
+            /* animation-timing-function: cubic-bezier(0.44, 0.4, 0, 1.54); */
+         }
+         
+         @keyframes bounce { 
+            0%, 3%, 10%, 18%, 100% {transform: translateY(0);} 
+            7% {transform: translateY(-30px);} 
+            15% {transform: translateY(-15px);} 
+         }
+         
+         .bounce { 
+            animation-timing-function: cubic-bezier(.14, .75, .2, 1.01);
+            animation-name: bounce; 
+            animation-iteration-count: infinite;
+         }
+      </style>
+      
+   </head>
+   <body>
+      <div id = "brain" class = "brain">
+         <div id = "eye" class = "bounce eye"></div>
+      </div>
+   </body>
+</html>
+

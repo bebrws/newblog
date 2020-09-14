@@ -11,6 +11,10 @@ const Index = ({ posts, title, description, ...props }) => {
         <h2>
           Thoughts and notes:
         </h2>
+
+        <div id = "brain" class = "brain">
+         <div id = "eye" class = "bounce eye"></div>
+        </div>
         
         <main>
           <PostList posts={posts} />

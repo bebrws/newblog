@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     display: "block"
   },
   popoverButtonCaptionText: {
-    fontSize: "10px"
+    fontSize: "8px"
   },
   arrowIcon: {
     position: "relative",
@@ -213,7 +213,7 @@ function FuzzySearchPopover({ }) {
               Fuzzy Search
             </Typography>
             <Typography classes={{root: classes.popoverButtonCaptionText}} variant="caption" display="block" gutterBottom>
-              (Spacebar)
+              (Press Spacebar)
             </Typography>
           </Button>
           <Popover
@@ -232,8 +232,8 @@ function FuzzySearchPopover({ }) {
           >
             <Paper>
               <Grid style={{maxHeight: 600, width: 600, overflow: 'auto'}} container spacing={0} direction="column" justify="center" alignItems="center">
-                <TextField autoFocus style={{ padding: "10px" }} id="filled-basic" label="Search"  value={fuzzyText} onChange={(event) => { handleFuzzySearchChange(event.target.value) }}/>
-                <List component="nav" aria-label="main mailbox folders">
+                <TextField autoFocus style={{ padding: "10px", marginTop: 20 }} id="filled-basic" label="Search"  value={fuzzyText} onChange={(event) => { handleFuzzySearchChange(event.target.value) }}/>
+                <List component="nav" aria-label="main mailbox folders" style={{overflow: "scroll", height: 400, padding: 20}}>
                   {postsShown.map((p) => (
                     <ListItemText key={p.slug}>
                       { p.slug == selectedPost.slug && <ArrowForwardIosIcon classes={{root: classes.arrowIcon}}  />}
@@ -335,6 +335,45 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           padding: 0 5px;
           height: 1rem;
         }
+
+        .brain { 
+          margin: auto;
+          width: 200px;
+          background-image: url(/static/JustBrain.svg); 
+          background-repeat: no-repeat;
+          background-position: left top; 
+          padding-top:95px;
+          margin-bottom:60px;
+          animation-duration: 4s; 
+          animation-fill-mode: both; 
+          /* animation-timing-function: cubic-bezier(0.44, 0.4, 0, 1.54); */
+       }
+
+       .eye {
+          background-image: url(/static/JustEye.svg); 
+          background-repeat: no-repeat;
+          background-position: left top; 
+          position: relative;
+          bottom: 50px;
+          left: 59px;
+          padding-top:95px;
+          margin-bottom:60px;
+          animation-duration: 4s; 
+          animation-fill-mode: both; 
+          /* animation-timing-function: cubic-bezier(0.44, 0.4, 0, 1.54); */
+       }
+       
+       @keyframes bounce { 
+          0%, 3%, 10%, 18%, 100% {transform: translateY(0);} 
+          7% {transform: translateY(-30px);} 
+          15% {transform: translateY(-15px);} 
+       }
+       
+       .bounce { 
+          animation-timing-function: cubic-bezier(.14, .75, .2, 1.01);
+          animation-name: bounce; 
+          animation-iteration-count: infinite;
+       }
       `}</style>
       <MUIWrapper sheets={sheets}>
       <section className="layout">
