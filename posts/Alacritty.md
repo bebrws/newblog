@@ -1,7 +1,7 @@
 ---
 title: 'Alacritty - Fastest OSX Terminal?'
 author: 'Brad Barrows'
-date: '2020-8-30'
+date: '2020-9-17'
 hero_image: ../static/alacritty.png
 ---
 ## Introducing Alacritty
