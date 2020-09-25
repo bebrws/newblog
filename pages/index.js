@@ -9,11 +9,11 @@ const Index = ({ posts, title, description, ...props }) => {
     <>
       <Layout pageTitle={title} description={description}>
         <h2>
-          Thoughts and notes:
+          Thoughts And Notes:
         </h2>
 
-        <div id = "brain" class = "brain">
-         <div id = "eye" class = "bounce eye"></div>
+        <div id="brain" className="brain">
+         <div id="eye" className="bounce eye"></div>
         </div>
         
         <main>
@@ -23,7 +23,7 @@ const Index = ({ posts, title, description, ...props }) => {
           Some kind of day
         </h4> */}
         <div style={{marginTop: 40}}>
-          <img style={{display: "block", margin: "auto"}} src="/static/niceday.png" alt="A beautiful surf photo I took" ></img>
+          <img id="bottomImage" src="/static/bigsurf.png" alt="A beautiful surf photo I took" ></img>
         </div>
       </Layout>
       <style jsx>{`

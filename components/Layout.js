@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
   popoverButtonRoot: {
     minHeight: '60px',
-    display: "block"
+    display: "block",
+    backgroundColor: "#836688"
   },
   popoverButtonCaptionText: {
     fontSize: "8px"
@@ -270,6 +271,12 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         <script src="/static/layoutScript.js"/>
       </Head>
 
+      {/* <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet" /> */}
+      {/* <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" /> */}
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"></link>
+
+
       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>
       <script src="static/google.js" />
 
@@ -279,12 +286,32 @@ export default function Layout({ children, pageTitle, description, ...props }) {
 
         html,
         body {
+          font-family: 'Inconsolata', monospace;
           margin: 0;
           padding: 0;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
             Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
             sans-serif;
           color: #445566;
+          background-color: #ede9d4;
+        }
+
+        h1 {
+          font-weight: bolder;
+          font-size: 3rem;
+        }
+
+        h2 {
+          font-weight: bold;
+          font-size: 2rem;
+        }
+
+        h3 {
+          font-size: 1.5rem;
+        }
+
+        h4 {
+          font-size: 1rem;
         }
 
         h1,
@@ -293,7 +320,9 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         h4,
         h5,
         h6 {
+          font-family: 'Roboto', sans-serif;
           font-weight: bold;
+          color: #b290b7;
         }
 
         pre {
@@ -303,10 +332,15 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           padding-top: 20px;
           padding-bottom: 20px;
           background: #80808024;
+          color: #884b6f;
         }
 
         a {
-          color: #8ba8de;
+          color: #452e47;
+        }
+
+        a:hover {
+          color: #dcc2e0;
         }
 
         .content {
@@ -319,7 +353,18 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         }
 
         .content img {
-          width: 80%
+          margin-top: 50px;
+          margin-bottom: 50px;
+          max-width: 800px;
+        }
+
+        #bottomImage {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 200px;
+          margin-bottom: 100px;
+          width: 80%;
         }
 
         footer {
@@ -337,7 +382,11 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         }
 
         .brain { 
-          margin: auto;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 100px;
+          margin-bottom: 100px;
+
           width: 200px;
           background-image: url(/static/JustBrain.svg); 
           background-repeat: no-repeat;
@@ -374,6 +423,11 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           animation-name: bounce; 
           animation-iteration-count: infinite;
        }
+
+       #normalHeader {
+         border-bottom: none;
+       }
+
       `}</style>
       <MUIWrapper sheets={sheets}>
       <section className="layout">

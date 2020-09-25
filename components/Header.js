@@ -130,7 +130,6 @@ export default function Header() {
         }
         nav a {
           margin-right: 20px;
-          color: #8ba8de;
           text-decoration: none;
         }
         nav a:hover {

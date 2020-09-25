@@ -48,7 +48,6 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
         .back {
           width: 100%;
           max-width: 1200px;
-          color: #8ba8de;
         }
       `}</style>
     </>

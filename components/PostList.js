@@ -7,7 +7,24 @@ import Divider from '@material-ui/core/Divider';
 import SubjectIcon from '@material-ui/icons/Subject';
 import MobileMediaQuery from './MobileMediaQuery'
 
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+   listItemTextRoot: {
+    maxWidth: 550,
+  },
+  listItemTextTypograhyRoot: {
+    color: "#836688",
+    fontWeight: "800",
+  }
+}));
+
+
 export default function PostList({ posts }) {
+
+  const classes = useStyles();
+
+
   if (posts === 'undefined') return null;
 
   posts.sort((x, y) => {
@@ -30,8 +47,8 @@ export default function PostList({ posts }) {
                   <SubjectIcon />
                 </ListItemIcon>
                 <div style={{display: "flex", justifyContent: "space-between", width: "100%"}}>
-                  <><ListItemText>{post?.frontmatter?.title}</ListItemText><Divider /></>
-                  <><ListItemText style={{width: 100, maxWidth: 100}}>{post.frontmatter.date}</ListItemText></>
+                  <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{classes: {root: classes.listItemTextTypograhyRoot}}} >{post?.frontmatter?.title}</ListItemText><Divider /></>
+                  <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{classes: {root: classes.listItemTextTypograhyRoot}}} style={{width: 100, maxWidth: 100}}>{post.frontmatter.date}</ListItemText></>
                 </div>
               </ListItem>
             </Link>
