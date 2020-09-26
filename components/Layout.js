@@ -27,27 +27,6 @@ const MUIWrapper = ({children, sheets}) => {
   </ThemeProvider>);
 };
 
-
-// popButtonRoot: {
-//   minHeight: '60px',
-//   display: "block",
-//   backgroundColor: "#836688"
-// },
-
-const useStyles = makeStyles((theme) => ({
-  typography: {
-    padding: theme.spacing(2),
-  },
-  popoverButtonCaptionText: {
-    fontSize: "8px"
-  },
-  arrowIcon: {
-    position: "relative",
-    top: 6,
-    width: 12
-  }
-}));
-
 const posts = ((context) => {
   return getPosts(context)
 })(require.context('../posts', true, /\.md$/))
@@ -104,7 +83,6 @@ function fuzzyMatch(item, pattern, longestItemLength) {
 
 // From https://material-ui.com/components/popover/
 function FuzzySearchPopover({ }) {
-  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isShown, setIsShown] = useState(false);
   const [postsShown, setPostsShown] = useState([]);
@@ -215,7 +193,7 @@ function FuzzySearchPopover({ }) {
             <Typography variant="button" display="block" gutterBottom>
               Fuzzy Search
             </Typography>
-            <Typography classes={{root: classes.popoverButtonCaptionText}} variant="caption" display="block" gutterBottom>
+            <Typography style={{fontSize: "8px"}} variant="caption" display="block" gutterBottom>
               (Press Spacebar)
             </Typography>
           </Button>
@@ -239,7 +217,7 @@ function FuzzySearchPopover({ }) {
                 <List component="nav" aria-label="main mailbox folders" style={{overflow: "scroll", height: 400, padding: 20}}>
                   {postsShown.map((p) => (
                     <ListItemText key={p.slug}>
-                      { p.slug == selectedPost.slug && <ArrowForwardIosIcon classes={{root: classes.arrowIcon}}  />}
+                      { p.slug == selectedPost.slug && <ArrowForwardIosIcon style={{ position: "relative", top: 6, width: 12 }}  />}
                       <Link href={{ pathname: `/post/${p.slug}` }}>
                         <a>{p.title}</a>
                       </Link>
