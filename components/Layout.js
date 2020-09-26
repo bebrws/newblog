@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   typography: {
     padding: theme.spacing(2),
   },
-  popoverButtonRoot: {
+  popButtonRoot: {
     minHeight: '60px',
     display: "block",
     backgroundColor: "#836688"
@@ -209,7 +209,7 @@ function FuzzySearchPopover({ }) {
               .interpolate(x => `scale(${x})`)
           }}
         >
-          <Button ref={buttonRef} classes={{root: classes.popoverButtonRoot}}  aria-describedby={id} variant="contained" color="primary" onClick={handleClick}>
+          <Button ref={buttonRef} classes={{root: classes.popButtonRoot}}  aria-describedby={id} variant="contained" color="primary" onClick={handleClick}>
             <Typography variant="button" display="block" gutterBottom>
               Fuzzy Search
             </Typography>
