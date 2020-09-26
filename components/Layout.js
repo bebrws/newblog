@@ -27,14 +27,16 @@ const MUIWrapper = ({children, sheets}) => {
   </ThemeProvider>);
 };
 
+
+// popButtonRoot: {
+//   minHeight: '60px',
+//   display: "block",
+//   backgroundColor: "#836688"
+// },
+
 const useStyles = makeStyles((theme) => ({
   typography: {
     padding: theme.spacing(2),
-  },
-  popButtonRoot: {
-    minHeight: '60px',
-    display: "block",
-    backgroundColor: "#836688"
   },
   popoverButtonCaptionText: {
     fontSize: "8px"
@@ -209,7 +211,7 @@ function FuzzySearchPopover({ }) {
               .interpolate(x => `scale(${x})`)
           }}
         >
-          <Button ref={buttonRef} classes={{root: classes.popButtonRoot}}  aria-describedby={id} variant="contained" color="primary" onClick={handleClick}>
+          <Button ref={buttonRef} style={{minHeight: '60px', display: "block", backgroundColor: "#836688"}} aria-describedby={id} variant="contained" color="primary" onClick={handleClick}>
             <Typography variant="button" display="block" gutterBottom>
               Fuzzy Search
             </Typography>
