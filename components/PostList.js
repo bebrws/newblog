@@ -27,13 +27,14 @@ export default function PostList({ posts }) {
 
   if (posts === 'undefined') return null;
 
-  posts.sort((x, y) => {
-    const a = new Date(x.frontmatter.date);
-    const b = new Date(y.frontmatter.date);
-    if (a < b) return 1;
-    if (a > b) return -1;
-    return 0;
-  })
+  // This is now done in index
+  // posts.sort((x, y) => {
+  //   const a = new Date(x.frontmatter.date);
+  //   const b = new Date(y.frontmatter.date);
+  //   if (a < b) return 1;
+  //   if (a > b) return -1;
+  //   return 0;
+  // })
 
   return (
   <MobileMediaQuery 

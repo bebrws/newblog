@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Brad Barrows' Blog]]></title>
+        <description><![CDATA[Brad Barrows' Blog]]></description>
+        <link>https://bradbarrows.com</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 02 Oct 2020 09:19:32 GMT</lastBuildDate>
+        <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Alacritty - Fastest OSX Terminal?]]></title>
+            <description><![CDATA[## Introducing Alacritty
+Alacritty is most likely the fastest GPU accelerated terminal emulator for OSX.
+
+The only reason I hadn't tried it or used it very much before was the learning curve 
+of a new terminal emulator and it's lack of tabs.
+
+Luckily I was able to figure out how to make a great tmux and alacritty configuration 
+file along with some nice bash functions to help with editing the configurations.
+
+## Setting up Alacritty using my build
+
+First [install Alacritty](https://github.com/bebrws/alacritty/releases/download/0.6.0-dev-brads/Alacritty.zip) from my repo to get a build that has]]></description>
+            <link>https://bradbarrows.com/posts/Alacritty</link>
+            <guid isPermaLink="false">Alacritty</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Thu, 17 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Chrome Extension to Fuzzy Search Bookmarks and History]]></title>
+            <description><![CDATA[## A Chrome extension to fuzzy search through bookmarks and history
+
+My [chrome extension](https://github.com/bebrws/chrome-omnibox-bookmark-history-search) uses the same fuzzy string search algorithm I came up with for [FZNim](https://github.com/bebrws/fznim) and for this site.
+
+On load of the extension it will create a table of bookmarks to urls and as the user types in the omnibar (following the keyword "dl") will fuzzy string search the omnibar text against bookmarks and grab the first few, highest ranking results. It then appens on a few results from the Chrome history when searched for t]]></description>
+            <link>https://bradbarrows.com/posts/chromeSearchExtension</link>
+            <guid isPermaLink="false">chromeSearchExtension</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Creating a keyboard shortcut to console log the selected javascript expression in VSCode]]></title>
+            <description><![CDATA[## Creating a keyboard shortcut to console log the selected javascript expression in VSCode
+
+Command Shift P -> Configure User Snippets -> Create New
+
+```
+{
+	// Console log the selected expressinn
+	"consolelog": {
+		"scope": "javascript, typescript",
+		"prefix": "consolelog",
+		"body": [
+			"console.log(`$TM_SELECTED_TEXT - ${$TM_SELECTED_TEXT}`);",
+			"$TM_SELECTED_TEXT$2"
+		],
+		"description": "Console log the selected expression"
+	}
+}
+```
+
+Command Shift P -> Open Keyboard Shortcuts (JSON)
+
+```
+[
+    { 
+        "key": "cmd+ctrl+c",        
+        "command": "editor.action.insertSnippet",
+  ]]></description>
+            <link>https://bradbarrows.com/posts/consolelogvscode</link>
+            <guid isPermaLink="false">consolelogvscode</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Playing around with parsing expression grammar and PEG.js]]></title>
+            <description><![CDATA[## Parsing expression grammar
+
+Parsing expression grammar is a newer type of parser than the others I have read about and barely used.
+
+I actually briefly used it once for a job years ago and really enjoyed working with it. It is one of the only grammar syntaxes that I felt like I could just pick up. 
+
+[PEG.js](https://pegjs.org/) is a great way to get started and work with parsing expression grammar.
+
+Not only is it incredibly easy to use, with a syntax that is readable without hours spent over documentation, but it is also powerful. Able to parse complicated languages with relativley simple ]]></description>
+            <link>https://bradbarrows.com/posts/pegJS</link>
+            <guid isPermaLink="false">pegJS</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Convert any video format to a gif]]></title>
+            <description><![CDATA[## Converting any video format supported by ffmped to a gif
+
+I have 2 helpful bash/zsh functions I use often.
+
+The first one uses gifsicle to compress the gif further and remove some frames. The second shouldn't have as much loss.
+
+```
+function convertMov2Gif() {
+  ffmpeg -i $1 -pix_fmt rgb8 -r 10 $1.gif && gifsicle -O3 $1.gif -o $1.gif 
+}
+alias mov2gif=convertMov2Gif
+
+function video2gifNoLoss() {
+  ffmpeg -i $1 -pix_fmt rgb8 $1.gif 
+}
+```
+
+To use to convert a mp4 to a gif:
+```
+video2gifNoLoss someVideo.mp4
+```
+
+Or convert a mov to a gif:
+```
+video2gifNoLoss someVideo.mov
+```
+
+Requires:
+
+```
+b]]></description>
+            <link>https://bradbarrows.com/posts/videoToGif</link>
+            <guid isPermaLink="false">videoToGif</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Chrome Debugger Window always on top script]]></title>
+            <description><![CDATA[## Keep your Chrome Dev Tools Debugger on top of all windows on OSX Catalina
+
+![An animated gif of the usage of these scripts](/static/ChromeDevToolsOnTop.gif)
+
+I was getting tired of having to search for my Chrome Dev Tools Debugger window and thought I would see how hard it would be to write a dylib I could
+add as a dylib load instruction eventually to my Google Chrome binary.
+
+I eventually will make a script and dylib that does all this but for now I wrote a quick frida-cycript script to take care of this.
+
+### Issues I encountered
+
+So for some reason.. sometimes.. I can't use 
+```[NSApplic]]></description>
+            <link>https://bradbarrows.com/posts/chromeDevTools</link>
+            <guid isPermaLink="false">chromeDevTools</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 06 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Github Repository Statistics command line tool grst]]></title>
+            <description><![CDATA[# Github Repository Statistics
+
+I wanted a VERY simple way to view Github statistics for all my public repos and couldn't find a tool to do this.
+Especially nothing lightweight and without a bunch of dependencies I didn't want to install.
+
+This command line tool: 
+```grst```
+will list all your public repos on the command line with all of the available traffic
+statistics.
+
+This includes number of clones, views, referrer information and paths.
+
+At the very end a sorted list of repos by clone and view count is also listed.
+Just to make it easy to figure out which repo from the first printout you ]]></description>
+            <link>https://bradbarrows.com/posts/githubStats</link>
+            <guid isPermaLink="false">githubStats</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Fri, 04 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Find recently updated Github forks and clones with the command line tool gfnfs]]></title>
+            <description><![CDATA[# Up to date Github Forks and Clones with gfnfs
+
+I was getting tired of clicking through all the forks for a repo then looking for the commits to find which ones were up to date so I wrote a command line utitlity to do it for me.
+
+The repository is at: [githubFindNewestForks](https://github.com/bebrws/githubFindNewestForks)
+
+Here is an image showing the tail end of the output:
+
+![An image of the output of gfnfs](/static/githubfindforks.png)
+
+To use run:
+
+```
+npm install -g github-find-newest-forks
+gfnfs
+```]]></description>
+            <link>https://bradbarrows.com/posts/githubforks</link>
+            <guid isPermaLink="false">githubforks</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Fri, 04 Sep 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[addAlias - taking notes and improving productivity]]></title>
+            <description><![CDATA[## A most useful, simple bash function
+
+A year or two ago I came up with a very simple bash/zsh function which I really like.
+
+It is addAlias.
+
+All it does is take the first argument, a string representing the new alias name, and a second argument being a string repsenting the alias itself.
+
+It then echos this into a file which I source in my .zshrc
+
+The great part about this is that I can be working throughout the day and come across some command line tool or collection of commands that are very useful and not have to write them down or remember them.
+
+I just addAlias them, like:
+
+addAlias gi]]></description>
+            <link>https://bradbarrows.com/posts/addAlias</link>
+            <guid isPermaLink="false">addAlias</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 31 Aug 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[FZNim - My fzf like library and clone writtin in Nim]]></title>
+            <description><![CDATA[## Introducing FZNim
+
+I love fzf
+
+It has become, by far, the most useful "new" command line tool I have. It can be a godsend when it comes to searching through.. anything. A good example is files and directories.
+
+I always setup a folder named "repos" on my laptop where I store all my code repositories. Because of this I am constantly cd ing into this folder then cd ing into a specific repo folder to start work on a project.
+
+Sometimes I cant rememeber the exact name of a repo or am just feeling lazy and now can save time and mental energy with a quick:
+
+```
+
+function cdr() {
+	cd ~/repos/$(ls ]]></description>
+            <link>https://bradbarrows.com/posts/FZNim</link>
+            <guid isPermaLink="false">FZNim</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 30 Aug 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Writing a fuzzy string search algorithm in Nim]]></title>
+            <description><![CDATA[## Introducing FZNim
+
+I needed a fuzzy string search algorithm for my fzf like library and this website's gimmicky search bar.
+
+I did see that the Nim documentation actually has an implementation which is used for searching their documentation.
+
+I tried this and I actually ran into a few issues. It also didn't quite get the results I expected. Which just felt bad.
+
+So I wrote my own:
+
+```
+proc fzfuzzyMatch*(pattern: string, str: string, longestItemLength: int) : tuple[score: int, matched: bool, item: string] =
+  var
+    strIndex = 0
+    patIndex = 0
+    lastCharMatchedScore = 0
+    score = 0
+ ]]></description>
+            <link>https://bradbarrows.com/posts/nimFuzzySearch</link>
+            <guid isPermaLink="false">nimFuzzySearch</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 30 Aug 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Nim Documentation Chrome Extension]]></title>
+            <description><![CDATA[
+I created a [Chrome Extension to search the Nim documenation from the Chrome Omnibar](https://chrome.google.com/webstore/detail/nim-language-omnibar-sear/melbldfjlacnhdbjbhbhlglaacgjnbgl?hl=en)
+
+To get this to work I needed both a background script and a content script:
+
+```
+{
+  "manifest_version": 2,
+  "icons": { 
+    "16": "nim16.png",
+    "48": "nim48.png",
+   "128": "nim128.png" 
+  },
+  "name": "Nim Language Omnibar Search",
+  "description": "This extension will allow you to search the nim documentation by using the keyword 'nim' before a search in the omnibar.",
+  "version": "0.0.4",
+  "]]></description>
+            <link>https://bradbarrows.com/posts/NimOmniBarSearch</link>
+            <guid isPermaLink="false">NimOmniBarSearch</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Wed, 01 Jul 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Ish]]></title>
+            <description><![CDATA[
+## Studying Ish
+
+and [x86UserModeEmu](https://github.com/bebrws/x86LinuxUserModeEmu)
+
+### The summary
+
+I have always been interested in Operating Systems, Compilers, Languages, Linux, Emulators, etc etc.. But there really isn't a ton of information about how to go from knowing nothing to writing any one of these things. At least including the intermediate subjects. At some point, I guess we really just have to and are expected to read source code.
+
+I read over a bunch of similar projects, learning about how these things were working from a high level. I really delved into JSLinux for example.]]></description>
+            <link>https://bradbarrows.com/posts/Ish</link>
+            <guid isPermaLink="false">Ish</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sat, 06 Jun 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Building this blog]]></title>
+            <description><![CDATA[
+# Introduction
+
+I just followed [this site](https://www.netlify.com/blog/2020/05/04/building-a-markdown-blog-with-next-9.4-and-netlify/) and used their Github repo as a base
+
+## Sorting posts
+
+Modified PostList.js to sort the posts with this change:
+
+```
+import Link from 'next/link'
+
+export default function PostList({ posts }) {
+  posts.sort((x, y) => {
+    const a = new Date(x);
+    const b = new Date(y);
+    if (a < b) return 1;
+    if (a > b) return -1;
+    return 0;
+  })
+  if (posts === 'undefined') return null
+
+  return (
+    <div>
+      {!posts && <div>No posts!</div>}
+      <ul>
+      ]]></description>
+            <link>https://bradbarrows.com/posts/blog</link>
+            <guid isPermaLink="false">blog</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sat, 06 Jun 2020 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Getting Input from STDIN after piping in STDIN to a C or Nim program]]></title>
+            <description><![CDATA[
+Writing my fzf like Nim library/application I ran into an issue. I could pipe input into the command line utility but then after processing the input from the piped
+
+STDIN I was unable to get input from the user via getch
+
+I actually found the answer was a few lines of code.
+
+In C:
+
+```
+#include <stdio.h>
+#include <unistd.h>
+```
+...
+
+```
+    if (!isatty(fileno(stdin))) {
+        // duplicate stdin file descriptor and open it as a FILE*
+        input = fdopen(dup(fileno(stdin)), "r");
+        // reopen stdin on the terminal (assuming stdout is still connected to the terminal)
+        freopen(t]]></description>
+            <link>https://bradbarrows.com/posts/GettingSTDINAfterPipe</link>
+            <guid isPermaLink="false">GettingSTDINAfterPipe</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Wed, 22 Jan 2020 08:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Writing Nim Command Line Utilities]]></title>
+            <description><![CDATA[
+Nim is an incredible language. It has an amazing type and macro system but I am not knowledgable enough to really go into how great this all is.
+
+One great use for Nim that I have found though is writing command line utilities.
+
+When scripting something maybe too slow to write or run then writing it in Nim might be a good option.
+
+To get started this is a short little example script which will read lines from stdin until EOF.
+
+For each line read it will check if the line ends with a string which was passed as the first command line option.
+
+If it does that line is echoed out to STDOUT. Basica]]></description>
+            <link>https://bradbarrows.com/posts/NimCLUtils</link>
+            <guid isPermaLink="false">NimCLUtils</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 20 Jan 2020 08:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Summertime]]></title>
+            <description><![CDATA[
+Trying to learn Summertime on the Cello and wrote out a Tab (missing any time signatures).
+
+* [Summertime - Louis Armstrong and Ella Fitzgerald Cello Tab PDF](/static/summertime/SummerTimeTab.pdf)
+* [Summertime - Louis Armstrong and Ella Fitzgerald Tab file for TabEdit](/static/summertime/SummerTimeTablEdit.tef)
+]]></description>
+            <link>https://bradbarrows.com/posts/Summertime</link>
+            <guid isPermaLink="false">Summertime</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 22 Dec 2019 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Wireguard]]></title>
+            <description><![CDATA[
+How to setup a Wireguard VPN for free!
+
+1. Go grab a free account if you haven't already signed for one from [Azure](https://azure.microsoft.com/en-us/free/search/?&ef_id=EAIaIQobChMIs6y5wYe25gIVFtRkCh3jJANyEAAYASABEgK6pvD_BwE:G:s&OCID=AID2000128_SEM_hDTj6HPx&MarinID=hDTj6HPx_287547081826_azure%20free%20account_e_c_TAwBQrMX_44568976297_kwd-300666823650&lnkd=Google_Azure_Brand&gclid=EAIaIQobChMIs6y5wYe25gIVFtRkCh3jJANyEAAYASABEgK6pvD_BwE) or you could use your AWS free compute hours with a small EC2 instance.
+
+2. Create a the small VM that fits in the free price range
+
+3. Set the networking ru]]></description>
+            <link>https://bradbarrows.com/posts/Wireguard</link>
+            <guid isPermaLink="false">Wireguard</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sat, 14 Dec 2019 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[OSX - Manually configuring System Preferences Security And Privacy settings]]></title>
+            <description><![CDATA[
+I have a laptop which I wanted to be able to check the status of remotely.
+
+For remote access on OSX I was using Jump Desktop.I had this same issue with RealVNC and other remote desktop services though.
+
+Specifically, on Catalina I ran into an issue where after installing Jump Desktop Connect. I was not able to add Jump Desktop Connect to my Security And Privacy settings to enable the Screen Recording permission.
+
+After some grepping.I figured out that a sqlite DB exists that contains all the OSX Catalina Security and Privacy settings.
+
+This DB can be opened with:
+```
+  sudo sqlite3 /Library/]]></description>
+            <link>https://bradbarrows.com/posts/OSXSecurity</link>
+            <guid isPermaLink="false">OSXSecurity</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Mon, 01 Jul 2019 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Me Surfing]]></title>
+            <description><![CDATA[## Surfing in SLO
+
+![Alt Text](/static/surf.gif)]]></description>
+            <link>https://bradbarrows.com/posts/surf</link>
+            <guid isPermaLink="false">surf</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 30 Sep 2018 07:00:00 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

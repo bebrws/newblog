@@ -1,8 +1,8 @@
 import Layout from '@components/Layout'
 import PostList from '@components/PostList'
 import getPosts from '@utils/getPosts'
-
-
+import generateRss from '../createRSSFeed';
+import * as fs from 'fs';
 
 const Index = ({ posts, title, description, ...props }) => {
   return (
@@ -40,11 +40,23 @@ const Index = ({ posts, title, description, ...props }) => {
 export default Index
 
 export async function getStaticProps() {
-  const configData = await import(`../siteconfig.json`)
+  const configData = await import(`../siteconfig.json`);
 
   const posts = ((context) => {
     return getPosts(context)
-  })(require.context('../posts', true, /\.md$/))
+  })(require.context('../posts', true, /\.md$/));
+
+  posts.sort((x, y) => {
+    const a = new Date(x.frontmatter.date);
+    const b = new Date(y.frontmatter.date);
+    if (a < b) return 1;
+    if (a > b) return -1;
+    return 0;
+  });
+
+
+  const rss = generateRss(posts);
+  fs.writeFileSync('./public/rss.xml', rss);
 
   return {
     props: {
@@ -52,5 +64,5 @@ export async function getStaticProps() {
       title: configData.default.title,
       description: configData.default.description,
     },
-  }
+  };
 }
