@@ -361,6 +361,10 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           height: 1rem;
         }
 
+        footer p {
+          padding-right: 10px;
+        }
+
         .brain { 
           margin-left: auto;
           margin-right: auto;
@@ -416,7 +420,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         <div className="content"><div style={{width: (width > 1000 ? 800: "90%")}} className="innerContent">{children}</div></div>
       </section>
       <footer>
-        © 2020 Bradley Barrows
+        <p>© 2020 Bradley Barrows</p> <p>|</p> <p><a href="/rss.xml">RSS Feed</a></p>
       </footer>
     </MUIWrapper>
     </>
