@@ -43,3 +43,12 @@ Other choices look to be:
 ## How does it look?
 
 ![image of game of life run](static/gol.gif)
+
+
+# Amendment
+
+It turns out that these 2 repos/crates do everything I am looking for:
+    * [General Piston Guide](https://github.com/PistonDevelopers/Piston-Tutorials/blob/master/getting-started/readme.md)
+    * [Piston OpenGL graphics](https://github.com/PistonDevelopers/opengl_graphics)
+
+    
