@@ -30,7 +30,15 @@ The big downside for me though is that it is very slow. Try out my Game of Life 
 
 On to the next library.
 
-I have a square rendering using rendy which is using gfx-hal underneath and is very fast. I am stuck on fixing the projection so that my aspect ratio isn't out of whack for full screen which I want.
+I have a square rendering using [rendy](https://github.com/amethyst/rendy) which is using [gfx-hal](https://github.com/gfx-rs/gfx) underneath and is very fast. I am stuck on fixing the projection so that my aspect ratio isn't out of whack for full screen which I want.
+
+Other choices look to be:
+    * [Conrod](https://github.com/PistonDevelopers/conrod)
+    * Lower level [Piston](https://github.com/PistonDevelopers/piston-examples)
+    * Lower Level [GFX](https://github.com/gfx-rs/gfx)
+    * [Rendy](ttps://github.com/amethyst/rendy)
+
+
 
 ## How does it look?
 
