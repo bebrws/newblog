@@ -1,5 +1,5 @@
 ---
-title: 'Conway's Game Of Life and the Rust NVG Library'
+title: 'Conways Game Of Life and the Rust NVG Library'
 author: 'Brad Barrows'
 date: '2020-10-01'
 hero_image: ../static/gol.gif
@@ -44,6 +44,9 @@ Other choices look to be:
 
 ![image of game of life run](static/gol.gif)
 
+# Code
+
+[My code is here](https://github.com/bebrws/gol-nvg)
 
 # Amendment
 

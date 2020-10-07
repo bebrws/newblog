@@ -4,8 +4,45 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 02 Oct 2020 09:23:33 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 07 Oct 2020 01:51:02 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Conways Game Of Life and the Rust GFX Library]]></title>
+            <description><![CDATA[## Why?
+
+I am trying to learn more about Rust and how Alacritty is so fast. This is also an attempt to explore the many different Rust graphics libraries.
+
+This post is about [gfx](https://github.com/gfx-rs/gfx).
+
+With gfx I managed to get the FPS I was looking for for this Game Of Life implementation.
+
+[My code is here](https://github.com/bebrws/gol-gfx)
+
+## How does it look?
+
+![image of game of life run](static/golgfx.gif)
+]]></description>
+            <link>https://bradbarrows.com/posts/rust-gfx-gol</link>
+            <guid isPermaLink="false">rust-gfx-gol</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Tue, 06 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Conways Game Of Life and the Rust NVG Library]]></title>
+            <description><![CDATA[## Why?
+
+So I have been crazy impressed with how fast Alacritty is. And I want to know more.
+
+I know I read somewhere that one of the libraries that Alacritty uses (or maybe it was just a random Rust OpenGL based library) actually does some cool React style tricks to improve performance. Something about diffing changes so that it know what changed and only re renders what it needs to.
+
+This combined with the speed of the OpenGL Graphics pipeline must be what gives Alacritty so much awesomeness. Other than the quality Rust code that the author wrote of course.
+
+So I wanted to play around with s]]></description>
+            <link>https://bradbarrows.com/posts/rust-nvg-gol</link>
+            <guid isPermaLink="false">rust-nvg-gol</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Thu, 01 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Alacritty - Fastest OSX Terminal?]]></title>
             <description><![CDATA[## Introducing Alacritty
