@@ -2,7 +2,7 @@
 title: 'Getting Input from STDIN after piping in STDIN to a C or Nim program'
 author: 'Brad Barrows'
 date: '2020-1-22'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 Writing my fzf like Nim library/application I ran into an issue. I could pipe input into the command line utility but then after processing the input from the piped

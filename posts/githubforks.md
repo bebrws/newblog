@@ -2,7 +2,7 @@
 title: 'Find recently updated Github forks and clones with the command line tool gfnfs'
 author: 'Brad Barrows'
 date: '2020-9-04'
-# hero_image: ../static/niceday.png
+hero_image: /static/githubfindforks.gif
 ---
 # Up to date Github Forks and Clones with gfnfs
 

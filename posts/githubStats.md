@@ -2,7 +2,7 @@
 title: 'Github Repository Statistics command line tool grst'
 author: 'Brad Barrows'
 date: '2020-9-04'
-# hero_image: ../static/niceday.png
+# hero_image: /static/reposSorted.png
 ---
 # Github Repository Statistics
 

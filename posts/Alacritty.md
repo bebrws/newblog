@@ -2,7 +2,7 @@
 title: 'Alacritty - Fastest OSX Terminal?'
 author: 'Brad Barrows'
 date: '2020-9-17'
-hero_image: ../static/alacritty.png
+hero_image: /static/alacritty.gif
 ---
 ## Introducing Alacritty
 Alacritty is most likely the fastest GPU accelerated terminal emulator for OSX.

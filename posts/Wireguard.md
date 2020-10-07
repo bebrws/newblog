@@ -2,7 +2,7 @@
 title: 'Wireguard'
 author: 'Brad Barrows'
 date: '2019-12-14'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 How to setup a Wireguard VPN for free!

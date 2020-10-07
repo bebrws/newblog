@@ -2,7 +2,7 @@
 title: 'FZNim - My fzf like library and clone writtin in Nim'
 author: 'Brad Barrows'
 date: '2020-8-30'
-# hero_image: ../static/niceday.png
+hero_image: /static/fznim.gif
 ---
 ## Introducing FZNim
 

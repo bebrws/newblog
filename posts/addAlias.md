@@ -2,7 +2,7 @@
 title: 'addAlias - taking notes and improving productivity'
 author: 'Brad Barrows'
 date: '2020-8-31'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 ## A most useful, simple bash function
 

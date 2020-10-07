@@ -2,7 +2,7 @@
 title: 'Chrome Debugger Window always on top script'
 author: 'Brad Barrows'
 date: '2020-9-06'
-# hero_image: ../static/niceday.png
+# hero_image: /static/ChromeDevToolsOnTop.gif
 ---
 ## Keep your Chrome Dev Tools Debugger on top of all windows on OSX Catalina
 

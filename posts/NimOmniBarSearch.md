@@ -2,7 +2,7 @@
 title: 'Nim Documentation Chrome Extension'
 author: 'Brad Barrows'
 date: '2020-7-01'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 I created a [Chrome Extension to search the Nim documenation from the Chrome Omnibar](https://chrome.google.com/webstore/detail/nim-language-omnibar-sear/melbldfjlacnhdbjbhbhlglaacgjnbgl?hl=en)

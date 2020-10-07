@@ -2,7 +2,7 @@
 title: 'Creating a keyboard shortcut to console log the selected javascript expression in VSCode'
 author: 'Brad Barrows'
 date: '2020-9-07'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 ## Creating a keyboard shortcut to console log the selected javascript expression in VSCode
 

@@ -2,7 +2,7 @@
 title: 'Playing around with parsing expression grammar and PEG.js'
 author: 'Brad Barrows'
 date: '2020-9-07'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 ## Parsing expression grammar
 

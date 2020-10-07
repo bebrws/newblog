@@ -2,7 +2,7 @@
 title: 'Convert any video format to a gif'
 author: 'Brad Barrows'
 date: '2020-9-07'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 ## Converting any video format supported by ffmped to a gif
 

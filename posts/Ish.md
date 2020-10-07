@@ -2,7 +2,7 @@
 title: 'Ish'
 author: 'Brad Barrows'
 date: '2020-6-6'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 ## Studying Ish

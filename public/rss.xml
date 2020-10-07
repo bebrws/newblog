@@ -4,7 +4,7 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 07 Oct 2020 02:09:42 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 07 Oct 2020 07:38:30 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[Conways Game Of Life and the Rust GFX Library]]></title>
@@ -20,7 +20,7 @@ With gfx I managed to get the FPS I was looking for for this Game Of Life implem
 
 ## How does it look?
 
-![image of game of life run](static/golgfx.gif)
+![image of game of life run](../static/golgfx.gif)
 ]]></description>
             <link>https://bradbarrows.com/posts/rust-gfx-gol</link>
             <guid isPermaLink="false">rust-gfx-gol</guid>
@@ -467,7 +467,7 @@ This DB can be opened with:
             <title><![CDATA[Me Surfing]]></title>
             <description><![CDATA[## Surfing in SLO
 
-![Alt Text](/static/surf.gif)]]></description>
+]]></description>
             <link>https://bradbarrows.com/posts/surf</link>
             <guid isPermaLink="false">surf</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>

@@ -2,7 +2,7 @@
 title: 'OSX - Manually configuring System Preferences Security And Privacy settings'
 author: 'Brad Barrows'
 date: '2019-07-01'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 I have a laptop which I wanted to be able to check the status of remotely.

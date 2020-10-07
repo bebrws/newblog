@@ -2,7 +2,7 @@
 title: 'Conways Game Of Life and the Rust GFX Library'
 author: 'Brad Barrows'
 date: '2020-10-06'
-hero_image: ../static/golgfx.gif
+hero_image: /static/golgfx.gif
 ---
 ## Why?
 

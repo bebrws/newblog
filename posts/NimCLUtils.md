@@ -2,7 +2,7 @@
 title: 'Writing Nim Command Line Utilities'
 author: 'Brad Barrows'
 date: '2020-1-20'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 
 Nim is an incredible language. It has an amazing type and macro system but I am not knowledgable enough to really go into how great this all is.

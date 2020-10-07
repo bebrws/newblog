@@ -2,7 +2,7 @@
 title: 'Writing a fuzzy string search algorithm in Nim'
 author: 'Brad Barrows'
 date: '2020-8-30'
-# hero_image: ../static/niceday.png
+# hero_image: /static/niceday.png
 ---
 ## Introducing FZNim
 

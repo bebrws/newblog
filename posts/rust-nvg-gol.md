@@ -2,7 +2,7 @@
 title: 'Conways Game Of Life and the Rust NVG Library'
 author: 'Brad Barrows'
 date: '2020-10-01'
-hero_image: ../static/gol.gif
+hero_image: /static/gol.gif
 ---
 ## Why?
 
@@ -38,7 +38,7 @@ Other choices look to be:
     * [Conrod](https://github.com/PistonDevelopers/conrod)
     * Lower level [Piston](https://github.com/PistonDevelopers/piston-examples)
     * Lower Level [GFX](https://github.com/gfx-rs/gfx)
-    * [Rendy](ttps://github.com/amethyst/rendy)
+    * [Rendy](https://github.com/amethyst/rendy)
 
 
 
