@@ -44,7 +44,7 @@ Other choices look to be:
 
 ## How does it look?
 
-![image of game of life run](static/gol.gif)
+![image of game of life run](../static/gol.gif)
 
 ## Code
 

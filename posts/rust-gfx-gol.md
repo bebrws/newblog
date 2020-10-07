@@ -16,4 +16,4 @@ With gfx I managed to get the FPS I was looking for for this Game Of Life implem
 
 ## How does it look?
 
-![image of game of life run](static/golgfx.gif)
+![image of game of life run](../static/golgfx.gif)

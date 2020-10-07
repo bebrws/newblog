@@ -116,15 +116,28 @@ function FuzzySearchPopover({ }) {
   }
 
   React.useEffect(() => {
+    let shakeCount = 0;
 
     handleFuzzySearchChange("");
     
-    setInterval(() => {
+    const startFuzzyShake = () => {
       setSpringState(true);
       setTimeout(() => {
         setSpringState(false);
       }, 1000);
-    }, 5000);
+    };
+
+    const startFuzzyShakeTimer = () => {
+      setTimeout(() => {
+        startFuzzyShake();
+        if (shakeCount < 5 && !window.location.pathname.includes("/post/")) {
+          shakeCount += 1;
+          startFuzzyShakeTimer();
+        }
+      }, 5000);
+    };
+
+    startFuzzyShakeTimer();
 
   }, []);
 
@@ -302,7 +315,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         h6 {
           font-family: 'Roboto', sans-serif;
           font-weight: bold;
-          color: #b290b7;
+          color: #362438;
         }
 
         pre {
