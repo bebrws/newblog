@@ -46,11 +46,11 @@ Other choices look to be:
 
 ![image of game of life run](static/gol.gif)
 
-# Code
+## Code
 
 [My code is here](https://github.com/bebrws/gol-nvg)
 
-# Amendment
+## Amendment
 
 It turns out that these 2 repos/crates do everything I am looking for:
     * [General Piston Guide](https://github.com/PistonDevelopers/Piston-Tutorials/blob/master/getting-started/readme.md)
