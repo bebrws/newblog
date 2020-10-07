@@ -16,7 +16,9 @@ So I wanted to play around with some of these Rust graphics libraries and see if
     * Render 2D text
     * Render 2D images
 
-This is actually much harder then it sounds. Due to the fact that all fast graphics rendering is going to have to be done in a 3D environment. Meaning someething like OpenGL. This means that you cannot do something as simple as drawing an image to the screen or drawing a rectangle. To draw an image for example you end up having to draw multiple triangles, loading a texture, mapping the texture to the triangles and rendering that. Not too mention all the insane amount of work it takes to just setup up the 3D environment you just want to 2D render into..
+This is actually much harder then it sounds. Due to the fact that all fast graphics rendering is going to have to be done in a 3D environment. Meaning something like OpenGL. This means that something which sounds simple, such as drawing an image or rectangle to the screen, is now challenging to implement.
+
+To draw an image for example you end up having to draw multiple triangles, loading a texture, mapping the texture to the triangles and rendering that. Not too mention all the insane amount of work it takes to just setup up the 3D environment when all you want to do is to render 2D images/shapes..
 
 So to get going on this I choose to implement a Conway's Game Of Life app.
 
