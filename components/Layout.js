@@ -428,7 +428,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
       `}</style>
       <MUIWrapper sheets={sheets}>
       <section className="layout">
-        { width > 800 && <FuzzySearchPopover/> }
+        {/* { width > 800 && <FuzzySearchPopover/> } */}
         <Header/>
         <div className="content"><div style={{width: (width > 1000 ? 800: "90%")}} className="innerContent">{children}</div></div>
       </section>
