@@ -205,7 +205,7 @@ Just to make it easy to figure out which repo from the first printout you ]]></d
         </item>
         <item>
             <title><![CDATA[Find recently updated Github forks and clones with the command line tool gfnfs]]></title>
-            <description><![CDATA[# Up to date Github Forks and Clones with gfnfs
+            <description><![CDATA[# Up to date Github Forks and Repositores with gfnfs
 
 I was getting tired of clicking through all the forks for a repo then looking for the commits to find which ones were up to date so I wrote a command line utitlity to do it for me.
 

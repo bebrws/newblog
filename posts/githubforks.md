@@ -2,9 +2,9 @@
 title: 'Find recently updated Github forks and clones with the command line tool gfnfs'
 author: 'Brad Barrows'
 date: '2020-9-04'
-hero_image: /static/githubfindforks.gif
+# hero_image: /static/githubfindforks.png
 ---
-# Up to date Github Forks and Clones with gfnfs
+# Up to date Github Forks and Repositories with gfnfs
 
 I was getting tired of clicking through all the forks for a repo then looking for the commits to find which ones were up to date so I wrote a command line utitlity to do it for me.
 

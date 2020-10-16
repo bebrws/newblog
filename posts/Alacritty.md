@@ -1,11 +1,11 @@
 ---
-title: 'Alacritty - Fastest OSX Terminal?'
+title: 'Alacritty - A Fast OSX Terminal'
 author: 'Brad Barrows'
 date: '2020-9-17'
 hero_image: /static/alacritty.gif
 ---
-## Introducing Alacritty
-Alacritty is most likely the fastest GPU accelerated terminal emulator for OSX.
+## Alacritty
+Alacritty is the fastest GPU accelerated terminal emulator for OSX I have used.
 
 The only reason I hadn't tried it or used it very much before was the learning curve 
 of a new terminal emulator and it's lack of tabs.
@@ -15,8 +15,10 @@ file along with some nice bash functions to help with editing the configurations
 
 ## Setting up Alacritty using my build
 
-First [install Alacritty](https://github.com/bebrws/alacritty/releases/download/0.6.0-dev-brads/Alacritty.zip) from my repo to get a build that has an "Always On Top' action
-I built in. The keyboard combo for this will "Command Shift A".
+Download the terminal here: [Alacritty releases](https://github.com/alacritty/alacritty/releases)
+
+I was checking out the code made some changes [here](https://github.com/bebrws/alacritty/releases/download/0.6.0-dev-brads/Alacritty.zip) 
+The only difference really was adding an "Always On Top' action. The keyboard combo for this will "Command Shift A".
 
 ## Setting up Alacritty using my tmux and alacritty config
 
