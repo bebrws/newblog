@@ -15,6 +15,8 @@ It starts off with some aliases to help with monotonous tasks like getting a spe
 
 ### Then there are some helpful command to describe and delete resources
 
+![Describing pods](/static/kdpod.gif)
+
 You could run:
 
 ```
@@ -52,6 +54,8 @@ will even work to list all ingresses in all namespaces and then describe the one
 Command starting with kdel will delete resources.
 
 ### Spawning a shell on a pod in a container
+
+![Spawning a shell on a pod in a container](/static/kexsh.gif)
 
 To run a shell on a pod in a container run:
 
@@ -195,7 +199,7 @@ Kubernetes events has helped me debug by far the majority of the more challengin
     alias kg='kubectl get '
     # alias -g kd='kubectl describe '
     function kd() {
-        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo '"'"'{}'"'"' | xargs kubectl describe $1 -n' | xargs kubectl describe $1 -n
+        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview="echo '{}' | xargs kubectl describe $1 -n" | xargs kubectl describe $1 -n
     }
 
     function kdelete() {
