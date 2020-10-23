@@ -1,7 +1,7 @@
 ---
-title: 'My Kubernetes aliases and functions - using fzf'
+title: 'My Kubernetes aliases and functions using fzf'
 author: 'Brad Barrows'
-date: '2020-10-20'
+date: '2020-10-21'
 # hero_image: /static/chrome-bookmark-history-search-ex-usage.gif
 ---
 ## Helpful Kubernetes Aliases and Functions

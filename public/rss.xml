@@ -4,8 +4,118 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 14 Oct 2020 02:38:11 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 23 Oct 2020 11:46:27 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[My Kubernetes aliases and functions using fzf]]></title>
+            <description><![CDATA[## Helpful Kubernetes Aliases and Functions
+
+I use fzf pretty extensively. I really appreciate how much time it can save looking up something like an id or namespace which will just need to be copied into the next command.
+
+To save time I created a number of alises and functions which work with Kubernetes' kubectl to help me get information about a cluster and also exec shells.
+
+It starts off with some aliases to help with monotonous tasks like getting a specific column.
+
+Then there are some helpful command to describe and delete resources.
+
+You could run:
+
+```
+    kd service
+```
+or
+```
+    kd]]></description>
+            <link>https://bradbarrows.com/posts/kubernetesAliasesFunctions</link>
+            <guid isPermaLink="false">kubernetesAliasesFunctions</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Wed, 21 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Javascript FlatMap Usage]]></title>
+            <description><![CDATA[## FlatMap is a great functional operation
+
+FlatMap can be implemented as follows:
+
+```
+    Array.prototype.flatMap = function(mapFunction) { return this.reduce((a, c) => { return [ ...a, ...c ]; }, []).map(mapFunction) }
+```
+
+This is an example of just flattening an array of arrays without mapping:
+
+```
+     [[1], [2,3]].reduce((a, c) => { return [ ...a, ...c ]; }, [])
+```
+
+Which will produce the same as: 
+
+```
+    [[1], [2,3]].flatMap(x => x)
+```
+
+Results in output:
+
+```
+    [1, 2, 3]
+```
+
+## Map, flatMap and the 1 to 1 vs 1 to many outputs
+
+Flat mapping is great in my opinion because while ]]></description>
+            <link>https://bradbarrows.com/posts/JSFlatMapUsage</link>
+            <guid isPermaLink="false">JSFlatMapUsage</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Tue, 20 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Escaping Single Quotes Within Single Quotes in Bash and ZSH]]></title>
+            <description><![CDATA[## Escaping single quotes for Bash and ZSH
+
+While writing a bash/zsh function which used fzf I needed to use the string "$1" and "$2" without them being evaluated.
+
+I realize now that I could have probably just done: "\$2"
+
+My command (before realizing I didn't even need the awk command!) was:
+
+```
+    function kd() {
+        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo '"'"'{}'"'"' | awk '"'"'{print $1, $2}'"'"' | xargs kubectl describe pod -n' | awk '{print $1, $2}' | xargs kubectl describe $1 -n
+    }
+]]></description>
+            <link>https://bradbarrows.com/posts/escapingSingleQuotes</link>
+            <guid isPermaLink="false">escapingSingleQuotes</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Tue, 20 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Python List Comprehension in Javascript]]></title>
+            <description><![CDATA[## Getting something better than Python style list comprehension in Javascript
+
+The javascript spread operator opened my eyes to an easy way to get Python style list comprehension in Javascript.
+
+By creating an array and spreading another array into it while doing some operation on the inner array we effectively have Python style list comprehension.
+
+For example:
+
+```
+
+    const anArray = [1,2,3];
+    console.log([ ...anArray.map(x => x*2)]);
+
+```
+
+This will print out:
+
+```
+    [ 2, 4, 6 ]
+```
+
+What I like even more than Python list comprehension here is that you can mix and match the arrays y]]></description>
+            <link>https://bradbarrows.com/posts/pythonListComprehensionsInJS</link>
+            <guid isPermaLink="false">pythonListComprehensionsInJS</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Tue, 20 Oct 2020 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Conways Game Of Life and the Rust GFX Library]]></title>
             <description><![CDATA[## Why?
@@ -44,9 +154,9 @@ So I wanted to play around with s]]></description>
             <pubDate>Thu, 01 Oct 2020 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Alacritty - Fastest OSX Terminal?]]></title>
-            <description><![CDATA[## Introducing Alacritty
-Alacritty is most likely the fastest GPU accelerated terminal emulator for OSX.
+            <title><![CDATA[Alacritty - A Fast OSX Terminal]]></title>
+            <description><![CDATA[## Alacritty
+Alacritty is the fastest GPU accelerated terminal emulator for OSX I have used.
 
 The only reason I hadn't tried it or used it very much before was the learning curve 
 of a new terminal emulator and it's lack of tabs.
@@ -56,7 +166,9 @@ file along with some nice bash functions to help with editing the configurations
 
 ## Setting up Alacritty using my build
 
-First [install Alacritty](https://github.com/bebrws/alacritty/releases/download/0.6.0-dev-brads/Alacritty.zip) from my repo to get a build that has]]></description>
+Download the terminal here: [Alacritty releases](https://github.com/alacritty/alacritty/releases)
+
+I was checking out the code made some changes [here](https:/]]></description>
             <link>https://bradbarrows.com/posts/Alacritty</link>
             <guid isPermaLink="false">Alacritty</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
@@ -105,22 +217,6 @@ Command Shift P -> Open Keyboard Shortcuts (JSON)
   ]]></description>
             <link>https://bradbarrows.com/posts/consolelogvscode</link>
             <guid isPermaLink="false">consolelogvscode</guid>
-            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
-            <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Playing around with parsing expression grammar and PEG.js]]></title>
-            <description><![CDATA[## Parsing expression grammar
-
-Parsing expression grammar is a newer type of parser than the others I have read about and barely used.
-
-I actually briefly used it once for a job years ago and really enjoyed working with it. It is one of the only grammar syntaxes that I felt like I could just pick up. 
-
-[PEG.js](https://pegjs.org/) is a great way to get started and work with parsing expression grammar.
-
-Not only is it incredibly easy to use, with a syntax that is readable without hours spent over documentation, but it is also powerful. Able to parse complicated languages with relativley simple ]]></description>
-            <link>https://bradbarrows.com/posts/pegJS</link>
-            <guid isPermaLink="false">pegJS</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
             <pubDate>Mon, 07 Sep 2020 07:00:00 GMT</pubDate>
         </item>
@@ -205,7 +301,7 @@ Just to make it easy to figure out which repo from the first printout you ]]></d
         </item>
         <item>
             <title><![CDATA[Find recently updated Github forks and clones with the command line tool gfnfs]]></title>
-            <description><![CDATA[# Up to date Github Forks and Repositores with gfnfs
+            <description><![CDATA[# Up to date Github Forks and Repositories with gfnfs
 
 I was getting tired of clicking through all the forks for a repo then looking for the commits to find which ones were up to date so I wrote a command line utitlity to do it for me.
 
