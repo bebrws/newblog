@@ -46,3 +46,14 @@ This will print out:
 
 Instead of having to do something like 2 different list comprehensions in Python and combine the 2 lists.
 
+A more useful example:
+
+```
+
+    Array.prototype.flatMap = function(mapFunction) { return this.reduce((a, c) => { return [ ...a, ...c ]; }, []).map(mapFunction) }
+    const containersInPod1 = ['nginx'];
+    const containersInPod2 = ['node', 'mongo'];
+    const continaersFromOtherNamespace = ['cert-manager', '']
+    [containersInPod1, containersInPod2].flatMap(x => x)
+
+```
