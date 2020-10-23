@@ -59,27 +59,18 @@ The python code for this would be require concatenating 2 seperate list comprehe
 
 I know you can [iterate over multiple lists at the same time in Python](https://stackoverflow.com/questions/16568056/nested-list-comprehension-with-two-lists) but I don't believe you can perform operations on lists and then order the results in any specific manner like the example does above.
 
-In Python you can do:
+## Python combination list comprehensions
+
+In Python you can create list comprehensions of every combination of multiple lists:
 
 ```
     [x + y for x in [1, 3] for y in [2, 4] ]
 ```
 
-In Javascript the closest I could think of was:
+In Javascript the closest I could get was:
 
 ```
     [1, 3].flatMap(d => [2, 4].map(v => d + v))
 ```
 
-
-A more useful example of list comprehensions in JS maybe?
-
-```
-
-    Array.prototype.flatMap = function(mapFunction) { return this.reduce((a, c) => { return [ ...a, ...c ]; }, []).map(mapFunction) }
-    const containersInPod1 = ['nginx'];
-    const containersInPod2 = ['node', 'mongo'];
-    const continaersFromOtherNamespace = ['cert-manager', '']
-    [containersInPod1, containersInPod2].flatMap(x => x)
-
-```
+However this example now looks nothing like the original list comprehension examples I liked. Which might go to show that list comprehensions couuld be unnecessary in Javascript with the wide array of functional utility functions provided.

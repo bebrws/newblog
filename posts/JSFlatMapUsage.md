@@ -9,7 +9,7 @@ date: '2020-10-20'
 FlatMap can be implemented as follows:
 
 ```
-    Array.prototype.flatMap = function(mapFunction) { return this.reduce((a, c) => { return [ ...a, ...c ]; }, []).map(mapFunction) }
+    Array.prototype.flatMap = function(mapFunction) { return this.map(mapFunction).reduce((a, c) => { return [ ...a, ...c ]; }, []) }
 ```
 
 This is an example of just flattening an array of arrays without mapping:
