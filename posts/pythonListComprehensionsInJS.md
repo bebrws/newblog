@@ -65,13 +65,11 @@ In Python you can do:
     [x + y for x in [1, 3] for y in [2, 4] ]
 ```
 
-In Javascript you could:
+In Javascript the closest I could think of was:
 
 ```
     [1, 3].flatMap(d => [2, 4].map(v => d + v))
 ```
-
-Although this is getting a little flame war like now...
 
 
 A more useful example of list comprehensions in JS maybe?
