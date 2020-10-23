@@ -269,10 +269,9 @@ export default function Layout({ children, pageTitle, description, ...props }) {
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"></link>
 
+      {/* This was for bebdev.com */}
+      {/* <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script> */}
 
-      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>
-
-      <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-1"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
