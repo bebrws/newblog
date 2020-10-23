@@ -4,7 +4,7 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 23 Oct 2020 11:47:49 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 23 Oct 2020 13:57:58 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[My Kubernetes aliases and functions using fzf]]></title>
@@ -14,18 +14,12 @@ I use fzf pretty extensively. I really appreciate how much time it can save look
 
 To save time I created a number of alises and functions which work with Kubernetes' kubectl to help me get information about a cluster and also exec shells.
 
+### It begins.. 
 It starts off with some aliases to help with monotonous tasks like getting a specific column.
 
-Then there are some helpful command to describe and delete resources.
+### Then there are some helpful command to describe and delete resources
 
-You could run:
-
-```
-    kd service
-```
-or
-```
-    kd]]></description>
+![Describing pods](/static/kdpod]]></description>
             <link>https://bradbarrows.com/posts/kubernetesAliasesFunctions</link>
             <guid isPermaLink="false">kubernetesAliasesFunctions</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>

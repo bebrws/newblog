@@ -83,6 +83,14 @@ Kubernetes events has helped me debug by far the majority of the more challengin
     kgevents
 ```
 
+#### Why are events useful?
+
+When I run into frustrating issues with Kubernetes, things that I overlooked, I am usually able to pretty quickly figure out what I missed just by looking at the events being logged.
+
+For example, if you are missing some secret or something needed for a volume to mount, that will show up in Kubernetes events if I remember correctly.
+
+I would deffinately recommend checking it out if you ever are stuck.
+
 ## The actual code
 
 ```
