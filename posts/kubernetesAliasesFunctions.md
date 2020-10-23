@@ -10,9 +10,10 @@ I use fzf pretty extensively. I really appreciate how much time it can save look
 
 To save time I created a number of alises and functions which work with Kubernetes' kubectl to help me get information about a cluster and also exec shells.
 
+### It begins.. 
 It starts off with some aliases to help with monotonous tasks like getting a specific column.
 
-Then there are some helpful command to describe and delete resources.
+### Then there are some helpful command to describe and delete resources
 
 You could run:
 
@@ -24,6 +25,8 @@ or
     kdservices
 ```            
 
+For pods:
+
 ```
     kd pod
 ```
@@ -33,7 +36,7 @@ or
 ```            
 
 
-To describe certain resources.
+### To describe certain resources
 
 The kd function will work with any resource type.
 
@@ -47,6 +50,8 @@ will even work to list all ingresses in all namespaces and then describe the one
 
 
 Command starting with kdel will delete resources.
+
+### Spawning a shell on a pod in a container
 
 To run a shell on a pod in a container run:
 
@@ -64,6 +69,8 @@ These are pretty powerful little functions.
 
 You will be able to select the pod you want to a shell into, and then a secondary fzf selection will occur for the container.
 
+### Kubernetes Events
+
 The last and mose useful of all these is probably just getting events in a sorted order (by timestamp).
 
 Kubernetes events has helped me debug by far the majority of the more challenging Kubernetes issues I hace run into.
@@ -72,6 +79,7 @@ Kubernetes events has helped me debug by far the majority of the more challengin
     kgevents
 ```
 
+## The actual code
 
 ```
 
