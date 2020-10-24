@@ -4,7 +4,7 @@ author: 'Brad Barrows'
 date: '2020-10-20'
 # hero_image: /static/chrome-bookmark-history-search-ex-usage.gif
 ---
-## Getting something better than Python style list comprehension in Javascript
+## Getting something similar to Python style list comprehension in Javascript
 
 The javascript spread operator opened my eyes to an easy way to get Python style list comprehension in Javascript.
 
@@ -31,13 +31,13 @@ The similar code in Python would be:
      [ n * 2 for n in [1, 2, 3] ]
 ```
 
-I actually think that using spread is more readable in some ways. It all makes sense that you can peice together the spread operator with the functional style methods on Arrays to get the same functionality as a list comprehension in Python to me. I like that this "problem" is solved by a combination of basic Javascript functionality instead of creating a new syntax just to add functionality like a list comprehension as well.
+I actually think that using spread is more readable in some ways. It all makes sense that you can piece together the spread operator with the functional style methods on Arrays to get the same functionality as a list comprehension in Python to me. I like that this "problem" is solved by a combination of basic Javascript functionality instead of creating a new syntax just to add functionality like a list comprehension as well.
 
-This all makes so much sense and seems so obvious to me now that I am guessing this was probably part of the proposal for the spread operator itself.. or something like that.
+### Differences with the Python style list comprehension
 
-### Even better than with Python list comprehensions IMO
+What I really like about this use of the spread operator in relation to the list comprehension is that you can mix and match the arrays you spread into the new array. With Python I do not believe it is possible to use a single list comprehension to do some ordered concatenation of multiple resulting arrays use a list comprehension.
 
-What I like even more than Python list comprehension here is that you can mix and match the arrays you spread into the new array to combine multiple list comprehensions into one with an easy to read syntax
+This is a pretty useful, common operation which makes me appreciate the spread operator.
 
 For example:
 
@@ -55,13 +55,13 @@ This will print out:
     [ 2, 4, 6, 1, 2, 3 ]
 ```
 
-The python code for this would be require concatenating 2 seperate list comprehensions I believe.
+The python code for this would require concatenating 2 seperate list comprehensions I believe.
 
 I know you can [iterate over multiple lists at the same time in Python](https://stackoverflow.com/questions/16568056/nested-list-comprehension-with-two-lists) but I don't believe you can perform operations on lists and then order the results in any specific manner like the example does above.
 
-## Python combination list comprehensions
+## Python list comprehension using multiple lists
 
-In Python you can create list comprehensions of every combination of multiple lists:
+In Python you can create a list comprehension that results in the combination of every value from the different lists:
 
 ```
     [x + y for x in [1, 3] for y in [2, 4] ]
@@ -73,4 +73,6 @@ In Javascript the closest I could get was:
     [1, 3].flatMap(d => [2, 4].map(v => d + v))
 ```
 
-However this example now looks nothing like the original list comprehension examples I liked. Which might go to show that list comprehensions couuld be unnecessary in Javascript with the wide array of functional utility functions provided.
+## Lists or iterables?
+
+Yes, I am saying lists when referring to what the list comprehension is iterating over. Technically, this would be any object which is iterable. An [explanation to what makes an object iterable](https://wiki.python.org/moin/Iterator).
