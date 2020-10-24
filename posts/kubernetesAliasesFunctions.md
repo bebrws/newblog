@@ -69,7 +69,7 @@ or
     kexSH
 ```
 
-These are pretty powerful little functions.
+These are pretty useful little functions.
 
 You will be able to select the pod you want to a shell into, and then a secondary fzf selection will occur for the container.
 
@@ -94,48 +94,8 @@ I would deffinately recommend checking it out if you ever are stuck.
 ## The actual code
 
 ```
-
-    alias c1="awk '{print \$1}'"
-    alias c2="awk '{print \$2}'"
-    alias c3="awk '{print \$3}'"
-    alias c4="awk '{print \$4}'"
-    alias c5="awk '{print \$5}'"
-    alias c6="awk '{print \$6}'"
-    alias c7="awk '{print \$7}'"
-    alias c8="awk '{print \$8}'"
-    alias c9="awk '{print \$9}'"
-    alias c10="awk '{print \$10}'"
-
-
-    alias k='kubectl '
-
-    function kebash() {
-    kubectl exec --stdin --tty $@ -- /bin/bash
-    }
-
-    function kesh() {
-    kubectl exec --stdin --tty $@ -- /bin/sh
-    }
-
     alias kgp='kubectl get pods --all-namespaces'
     alias kgs='kubectl get services --all-namespaces'
-
-    function kListContainersInPod() {
-    for pod in $( kgp | ignoreFirstLine | c1 ); do 
-        echo "\nPOD: $pod"
-        kubectl get pod $pod -o=jsonpath='{.spec.containers[*].name}'; 
-        echo "\n"
-    done
-    }
-
-
-    function kLogAllContainersInPod() {
-    for container in $(kubectl get pod $1 -o=jsonpath='{.spec.containers[*].name}'); do
-        kubectl logs $1 --container $container | tail -20
-    done
-    }
-
-    # function kLogAllContainersInPod() { for container in $(kubectl get pod $1 -o=jsonpath='{.spec.containers[*].name}'); do kubectl logs $1 --container $container | tail -20; done }
 
     function kLogsAllContainers() {
         kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo {} | xargs kubectl logs -n'  --preview-window=up:80% | xargs kubectl logs -n
@@ -143,69 +103,23 @@ I would deffinately recommend checking it out if you ever are stuck.
     alias klogs=kLogsAllContainers
 
     function kLogsContainer() {
+        # The first argument to this function should be the container name
         kubectl get pods -o name | fzf --preview="kubectl logs {} --container $1 | tail -20" --preview-window=up:80%
     }
 
-    # function kShContainer() {
-    #   export KPOD=$(kubectl get pods -o name | fzf)
-    #   kubectl exec --stdin --tty $KPOD --container $1 -- /bin/sh
-    # }
-
     function kexSh() {
         kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
-        echo "Looking up contianers now for:"
-        echo "namespace $namespace"
-        echo "pod $pod"
         export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
-        echo "Running shell:"
         kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/sh
     }
 
 
     function kexBash() {
         kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
-        echo "Looking up contianers now for:"
-        echo "namespace $namespace"
-        echo "pod $pod"
         export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
-        echo "Running shell:"
         kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/bash
     }
 
-
-
-
-    function kBashContainer() {
-        export KPOD=$(kubectl get pods -o name | fzf)
-        kubectl exec --stdin --tty $KPOD --container $1 -- /bin/bash
-    }
-
-
-    function getAllPodsNamespaceAndName() {
-        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]} {.metadata.namespace}   {.metadata.name} {"\n"}' 
-    }
-
-    function kdpods() {
-        getAllPodsNamespaceAndName | fzf --preview='echo {} | xargs kubectl describe pod -n' | xargs kubectl describe pod -n
-    }
-    function kdelpods() {
-        getAllPodsNamespaceAndName | fzf --preview='echo {} | xargs kubectl describe pod -n' | xargs kubectl delete pod -n
-    }
-
-    function getAllServicesNamespaceAndName() {
-        kubectl get services --all-namespaces -o jsonpath='{range .items[*]} {.metadata.namespace}   {.metadata.name} {"\n"}' 
-    }
-
-    function kdservices() {
-        getAllServicesNamespaceAndName | fzf --preview='echo {} | xargs kubectl describe service -n' | xargs kubectl describe service -n
-    }
-
-    function kdelservice() {
-        getAllServicesNamespaceAndName | fzf --preview='echo {} | xargs kubectl describe service -n' | xargs kubectl delete service -n
-    }
-
-    alias kg='kubectl get '
-    # alias -g kd='kubectl describe '
     function kd() {
         kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview="echo '{}' | xargs kubectl describe $1 -n" | xargs kubectl describe $1 -n
     }
@@ -214,9 +128,17 @@ I would deffinately recommend checking it out if you ever are stuck.
         kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | xargs kubectl delete $1 -n
     }
 
+    alias kdpod='kd pod'
+    
+    alias kdelpod='kdelete pod'
+
+    alias kdservice='kd service'
+
+    alias kdelservice='kdelete service'
+
+    alias kg='kubectl get '
+    
     function kgevents() {  kubectl get events --sort-by='.metadata.creationTimestamp'  }
     alias kgev=kgevents
-
-
 
 ```
