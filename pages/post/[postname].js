@@ -34,7 +34,7 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
       <style jsx>{`
         article {
           padding: 20px;
-          width: 95%;
+          width: calc(100% - 40px);
         }
         h1 {
           font-size: 3rem;

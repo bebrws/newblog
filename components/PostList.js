@@ -48,7 +48,8 @@ export default function PostList({ posts }) {
                   <SubjectIcon />
                 </ListItemIcon>
                 <div style={{display: "flex", justifyContent: "space-between", width: "100%"}}>
-                  <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{"data-text": post?.frontmatter?.title, className: "glitch", classes: {root: classes.listItemTextTypograhyRoot}}} >{post?.frontmatter?.title}</ListItemText><Divider /></>
+                  {/* <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{"data-text": post?.frontmatter?.title, className: "glitch", classes: {root: classes.listItemTextTypograhyRoot}}} >{post?.frontmatter?.title}</ListItemText><Divider /></> */}
+                  <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{classes: {root: classes.listItemTextTypograhyRoot}}} >{post?.frontmatter?.title}</ListItemText><Divider /></>
                   <><ListItemText classes={{root: classes.listItemTextRoot}} primaryTypographyProps={{classes: {root: classes.listItemTextTypograhyRoot}}} style={{width: 100, maxWidth: 100}}>{post.frontmatter.date}</ListItemText></>
                 </div>
               </ListItem>
