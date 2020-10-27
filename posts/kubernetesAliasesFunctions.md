@@ -4,7 +4,61 @@ author: 'Brad Barrows'
 date: '2020-10-21'
 # hero_image: /static/chrome-bookmark-history-search-ex-usage.gif
 ---
-## Helpful Kubernetes Aliases and Functions
+
+## The actual code
+
+```
+    alias kgp='kubectl get pods --all-namespaces'
+    alias kgs='kubectl get services --all-namespaces'
+
+    function kLogsAllContainers() {
+        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo {} | xargs kubectl logs -n'  --preview-window=up:80% | xargs kubectl logs -n
+    }
+    alias klogs=kLogsAllContainers
+
+    function kLogsContainer() {
+        # The first argument to this function should be the container name
+        kubectl get pods -o name | fzf --preview="kubectl logs {} --container $1 | tail -20" --preview-window=up:80%
+    }
+
+    function kexSh() {
+        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
+        export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
+        kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/sh
+    }
+
+
+    function kexBash() {
+        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
+        export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
+        kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/bash
+    }
+
+    function kd() {
+        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview="echo '{}' | xargs kubectl describe $1 -n" | xargs kubectl describe $1 -n
+    }
+
+    function kdelete() {
+        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | xargs kubectl delete $1 -n
+    }
+
+    alias kdpod='kd pod'
+    
+    alias kdelpod='kdelete pod'
+
+    alias kdservice='kd service'
+
+    alias kdelservice='kdelete service'
+
+    alias kg='kubectl get '
+    
+    function kgevents() {  kubectl get events --sort-by='.metadata.creationTimestamp'  }
+    alias kgev=kgevents
+
+```
+
+
+## Helpful Kubernetes Aliases and Functions Explained
 
 I use fzf pretty extensively. I really appreciate how much time it can save looking up something like an id or namespace which will just need to be copied into the next command.
 
@@ -90,55 +144,3 @@ When I run into frustrating issues with Kubernetes, things that I overlooked, I 
 For example, if you are missing some secret or something needed for a volume to mount, that will show up in Kubernetes events if I remember correctly.
 
 I would deffinately recommend checking it out if you ever are stuck.
-
-## The actual code
-
-```
-    alias kgp='kubectl get pods --all-namespaces'
-    alias kgs='kubectl get services --all-namespaces'
-
-    function kLogsAllContainers() {
-        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo {} | xargs kubectl logs -n'  --preview-window=up:80% | xargs kubectl logs -n
-    }
-    alias klogs=kLogsAllContainers
-
-    function kLogsContainer() {
-        # The first argument to this function should be the container name
-        kubectl get pods -o name | fzf --preview="kubectl logs {} --container $1 | tail -20" --preview-window=up:80%
-    }
-
-    function kexSh() {
-        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
-        export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
-        kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/sh
-    }
-
-
-    function kexBash() {
-        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | read -r namespace pod
-        export container=$(kubectl get pod -n $namespace $pod -o jsonpath='{.spec.containers[*].name}' | fzf)
-        kubectl exec -n $namespace --stdin --tty $pod --container $container -- /bin/bash
-    }
-
-    function kd() {
-        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview="echo '{}' | xargs kubectl describe $1 -n" | xargs kubectl describe $1 -n
-    }
-
-    function kdelete() {
-        kubectl get $1 --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf | xargs kubectl delete $1 -n
-    }
-
-    alias kdpod='kd pod'
-    
-    alias kdelpod='kdelete pod'
-
-    alias kdservice='kd service'
-
-    alias kdelservice='kdelete service'
-
-    alias kg='kubectl get '
-    
-    function kgevents() {  kubectl get events --sort-by='.metadata.creationTimestamp'  }
-    alias kgev=kgevents
-
-```
