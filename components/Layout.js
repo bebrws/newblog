@@ -289,7 +289,8 @@ export default function Layout({ children, pageTitle, description, ...props }) {
             Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
             sans-serif;
           color: #445566;
-          background-color: #f9edbb;
+          /* background-color: #f9edbb; */
+          background-color: #f5f0df;
         }
 
         h1 {
