@@ -35,3 +35,38 @@ This results in output:
 ## Map, flatMap and the 1 to 1 vs 1 to many outputs
 
 FlatMap is great in my opinion because while with map you get to iterate over each value, doing some operation, with flatMap you can have your operation return any number of results. This removes to 1 to 1 constraint that you get between values and results when mapping over an array.
+
+## Convincing? examples of why flatMap is so great
+
+### You can now iterate over a list creating a new list with any number of values
+
+Let's say you have some need to take a list and get all variations of that list. You might normally make some array and forEach iterate over each item.
+
+
+```
+
+    const items = ["book", "dog"];
+    let variations = [];
+    items.forEach(item => {
+        variations.push(item);
+        variations.push(item + "s");
+    });
+```
+
+Or:
+
+```
+
+    const items = ["book", "dog"];
+    let variations = [];
+    items.forEach(i => variations = variations.concat([i, i + "s"]))
+```
+
+But now with flatMap:
+
+```
+
+    const items = ["book", "dog"];
+    let variations = [];
+    items.flatMap(i => [i, i + "s"])
+```
