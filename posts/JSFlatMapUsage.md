@@ -70,3 +70,9 @@ But now with flatMap:
     let variations = [];
     items.flatMap(i => [i, i + "s"])
 ```
+
+### Creating a list of all combinations of items in two lists
+
+```
+    [1, 3].flatMap(d => [2, 4].map(v =>[d, v]))
+```
