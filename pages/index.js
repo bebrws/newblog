@@ -8,7 +8,7 @@ const Index = ({ posts, title, description, ...props }) => {
   return (
     <>
       <Layout pageTitle={title} description={description}>
-        <h2>
+        <h2 className={"glitch"} data-text={"Thoughts And Notes"}>
           Thoughts And Notes:
         </h2>
 

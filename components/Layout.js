@@ -429,7 +429,10 @@ export default function Layout({ children, pageTitle, description, ...props }) {
          border-bottom: none;
        }
 
+
+
       `}</style>
+      <link rel="stylesheet" href="static/glitch.css"></link>
       <MUIWrapper sheets={sheets}>
       <section className="layout">
         {/* { width > 800 && <FuzzySearchPopover/> } */}

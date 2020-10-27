@@ -4,22 +4,25 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 23 Oct 2020 13:57:58 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 27 Oct 2020 10:58:30 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[My Kubernetes aliases and functions using fzf]]></title>
-            <description><![CDATA[## Helpful Kubernetes Aliases and Functions
+            <description><![CDATA[
+## The actual code
 
-I use fzf pretty extensively. I really appreciate how much time it can save looking up something like an id or namespace which will just need to be copied into the next command.
+```
+    alias kgp='kubectl get pods --all-namespaces'
+    alias kgs='kubectl get services --all-namespaces'
 
-To save time I created a number of alises and functions which work with Kubernetes' kubectl to help me get information about a cluster and also exec shells.
+    function kLogsAllContainers() {
+        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\n"}' | fzf --preview='echo {} | xargs kubectl logs -n'  --preview-window=up:80% | xargs kubectl logs -n
+    }
+    alias klogs=kLogsAllContainers
 
-### It begins.. 
-It starts off with some aliases to help with monotonous tasks like getting a specific column.
-
-### Then there are some helpful command to describe and delete resources
-
-![Describing pods](/static/kdpod]]></description>
+    function kLogsContainer() {
+        # The first argument to this function should be the container name
+        kubectl get pods -o name | fzf --preview="kubectl logs ]]></description>
             <link>https://bradbarrows.com/posts/kubernetesAliasesFunctions</link>
             <guid isPermaLink="false">kubernetesAliasesFunctions</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
@@ -32,30 +35,10 @@ It starts off with some aliases to help with monotonous tasks like getting a spe
 FlatMap can be implemented as follows:
 
 ```
-    Array.prototype.flatMap = function(mapFunction) { return this.reduce((a, c) => { return [ ...a, ...c ]; }, []).map(mapFunction) }
+    Array.prototype.flatMaper = function(mapFunction) { return this.map(mapFunction).reduce((a, c) => { return [ ...a, ...(c.length ? c : [c]) ]; }, []) }
 ```
 
-This is an example of just flattening an array of arrays without mapping:
-
-```
-     [[1], [2,3]].reduce((a, c) => { return [ ...a, ...c ]; }, [])
-```
-
-Which will produce the same as: 
-
-```
-    [[1], [2,3]].flatMap(x => x)
-```
-
-Results in output:
-
-```
-    [1, 2, 3]
-```
-
-## Map, flatMap and the 1 to 1 vs 1 to many outputs
-
-Flat mapping is great in my opinion because while ]]></description>
+Which is a method on Arrays (when implemented) which will do something akin to mapping over each value in an array, doing some operation, followed by a reduce step which then takes each object returned from that inital map step and if that object is an array, then flattens or spreads the array into the final resulting array (the reduce step's accumul]]></description>
             <link>https://bradbarrows.com/posts/JSFlatMapUsage</link>
             <guid isPermaLink="false">JSFlatMapUsage</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
@@ -83,7 +66,7 @@ My command (before realizing I didn't even need the awk command!) was:
         </item>
         <item>
             <title><![CDATA[Python List Comprehension in Javascript]]></title>
-            <description><![CDATA[## Getting something better than Python style list comprehension in Javascript
+            <description><![CDATA[## Getting something similar to Python style list comprehension in Javascript
 
 The javascript spread operator opened my eyes to an easy way to get Python style list comprehension in Javascript.
 
@@ -104,7 +87,13 @@ This will print out:
     [ 2, 4, 6 ]
 ```
 
-What I like even more than Python list comprehension here is that you can mix and match the arrays y]]></description>
+The similar code in Python would be:
+
+```
+     [ n * 2 for n in [1, 2, 3] ]
+```
+
+I actually think tha]]></description>
             <link>https://bradbarrows.com/posts/pythonListComprehensionsInJS</link>
             <guid isPermaLink="false">pythonListComprehensionsInJS</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
