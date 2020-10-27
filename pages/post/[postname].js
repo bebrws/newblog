@@ -17,8 +17,8 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
             <a>Back to post list</a>
           </Link>
         </div>
+        <h1 style={{paddingBottom: 0, marginBottom: 0}}>{frontmatter.title}</h1>
         <article>
-          <h1>{frontmatter.title}</h1>
           {frontmatter.hero_image && (
             <img
               src={frontmatter.hero_image}
@@ -33,8 +33,8 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
       </Layout>
       <style jsx>{`
         article {
-          width: 100%;
-          max-width: 1200px;
+          padding: 20px;
+          width: 95%;
         }
         h1 {
           font-size: 3rem;
@@ -47,7 +47,6 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
         }
         .back {
           width: 100%;
-          max-width: 1200px;
         }
       `}</style>
     </>

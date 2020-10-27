@@ -16,6 +16,9 @@ import Grid from '@material-ui/core/Grid';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Link from 'next/link'
 
+import { useRouter } from 'next/router'
+
+
 import {useSpring, animated} from 'react-spring'
 
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
@@ -246,6 +249,12 @@ function FuzzySearchPopover({ }) {
 }
 
 export default function Layout({ children, pageTitle, description, ...props }) {
+  const router = useRouter()
+  const isOnPostPage = router.pathname.includes("/post/");
+
+  const regularSize = isOnPostPage ?  "100%" : 800;
+  const mobileSize = "90%";
+
   const sheets = new ServerStyleSheets();
   const [width, setWidth] = React.useState(0);
 
@@ -264,7 +273,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         <script src="/static/layoutScript.js"/>
       </Head>
 
-      {/* <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet" /> */}
+      <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet" />
       {/* <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" /> */}
       <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"></link>
@@ -282,7 +291,6 @@ export default function Layout({ children, pageTitle, description, ...props }) {
 
         html,
         body {
-          font-family: 'Inconsolata', monospace;
           margin: 0;
           padding: 0;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -328,8 +336,18 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           padding-right: 10px;
           padding-top: 20px;
           padding-bottom: 20px;
-          background: #80808024;
+          /* background: #80808024; */
+          background: #4b6ed224;
           color: #884b6f;
+        }
+
+        code {
+          font-size: smaller;
+          font-family: 'PT Mono', monospace;
+        }
+        
+        p {
+          font-family: 'Inconsolata', monospace;
         }
 
         a {
@@ -359,18 +377,26 @@ export default function Layout({ children, pageTitle, description, ...props }) {
           display: block;
           margin-left: auto;
           margin-right: auto;
-          margin-top: 200px;
-          margin-bottom: 100px;
+          margin-top: 20px;
+          margin-bottom: 10px;
           width: 80%;
         }
 
-        footer {
+        .regularFooter {
           width: 100%;
           height: 100px;
           border-top: 1px solid #eaeaea;
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .postFooter {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;     
+          margin-left: 20px;     
+          width: 400px;
         }
 
         footer img {
@@ -436,10 +462,10 @@ export default function Layout({ children, pageTitle, description, ...props }) {
       <MUIWrapper sheets={sheets}>
       <section className="layout">
         {/* { width > 800 && <FuzzySearchPopover/> } */}
-        <Header/>
-        <div className="content"><div style={{width: (width > 1000 ? 800: "90%")}} className="innerContent">{children}</div></div>
+        <Header />
+        <div className="content"><div style={{width: (width > 1000 ? regularSize: mobileSize)}} className="innerContent">{children}</div></div>
       </section>
-      <footer>
+      <footer className={isOnPostPage ? "postFooter" : "regularFooter"}>
         <p>© 2020 Bradley Barrows</p> <p>|</p> <p><a href="/rss.xml">RSS Feed</a></p>
       </footer>
     </MUIWrapper>

@@ -105,8 +105,8 @@ export default function Header() {
           </header>)}
         regular={(
           <header className="header" id="normalHeader">
-            <h1 style={{display: "block", width: "390px", paddingRight: "0", marginRight: "0"}} className="title"><Link href="/"><a style={{textDecoration: "none"}}>Brad Barrows</a></Link></h1>
-            <nav style={{display: "block", borderLeft: "solid", paddingTop: "10px", paddingBottom: "10px"}}  className="nav" role="navigation" aria-label="main navigation">
+            <h1 style={{}} className="title"><Link href="/"><a style={{textDecoration: "none"}}>Brad Barrows</a></Link></h1>
+            <nav style={{borderLeft: "solid"}}  className="nav" role="navigation" aria-label="main navigation">
               <a href={"https://github.com/bebrws"} style={{display: "block", paddingLeft: "10px"}}  >Github</a>
               <a href={"https://linkedin.com/in/bbarrows"} style={{display: "block", paddingLeft: "10px"}}  >LinkedIn</a>
               <MessageMePopover />
@@ -115,16 +115,15 @@ export default function Header() {
       )} />
       <style jsx>{`
         header {
-          width: 100%;
+          width: 600px;
           height: 100px;
           border-bottom: 1px solid #eaeaea;
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
+          padding-left: 20px;
         }
         nav {
-          width: calc(100% - 40px);
-          max-width: 1200px;
           font-weight: bold;
           font-size: 1.3rem;
         }
