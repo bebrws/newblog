@@ -518,7 +518,7 @@ const About = ({ title, description, ...props }) => {
         </p>
 
         <p>
-          You can find the code I started from to build this site from this{' '}
+          You can find the code I started from when building this site at this{' '}
           <a href="https://github.com/cassidoo/next-netlify-blog-starter">
             repo here.
           </a>
