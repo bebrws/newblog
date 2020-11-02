@@ -457,6 +457,19 @@ export default function Layout({ children, pageTitle, description, ...props }) {
 
 
 
+      /*  For about page: */
+      .path {
+        stroke-dasharray: 100;
+        animation: dash 5s linear;
+    }
+
+    @keyframes dash {
+        to {
+            stroke-dashoffset: 1000;
+        }
+    }
+
+
       `}</style>
       <link rel="stylesheet" href="static/glitch.css"></link>
       <MUIWrapper sheets={sheets}>
@@ -466,7 +479,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         <div className="content"><div style={{width: (width > 1000 ? regularSize: mobileSize)}} className="innerContent">{children}</div></div>
       </section>
       <footer className={isOnPostPage ? "postFooter" : "regularFooter"}>
-        <p>© 2020 Bradley Barrows</p> <p>|</p> <p><a href="/rss.xml">RSS Feed</a></p>
+        <p>© 2020 Bradley Barrows</p> <p>|</p> <p><a href="/rss.xml">RSS Feed</a></p><p>|</p> <p><a href="/about">About</a></p>
       </footer>
     </MUIWrapper>
     </>
