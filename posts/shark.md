@@ -2,7 +2,7 @@
 title: 'Animating SVGs using CSS ( using Affinity Designer to create SVGs )'
 author: 'Brad Barrows'
 date: '2020-11-01'
-post_shark: true
+pre_shark: true
 ---
 # What is this?
 

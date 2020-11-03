@@ -30,13 +30,13 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
             />
           )}
           <div>
+          {frontmatter.pre_shark && (
+              <Shark />
+            )}                
             <ReactMarkdown source={markdownBody} />
             {frontmatter.post_html && (
               <div dangerouslySetInnerHTML={{ __html: frontmatter.post_html }} ></div>
-            )}
-             {frontmatter.post_shark && (
-              <Shark />
-            )}            
+            )}        
           </div>
         </article>
       </Layout>
