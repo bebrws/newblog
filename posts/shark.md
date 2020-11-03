@@ -12,7 +12,7 @@ I wanted to see how I could animate some of the SVGs I had been drawing using Af
 
 To animate I am using CSS only.
 
-[My code is here](https://github.com/bebrws/shark)
+[My code is here](https://github.com/bebrws/shark-animation)
 
 # How?
 
@@ -28,6 +28,6 @@ Then I copied over the SVG into my html and was able to use the css IDs to anima
 
 ## How does it look?
 
-[Click here to see in in action](https://bebrws.github.io/shark/index.html)
+[Click here to see in in action](https://bebrws.github.io/shark-animation/index.html)
 
 OR LOOK BELOW!
