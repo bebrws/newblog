@@ -35,7 +35,7 @@ The CSS Code is :
 ```
 
 
-    #wholeShark {
+  #wholeShark {
       /* width: 500px; */
       transform: translate(-400px, 0px);
       animation: moveShark 2s linear forwards;
