@@ -291,6 +291,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
 
         html,
         body {
+          font-size: large;
           margin: 0;
           padding: 0;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -342,7 +343,7 @@ export default function Layout({ children, pageTitle, description, ...props }) {
         }
 
         code {
-          font-size: smaller;
+          font-size: small;
           font-family: 'PT Mono', monospace;
         }
         

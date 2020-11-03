@@ -16,11 +16,12 @@ To animate I am using CSS only.
 
 # How?
 
-You can name a group or single layer in AD (Affinity Designer). This will set the ID for the group or path to the name you set in AD.
+You can name a group or single layer in AD (Affinity Designer). 
+This will set a CSS ID to the group name you have in AD.
 
-You can then use CSS to transform or animate in other ways these IDs.
+You can then use CSS to transform or animate whatever you have the ID for.
 
-In shark.html you can see how I animate using CSS.
+In shark-animcation/index.html you can see how I animate using CSS.
 
 If you open up the AD file here you can see I took my shark I had drawn as a solid object and broke up the path around the mouth. Then named everything I needed to move with a name ending in Head.
 
@@ -63,6 +64,4 @@ The CSS Code is :
 
 ## How does it look?
 
-[Click here to see in in action](https://bebrws.github.io/shark-animation/index.html)
-
-OR LOOK BELOW!
+[Click here to see it hosted on its own](https://bebrws.github.io/shark-animation/index.html)
