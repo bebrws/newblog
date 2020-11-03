@@ -5,6 +5,9 @@ import ReactMarkdown from 'react-markdown'
 import Layout from '@components/Layout'
 import getSlugs from '@utils/getSlugs'
 
+import Shark from '../../random/Shark'
+
+
 export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
   if (!frontmatter) return <></>
 
@@ -28,6 +31,12 @@ export default function BlogPost({ siteTitle, frontmatter, markdownBody }) {
           )}
           <div>
             <ReactMarkdown source={markdownBody} />
+            {frontmatter.post_html && (
+              <div dangerouslySetInnerHTML={{ __html: frontmatter.post_html }} ></div>
+            )}
+             {frontmatter.post_shark && (
+              <Shark />
+            )}            
           </div>
         </article>
       </Layout>

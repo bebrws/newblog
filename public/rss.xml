@@ -4,8 +4,34 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 02 Nov 2020 17:52:52 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 03 Nov 2020 01:56:02 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Animating SVGs using CSS ( using Affinity Designer to create SVGs )]]></title>
+            <description><![CDATA[# What is this?
+
+Example for creating an SVG in Affinity Designer and then exporting as an SVG and animating using CSS.
+
+I wanted to see how I could animate some of the SVGs I had been drawing using Affinity Designer.
+
+To animate I am using CSS only.
+
+[My code is here](https://github.com/bebrws/shark)
+
+# How?
+
+You can name a group or single layer in AD (Affinity Designer). This will set the ID for the group or path to the name you set in AD.
+
+You can then use CSS to transform or animate in other ways these IDs.
+
+In shark.html you can see how I animate using CSS.
+
+If you open up the AD file her]]></description>
+            <link>https://bradbarrows.com/posts/shark</link>
+            <guid isPermaLink="false">shark</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 01 Nov 2020 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[My Kubernetes aliases and functions using fzf]]></title>
             <description><![CDATA[

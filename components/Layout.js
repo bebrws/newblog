@@ -458,17 +458,47 @@ export default function Layout({ children, pageTitle, description, ...props }) {
 
 
       /*  For about page: */
-      .path {
-        stroke-dasharray: 100;
-        animation: dash 5s linear;
+
+
+    .path {
+      stroke-dasharray: 450;
+      stroke-dashoffset: 450;
+      animation: draw 2s linear forwards;
+    }
+    
+    @keyframes draw {
+      to {
+        stroke-dasharray: 0;
+        stroke-dashoffset: 0;
+      }
     }
 
-    @keyframes dash {
-        to {
-            stroke-dashoffset: 1000;
-        }
-    }
 
+    /* For shark animate post */
+
+    #wholeShark {
+      /* width: 500px; */
+      transform: translate(-400px, 0px);
+      animation: moveShark 2s linear forwards;
+  }
+  @keyframes moveShark {
+      to {
+          transform: translate(100px, 0px);
+      }
+  }
+
+  #SharkEyeHead, #SharkNoseStuffHead, #SharkStylHead, #SharkBackgroundHead {
+      transform: rotate(-6deg) translate(-105px, 190px);
+      animation: moveMouth .3s linear forwards;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+  }
+
+  @keyframes moveMouth {
+      to {
+          transform: rotate(0deg) translate(0px, 0px);
+      }
+  }
 
       `}</style>
       <link rel="stylesheet" href="static/glitch.css"></link>
