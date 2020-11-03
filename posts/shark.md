@@ -26,6 +26,41 @@ If you open up the AD file here you can see I took my shark I had drawn as a sol
 
 Then I copied over the SVG into my html and was able to use the css IDs to animate. 
 
+# CSS Code
+
+The css code I used is pretty simple. Just an animation to move the mouth and another to move the shark. The way animations work in CSS I am able to set the inital state of an object. In this case the object is either the whole shark or different parts of the shark drawing. Then I can set the final state, or where I want to animate "to". And then set the time it takes to animate betweeen these two states and the acceleration in change used (I used linear here).
+
+The CSS Code is :
+
+```
+
+
+    #wholeShark {
+      /* width: 500px; */
+      transform: translate(-400px, 0px);
+      animation: moveShark 2s linear forwards;
+  }
+  @keyframes moveShark {
+      to {
+          transform: translate(100px, 0px);
+      }
+  }
+
+  #SharkEyeHead, #SharkNoseStuffHead, #SharkStylHead, #SharkBackgroundHead {
+      transform: rotate(-6deg) translate(-105px, 190px);
+      animation: moveMouth .3s linear forwards;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+  }
+
+  @keyframes moveMouth {
+      to {
+          transform: rotate(0deg) translate(0px, 0px);
+      }
+  }
+
+```
+
 ## How does it look?
 
 [Click here to see in in action](https://bebrws.github.io/shark-animation/index.html)
