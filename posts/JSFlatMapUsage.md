@@ -9,7 +9,7 @@ date: '2020-10-20'
 FlatMap can be implemented as follows:
 
 ```
-    Array.prototype.flatMaper = function(mapFunction) { return this.map(mapFunction).reduce((a, c) => { return [ ...a, ...(c.length ? c : [c]) ]; }, []) }
+    Array.prototype.flatMaper = function(mapFunction) { return this.map(mapFunction).reduce((a, c) => { return [ ...a, ...(Array.isArray(c) ? c : [c]) ]; }, []) }
 ```
 
 Which is a method on Arrays (when implemented) which will do something akin to mapping over each value in an array, doing some operation, followed by a reduce step which then takes each object returned from that inital map step and if that object is an array, then flattens or spreads the array into the final resulting array (the reduce step's accumulator) if the current object from the map step is not an array then the object itself is added into the resulting array (which is again, the reduce steps accumulator). The reduce steps accumulator in this flatMap implementation is an empty array.
