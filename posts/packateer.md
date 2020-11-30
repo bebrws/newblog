@@ -26,7 +26,7 @@ It allows you to craft a new tsx or jsx file with these components in whichever 
 # Example
 You can check the example_usage folder for an Example or click here [to see a full example in the README](#example-usage)
 
-# Exaplin the Example
+# Explain the Example
 You can take a component: [App.js For example](#appjs)
 
 Create a file where you get to [layout one or more](#appsubpagejsx) (as many components as you want!). The point of this package is to allow you to create these "pages" or "subsections of sites" that contain components you want to test and only those components. Why write a test that has to login and navigate around your site just to test a specific component when you couuld layout a few components in a new page and test only those components?

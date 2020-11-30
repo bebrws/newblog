@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
    listItemTextRoot: {
     maxWidth: 550,
+    marginTop: 10,
   },
   listItemTextTypograhyRoot: {
     color: "#836688",
