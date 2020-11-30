@@ -8,14 +8,10 @@ date: '2020-11-22'
 
 # What is this?
 
-This is a library which will take a filename (the entry argument), use webpack to compile that JSX file into a website.
-Then use the WebpackDevServer to host it. It follows this up by creating a puppeteer browser and loading a page to the
-site this library just hosted.
+This is a library which will take a filename (the entry argument) which should point to a page you have designed for testing.
+Then use webpack to compile that JSX/TSX file using WebpackDevServer. After compilation and hosting a puppeteer browser is created launching a headless Chrome instance and the page you provided in the initial step is loaded for testing with Jest or whatever testing library you prefer.
 
-You are then provided the pupeteer and webpack dev server variables to test to your hearts content.
-
-This is useful when you need to test interaction with React components that cannot be tested with available
-virtual DOM options. One such example is shown below, testing tabIndex.
+This is useful when you need to test interaction with React components that cannot be tested with available virtual DOM options. One such example is [shown below](#example): testing tabIndex.
 
 # Why is this useful?
 
@@ -29,7 +25,7 @@ You can check the example_usage folder for an Example or click here [to see a fu
 # Explain the Example
 You can take a component: [App.js For example](#appjs)
 
-Create a file where you get to [layout one or more](#appsubpagejsx) (as many components as you want!). The point of this package is to allow you to create these "pages" or "subsections of sites" that contain components you want to test and only those components. Why write a test that has to login and navigate around your site just to test a specific component when you couuld layout a few components in a new page and test only those components?
+Create a file where you get to [layout one or more](#appsubpagejsx) components. The point of this package is to allow you to create these "pages" or "subsections of sites" that contain components you want to test and only those components. Why write a test that has to login and navigate around your site just to test a specific component when you couuld layout a few components in a new page and test only those components?
 
 In the example below I am testing that pressing tab while viewing the page will traverse the HTML DIV elements as expected. The test starts by selecting the DIV with the id "initial". Then tabs down the DIV with the id "second".
 
