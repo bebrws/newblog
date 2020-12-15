@@ -507,7 +507,8 @@ export default function Layout({ children, pageTitle, description, ...props }) {
       <section className="layout">
         {/* { width > 800 && <FuzzySearchPopover/> } */}
         <Header />
-        <div className="content"><div style={{width: (width > 1000 ? regularSize: mobileSize)}} className="innerContent">{children}</div></div>
+        {/* <div className="content"><div style={{width: (width > 1000 ? regularSize: mobileSize)}} className="innerContent">{children}</div></div> */}
+        <div className="content">{children}</div>
       </section>
       <footer className={isOnPostPage ? "postFooter" : "regularFooter"}>
         <p>© 2020 Bradley Barrows</p> <p>|</p> <p><a href="/rss.xml">RSS Feed</a></p><p>|</p> <p><a href="/about">About</a></p>

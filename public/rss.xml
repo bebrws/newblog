@@ -4,8 +4,40 @@
         <description><![CDATA[Brad Barrows' Blog]]></description>
         <link>https://bradbarrows.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 30 Nov 2020 04:14:08 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 15 Dec 2020 13:51:53 GMT</lastBuildDate>
         <atom:link href="https://lbradbarrows.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Map and Reduce in the Shell with Javascript]]></title>
+            <description><![CDATA[# Javascript Eval : JEval
+
+I wanted the power of map and reduce in the shell. I want to use Javascript to manage this.
+
+```
+#!/usr/bin/env node
+
+const readline = require('readline');
+const evalString = process.argv[process.argv.length - 1];
+
+function evalInContext() {
+    eval(evalString);
+}
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function (line) {
+  line.length && evalInContext.call(line);
+});
+
+```]]></description>
+            <link>https://bradbarrows.com/posts/jeval</link>
+            <guid isPermaLink="false">jeval</guid>
+            <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
+            <pubDate>Sun, 22 Nov 2020 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Packateer - A new testing tool for testing one or more React Components using Puppeteer]]></title>
             <description><![CDATA[# Packateer
@@ -13,14 +45,10 @@
 
 # What is this?
 
-This is a library which will take a filename (the entry argument), use webpack to compile that JSX file into a website.
-Then use the WebpackDevServer to host it. It follows this up by creating a puppeteer browser and loading a page to the
-site this library just hosted.
+This is a library which will take a filename (the entry argument) which should point to a page you have designed for testing.
+Then use webpack to compile that JSX/TSX file using WebpackDevServer. After compilation and hosting a puppeteer browser is created launching a headless Chrome instance and the page you provided in the initial step is loaded for testing with Jest or whatever testing library you prefer.
 
-You are then provided the pupeteer and webpack dev server variables to test to your hearts content.
-
-This is useful when you need to test interaction with React components that cannot be tested with available
-virtual DOM options. One such e]]></description>
+This is useful when you need to test interaction with React components that cannot be tested with ]]></description>
             <link>https://bradbarrows.com/posts/packateer</link>
             <guid isPermaLink="false">packateer</guid>
             <dc:creator><![CDATA[Brad Barrows]]></dc:creator>
