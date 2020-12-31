@@ -1,7 +1,7 @@
 ---
 title: 'ZSH shortcut (keybinding) to replace cursor selected word with your preset choice'
 author: 'Brad Barrows'
-date: '2020-12-30'
+date: '2020-12-29'
 hero_image: /static/zshstringreplace.gif
 ---
 # ZSH Is Amazingly Powerful

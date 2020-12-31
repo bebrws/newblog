@@ -80,4 +80,4 @@ Then under Run:
 
 If you are running into an error regarding the deployment target you just need to bump the deployment target here up to a recent version
 
-![XCode Scheme Settings Info](/static/xcode-scheme-target.png)
+![XCode Scheme Settings Info](/static/xcode-deployment-target.png)
