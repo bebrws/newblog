@@ -53,7 +53,11 @@ function replacecurrentword() {
     zle kill-word
     zle backward-kill-word
 
+  if [ -z "$CURRENTWORD" ]; then
+    export REPLACEMENT="$(cat ~/.my_inserts| fzf  )"
+  else 
     export REPLACEMENT="$(cat ~/.my_inserts| fzf  -q $CURRENTWORD)"
+  fi
 
     zle -M "Replacing $CURRENTWORD with $REPLACEMENT"
 
@@ -95,3 +99,67 @@ and with my cursor over clang I can hit Contorl i w
 Then select one of the clang strings I have selected to set the compiler for my configuration. 
 
 I will need to jump back and add some quotes around the replaced string probably and the function could do that but this might be a helpful starting point for for someone else to play around with zle and will make good notes for myself.
+
+
+
+
+
+## An extra couple scripts
+
+
+### Assuming you have a directory named repos in your home directory that you travel to often
+With this you can begin typing a directory, then lazily or hastily hit 
+
+Control + r + g
+
+Then fzf will popup with the word you were typing already entered into the search and you can select one of the repos you want to goto.
+
+The only requirements for ALL of this functionality is  1. fzf binary:
+```
+brew install fzf
+```
+and 1. zsh which comes standard with OSX now.
+
+```
+
+function fzfgotoreposdir() { 
+  export CURRENTWORD="${LBUFFER/* /}${RBUFFER/ */}"
+
+      zle kill-word
+    zle backward-kill-word
+
+  
+    if [ -z "$CURRENTWORD" ]; then
+    eval code "/Users/bbarrows/repos/$(ls ~/repos | fzf)" 
+  else 
+    eval code "/Users/bbarrows/repos/$(ls ~/repos | fzf -q $CURRENTWORD)" 
+  fi
+}
+zle -N fzfgotoreposdir
+bindkey "^re" fzfgotoreposdir
+```
+
+
+### And if you need to kill some processess which got away from you!
+
+```
+
+function killprocessusingfzf() { 
+  export CURRENTWORD="${LBUFFER/* /}${RBUFFER/ */}"
+
+    zle kill-word
+    zle backward-kill-word
+
+  if [ -z "$CURRENTWORD" ]; then
+    sudo kill -9 $(ps -efc | fzf -m  | awk '{print $2}')
+  else 
+    sudo kill -9 $(ps -efc | fzf -m -q $CURRENTWORD | awk '{print $2}')
+  fi
+}
+zle -N killprocessusingfzf
+bindkey "^pp" killprocessusingfzf
+bindkey "^po" killprocessusingfzf
+
+```
+
+Control + p + p  now will bring up a nice menu where you can use the tab key to select multiple processes. On enter they will be killed.
