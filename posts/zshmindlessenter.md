@@ -6,9 +6,9 @@ date: '2020-12-30'
 ---
 # ZSH Is Amazingly Powerful - Some More
 
-I am going to skip the breakdown on this actually and just post some code.
+This function will keep track of the commands entered. Including the previous command.
 
-This will make it so on any empty command sent to your shell a zsh function will run and an if block will decide to list out the files in the current directory.
+When the command is an empty string then it will provide a directory listing.
 
 I am finding this to be useful when used along with the key binding I posted for changing to my repository directories.
 
