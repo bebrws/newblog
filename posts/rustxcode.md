@@ -4,7 +4,7 @@ author: 'Brad Barrows'
 date: '2020-12-30'
 # hero_image: /static/zshstringreplace.gif
 ---
-# 
+
 
 ## Setup
 
@@ -12,7 +12,7 @@ To get Rust in XCode working you just need to go and clone this repo:
 
 https://github.com/bebrws/rust-xcode-plugin
 
-and run my install script
+I have an install script I created for myself as well:
 
 ```
 git clone https://github.com/bebrws/rust-xcode-plugin.git
@@ -20,17 +20,13 @@ cd rust-xcode-plugin
 ./install.sh
 ```
 
-Close and open XCode.
-
-You should see a warning about an unsigned plugin.
-
-This is good. It is loading the Rust plugin!
+Afterwords close and open XCode.
 
 If later you notice that you cannot set breakpoints then you will need to add your XCode UUID to the plist file.
 
 Follow the directions in the README. You just have to run the command they provide and add it to the plist.
 
-# Creating XCode projects for your Rust projects
+# Creating XCode Projects For Yur Rust Projects
 
 Be sure to check out the amazing project:
 
@@ -57,7 +53,7 @@ Although I did write a post about setting this up as well and it has been workin
 You will most likely need to make sure your projevt has similar settings for the "Scheme". I took screen shots and list them below.
 
 
-### For Mac OSX only right now
+### For Mac OSX Only Right Now
 
 ### For iOS 
 
