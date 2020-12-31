@@ -19,6 +19,13 @@ bind -n C-DoubleClick1Pane {
    run-shell -t 0 "tmhac #{mouse_word}"
 }
 
+# Make it so when you Option Double Click on a word it is copied to the clip board - easier than selecting it usually
+bind -n M-DoubleClick1Pane { 
+   setw -g word-separators ' @"=()[]:'
+run-shell -t 0 "echo \"#{mouse_word}\" | pbcopy"
+}
+
+
 ```
 
 Make sure mouse mode is on:
@@ -68,3 +75,9 @@ tmux send-keys -t "$pane" C-z "code $1" Enter
 Now whenever you double click on a file it will either try to run npm run-scripts if it is package.json, if it is a specific path then just open VSCode editor to that path, or if it is a direcory then cd to that directory and list all files.
 
 Note that Control clicking will lead to VSCode always being ran on the file clicked.
+
+
+## If you like this..
+
+Then checkout my [Alacritty Github Fork Releases](https://github.com/bebrws/alacritty/releases). I have a build of Alacritty that, when Command Click occurs, the word clicked is echoed into the terminal.
+
