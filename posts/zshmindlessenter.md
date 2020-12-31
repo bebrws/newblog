@@ -28,8 +28,6 @@ Then the actual function/s:
 
 ```
 
-local ncmd;
-local lcmd;
 # last non empty command entered is $lcmd 
 empty_command_preexec(){ ncmd=$1; }
 add-zsh-hook -Uz preexec empty_command_preexec
