@@ -41,7 +41,7 @@ Add these functions to your .zshrc
 ```
 
 ######### ALACRITTY GOOODNESS ############
-alias -g alacrittycolors='python3 /Users/bbarrows/Library/Python/3.8//lib/python/site-packages/alacritty_colorscheme/cli.py '
+alias -g alacrittycolors='python3 $HOME/Library/Python/3.8//lib/python/site-packages/alacritty_colorscheme/cli.py '
 # To use run: alaFontSize 12
 function alaFontSize() {
     cat ~/.config/alacritty/alacritty.yml | jsin --yaml --yamlout --whole "(l.font.size=Number(\"$1\")) && l; " > $HOME/.config/alacritty/alacritty.yml.tmp

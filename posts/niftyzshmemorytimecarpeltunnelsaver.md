@@ -122,21 +122,21 @@ and 1. zsh which comes standard with OSX now.
 
 ```
 
-function fzfgotoreposdir() { 
+function goto_repos_dir_fzf() { 
   export CURRENTWORD="${LBUFFER/* /}${RBUFFER/ */}"
 
-      zle kill-word
+    zle kill-word
     zle backward-kill-word
 
   
     if [ -z "$CURRENTWORD" ]; then
-    eval code "/Users/bbarrows/repos/$(ls ~/repos | fzf)" 
+    eval code "$HOME/repos/$(ls ~/repos | fzf)" 
   else 
-    eval code "/Users/bbarrows/repos/$(ls ~/repos | fzf -q $CURRENTWORD)" 
+    eval code "$HOME/repos/$(ls ~/repos | fzf -q $CURRENTWORD)" 
   fi
 }
-zle -N fzfgotoreposdir
-bindkey "^re" fzfgotoreposdir
+zle -N goto_repos_dir_fzf
+bindkey "^re" goto_repos_dir_fzf
 ```
 
 
@@ -144,11 +144,11 @@ bindkey "^re" fzfgotoreposdir
 
 ```
 
-function killprocessusingfzf() { 
+function kill_process_using_fzf() { 
   export CURRENTWORD="${LBUFFER/* /}${RBUFFER/ */}"
 
-    zle kill-word
-    zle backward-kill-word
+  zle kill-word
+  zle backward-kill-word
 
   if [ -z "$CURRENTWORD" ]; then
     sudo kill -9 $(ps -efc | fzf -m  | awk '{print $2}')
@@ -156,9 +156,8 @@ function killprocessusingfzf() {
     sudo kill -9 $(ps -efc | fzf -m -q $CURRENTWORD | awk '{print $2}')
   fi
 }
-zle -N killprocessusingfzf
-bindkey "^pp" killprocessusingfzf
-bindkey "^po" killprocessusingfzf
+zle -N kill_process_using_fzf
+bindkey "^pp" kill_process_using_fzf
 
 ```
 

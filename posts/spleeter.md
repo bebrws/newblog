@@ -30,7 +30,7 @@ I needed to add path for Python 2 but since Python 3 was installed with homebrew
 
 If needed - add Python 2 pip to path:
 ```
-export PATH=/Users/bbarrows/Library/Python/2.7/bin/pip:$PATH
+export PATH="$HOME/Library/Python/2.7/bin/pip:$PATH"
 ```
 
 

@@ -8,21 +8,21 @@ date: '2020-12-30'
 
 I am going to skip the breakdown on this actually and just post some code.
 
-This will make it so on any empty command snet to your shell a zsh function will run and an if block will decide to list out the files in the current directory.
+This will make it so on any empty command sent to your shell a zsh function will run and an if block will decide to list out the files in the current directory.
 
-I find this very useful in conjunction with the key binding I just posted to jump to directories in my repos directory.
+I am finding this to be useful when used along with the key binding I posted for changing to my repository directories.
 
-Then I use my keybinding. Hit enter to get the new prompt line to show and now I have a directory listing as well! But only when I want, when I am not trying to do something important!
+Now, after I use my "change to a repository directory" keybinding, I am able to hit enter right away, which I had to anyway to get the new prompt line to show up, and I am now given a directory listing.
 
-## Code
+## The Code
 
-### First Off
+### Setup
 
 This line needs to be somewhere before the meat of this:
 ```
 autoload -U add-zsh-hook
 ```
-
+## The Functions
 
 Then the actual function/s:
 
@@ -41,5 +41,11 @@ empty_command_precmd(){
 add-zsh-hook -Uz precmd empty_command_precmd
 
 ```
+
+
+This code is actually mostly from a [StackOverflow article](https://unix.stackexchange.com/questions/515356/make-zsh-run-a-command-when-no-command-is-entered) but I thought it would go well with the directory changing function and wanted to remember how to do this anyway.
+
+It might be best to just make one document or page with the most helpful shell aliases/functions/tools I have and a list of resources/references.
+
 
 

@@ -17,14 +17,22 @@ You will want to use something similar to:
     "configurations": [
         {
             "type": "lldb",
+            "request": "launch",
+            "stopOnEntry": true,
+            "name": "Debug with LLDB",
+            "program": "${workspaceRoot}/target/debug/your_project_name",
+            "args": [],
+            "cwd": "${workspaceRoot}/",
+            "sourceLanguages": [
+                "rust"
+            ],
+        },
+        {
+            "type": "lldb",
             "request": "attach",
             "pid": "${command:pickMyProcess}",
-            "waitFor": true,
-            "stopOnEntry": true,
             "name": "Attach LLDB",
-            "program": "${workspaceRoot}/target/debug/session-manager",
-            "args": [],
-            "cwd": "${workspaceRoot}/target/debug/",
+            "program": "${workspaceRoot}/target/debug/your_project_name",
             "sourceLanguages": [
                 "rust"
             ],
@@ -33,6 +41,6 @@ You will want to use something similar to:
 }
 ```
 
-NOTE: You will wan to change the program property to point to your binary!
+NOTE: You will wan to change the program property to point to your binary (from your_project_name to whatever your project is)!
 
 That should be it though! 
