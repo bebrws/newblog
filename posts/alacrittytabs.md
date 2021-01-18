@@ -42,6 +42,11 @@ find ~/repos/llvm-project  0.11s user 0.99s system 96% cpu 1.142 total
 
 In comparison to mid 2 second time ranges for the official build.
 
+## New functionality
+
+I also hardcoded the new feature (no keybinding) for Command Click to write the word under the cursor into the terminal. I thought this would be a huge time saver instead of double clicking, copy, and then pasting.
+
+
 ## Example alacritty.yml file:
 
 ```
