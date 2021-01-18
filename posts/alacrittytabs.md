@@ -23,6 +23,25 @@ The build of Alacritty, based off of the official v0.7.0-dev tag can be found at
 
 The code is up at [alacritty](https://github.com/bebrws/alacritty/). Note that this has only been tested on OSX.
 
+## Performance
+
+The only way I spent time trying to measure performance was by timing the find file print out of my local llvm-project directory.
+
+With my Alacritty build I see that it takes *half* the time to do this in comparison to the official Alacritty build.
+
+The command I used was:
+
+```
+time find ~/repos/llvm-project
+```
+
+I am seeing:
+```
+find ~/repos/llvm-project  0.11s user 0.99s system 96% cpu 1.142 total
+```
+
+In comparison to mid 2 second time ranges for the official build.
+
 ## Example alacritty.yml file:
 
 ```
