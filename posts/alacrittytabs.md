@@ -56,84 +56,6 @@ key_bindings:
   - key: Minus
     mods: Command|Shift
     action: DecreaseFontSize
-  - key: Back
-    mods: Super
-    chars: "\x15"
-  - key: Back
-    mods: Control
-    chars: "\x17"
-  - key: Back
-    mods: Alt
-    chars: "\ed"
-  - key: Left
-    mods: Super
-    chars: "\e[1;5D"
-  - key: Right
-    mods: Super
-    chars: "\e[1;5C"
-  - key: Left
-    mods: Control
-    chars: "\e[1;5D"
-  - key: Right
-    mods: Control
-    chars: "\e[1;5C"
-  - key: Left
-    mods: Alt
-    chars: "\e[1;5D"
-  - key: Right
-    mods: Alt
-    chars: "\e[1;5C"
-  - key: Space
-    mods: Command|Control
-    action: ToggleViMode
-  - key: Left
-    mods: Command|Option
-    chars: "\x02p"
-  - key: Right
-    mods: Command|Option
-    chars: "\x02n"
-  - key: Left
-    mods: Command|Shift
-    chars: "\x02p"
-  - key: Right
-    mods: Command|Shift
-    chars: "\x02n"
-  - key: Up
-    mods: Command|Option
-    chars: "\x02k"
-  - key: Down
-    mods: Command|Option
-    chars: "\x02j"
-  - key: F
-    mods: Option
-    chars: "\x02\x2f"       
-  - key: Key1
-    mods: Command
-    chars: "\x021"
-  - key: Key2
-    mods: Command
-    chars: "\x022"
-  - key: Key3
-    mods: Command
-    chars: "\x023"
-  - key: Key4
-    mods: Command
-    chars: "\x024"
-  - key: Key5
-    mods: Command
-    chars: "\x025"
-  - key: Key6
-    mods: Command
-    chars: "\x026"
-  - key: Key7
-    mods: Command
-    chars: "\x027"
-  - key: Key8
-    mods: Command
-    chars: "\x028"
-  - key: Key9
-    mods: Command
-    chars: "\x029"
 font:
   size: 12
   normal:
@@ -223,4 +145,10 @@ shell:
     - -l
 
 
+```
+
+This can be copy and pasted into a file which should be placed at:
+
+```
+~/.config/alacritty/alacritty.yml
 ```
