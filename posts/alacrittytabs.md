@@ -46,6 +46,9 @@ In comparison to mid 2 second time ranges for the official build.
 
 I also hardcoded the new feature (no keybinding) for Command Click to write the word under the cursor into the terminal. I thought this would be a huge time saver instead of double clicking, copy, and then pasting.
 
+## Screen Capture with Tabs
+
+![Alacritty With Tabs in action](/static/alacrittytabs.gif)
 
 ## Example alacritty.yml file:
 
