@@ -19,7 +19,7 @@ Luckily this mutex use along with the removal of the use of channels actually le
 
 Currently the key bindings default to Command + T for a new tab. Command + Shift + Left Bracket for previous tab and Command + Shift + Right Bracket for the next tab.
 
-The build of Alacritty, based off of the official v0.7.0-dev tag can be found at [alacritty DMG download](https://github.com/bebrws/alacritty/releases/download/v0.7.0-tabs/Alacritty.zip).
+The build of Alacritty, based off of the official v0.7.0-dev tag can be found at [alacritty DMG download](https://github.com/bebrws/alacritty/releases/download/v0.7.1-tabs/Alacritty.zip).
 
 The code is up at [alacritty](https://github.com/bebrws/alacritty/). Note that this has only been tested on OSX.
 
