@@ -17,7 +17,7 @@ file along with some nice bash functions to help with editing the configurations
 
 Download the terminal here: [Alacritty releases](https://github.com/alacritty/alacritty/releases)
 
-I was checking out the code made some changes [here](https://github.com/bebrws/alacritty/releases/download/0.6.0-dev-brads/Alacritty.zip) 
+I was checking out the code made some changes [here](https://github.com/bebrws/alacritty-tabs/releases/download/0.6.0-dev-brads/Alacritty.zip) 
 The only difference really was adding an "Always On Top' action. The keyboard combo for this will "Command Shift A".
 
 ## Setting up Alacritty using my tmux and alacritty config

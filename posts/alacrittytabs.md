@@ -1,5 +1,5 @@
 ---
-title: 'Alacritty - builtin tab support - no tmux needed - improved performance'
+title: 'Alacritty - builtin tab support - no tmux needed - possible performance improvement'
 author: 'Brad Barrows'
 date: '2021-01-17'
 hero_image: /static/alacritty-tabs.png
@@ -19,36 +19,22 @@ Luckily this mutex use along with the removal of the use of channels actually le
 
 Currently the key bindings default to Command + T for a new tab. Command + Shift + Left Bracket for previous tab and Command + Shift + Right Bracket for the next tab.
 
-The build of Alacritty, based off of the official v0.7.0-dev tag can be found at [alacritty DMG download](https://github.com/bebrws/alacritty/releases/download/v0.7.1-tabs/Alacritty.zip).
+The build of Alacritty, based off of the official v0.7.0-dev tag can be found at [alacritty DMG download](https://github.com/bebrws/alacritty-tabs/releases/download/v0.7.1-tabs/Alacritty.zip).
 
-The code is up at [alacritty](https://github.com/bebrws/alacritty/). Note that this has only been tested on OSX.
+The code is up at [alacritty](https://github.com/bebrws/alacritty-tabs/). Note that this has only been tested on OSX.
 
 ## Performance
 
 The only way I spent time trying to measure performance was by timing the find file print out of my local llvm-project directory.
 
-With my Alacritty build I see that it takes *half* the time to do this in comparison to the official Alacritty build.
-
-The command I used was:
+I am seeing slightly faster times when running:
 
 ```
 time find ~/repos/llvm-project
 ```
 
-I am seeing:
-```
-find ~/repos/llvm-project  0.11s user 0.99s system 96% cpu 1.142 total
-```
+with my build of Alacritty than with the official build.
 
-In comparison to mid 2 second time ranges for the official build.
-
-Actually with the latest changes merged in from v0.7.1 I am seeing:
-
-```
-find ~/repos/llvm-project  0.10s user 0.52s system 95% cpu 0.652 total
-```
-
-I should really find a decent benchmark metric if I am going to compare though.
 
 ## New functionality
 

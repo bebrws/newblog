@@ -79,5 +79,5 @@ Note that Control clicking will lead to VSCode always being ran on the file clic
 
 ## If you like this..
 
-Then checkout my [Alacritty Github Fork Releases](https://github.com/bebrws/alacritty/releases). I have a build of Alacritty that, when Command Click occurs, the word clicked is echoed into the terminal.
+Then checkout my [Alacritty Github Fork Releases](https://github.com/bebrws/alacritty-tabs/releases). I have a build of Alacritty that, when Command Click occurs, the word clicked is echoed into the terminal.
 
