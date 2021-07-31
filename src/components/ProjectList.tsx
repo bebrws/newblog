@@ -1,23 +1,21 @@
 import React from "react";
 import { PostContent } from "../lib/posts";
 import PostItem from "./PostItem";
-import TagLink from "./TagLink";
 import Pagination from "./Pagination";
-import { TagContent } from "../lib/tags";
 
 type Props = {
-  posts: PostContent[];
+  projects: PostContent[];
   pagination: {
     current: number;
     pages: number;
   };
 };
-export default function PostList({ posts, pagination }: Props) {
+export default function ProjectList({ projects, pagination }: Props) {
   return (
     <div className={"container"}>
       <div className={"posts"}>
         <ul className={"post-list"}>
-          {posts.map((it, i) => (
+          {projects.map((it, i) => (
             <li key={i}>
               <PostItem post={it} />
             </li>

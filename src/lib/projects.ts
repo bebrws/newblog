@@ -3,9 +3,9 @@ import matter from "gray-matter";
 import path from "path";
 import yaml from "js-yaml";
 
-const postsDirectory = path.join(process.cwd(), "content/posts");
+const projectsDirectory = path.join(process.cwd(), "content/projects");
 
-export type PostContent = {
+export type ProjectContent = {
   readonly date: string;
   readonly title: string;
   readonly slug: string;
@@ -13,22 +13,21 @@ export type PostContent = {
   readonly fullPath: string;
 };
 
-let postCache: PostContent[];
+let projectsCache: ProjectContent[];
 
-export function fetchPostContent(): PostContent[] {
-  if (postCache) {
-    return postCache;
+export function fetchProjectContent(): ProjectContent[] {
+  if (projectsCache) {
+    return projectsCache;
   }
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames
+
+  const fileNames = fs.readdirSync(projectsDirectory);
+  const allProjectsData = fileNames
     .filter((it) => it.endsWith(".mdx"))
     .map((fileName) => {
       // Read markdown file as string
-      const fullPath = path.join(postsDirectory, fileName);
+      const fullPath = path.join(projectsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, "utf8");
 
-      // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents, {
         engines: {
           yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
@@ -54,29 +53,29 @@ export function fetchPostContent(): PostContent[] {
 
       return matterData;
     });
-  // Sort posts by date
-  postCache = allPostsData.sort((a, b) => {
+
+  projectsCache = allProjectsData.sort((a, b) => {
     if (a.date < b.date) {
       return 1;
     } else {
       return -1;
     }
   });
-  return postCache;
+  return projectsCache;
 }
 
-export function countPosts(tag?: string): number {
-  return fetchPostContent().filter(
+export function countProjects(tag?: string): number {
+  return fetchProjectContent().filter(
     (it) => !tag || (it.tags && it.tags.includes(tag))
   ).length;
 }
 
-export function listPostContent(
+export function listProjectContent(
   page: number,
   limit: number,
   tag?: string
-): PostContent[] {
-  return fetchPostContent()
+): ProjectContent[] {
+  return fetchProjectContent()
     .filter((it) => !tag || (it.tags && it.tags.includes(tag)))
     .slice((page - 1) * limit, page * limit);
 }
