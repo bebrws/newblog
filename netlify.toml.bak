@@ -1,6 +1,0 @@
-[build]
-  command = "rm -rf dist && npm run-script export"
-  publish = "dist"
-  commandOrigin = "./"
-  publishOrigin = "./"
-  
