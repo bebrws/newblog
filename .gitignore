@@ -26,6 +26,7 @@ yarn-error.log*
 
 # dist
 /dist
+/out
 
 # Local Netlify folder
 .netlify
