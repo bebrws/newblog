@@ -1,19 +1,31 @@
 {
-  "base_url": "https://wutali-nextjs-netlify-blog.netlify.app",
-  "site_title": "Next.js Netlify Blog",
-  "site_description": "Next.js blog template for Netlify",
+  "base_url": "https://bbarrows.com",
+  "site_title": "Brad Barrows' Blog",
+  "site_description": "Brad Barrows' Blog",
   "site_keywords": [
     {
-      "keyword": "Next.js"
+      "keyword": "Javascript"
     },
     {
-      "keyword": "Netlify"
+      "keyword": "Typescript"
     },
     {
       "keyword": "React"
+    },
+    {
+      "keyword": "Zsh"
+    },
+    {
+      "keyword": "Linux"
+    },
+    {
+      "keyword": "OSX"
+    },
+    {
+      "keyword": "iOS"
     }
   ],
   "posts_per_page": 5,
-  "twitter_account": "@my-account",
-  "github_account": "wutali"
+  "twitter_account": "@bebrws",
+  "github_account": "bebrws"
 }

@@ -11,7 +11,8 @@ export default function Index() {
       <div className="container">
         <div>
           <h1>
-            Brad Barrows<span className="fancy">.</span>
+            Brad Barrows
+            {/* <span className="fancy"></span> */}
           </h1>
           <h2>Projects and Notes.</h2>
           <SocialList />
