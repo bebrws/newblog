@@ -3,7 +3,6 @@
   "version": "1.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && rm -rf dist &&  next export -o ./dist",
     "start": "next start",
     "export": "next build && rm -rf dist &&  next export -o ./dist",
     "test": "jest"

@@ -1,3 +1,3 @@
 [build]
-  command = "rm -rf dist && npm run-script build"
+  command = "rm -rf dist && npm run-script export"
   publish = "dist"
