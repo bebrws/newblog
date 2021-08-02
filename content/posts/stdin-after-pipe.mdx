@@ -18,11 +18,7 @@ In C:
 ```
 #include <stdio.h>
 #include <unistd.h>
-```
 
-...
-
-```
     if (!isatty(fileno(stdin))) {
         // duplicate stdin file descriptor and open it as a FILE*
         input = fdopen(dup(fileno(stdin)), "r");
@@ -36,9 +32,7 @@ In Nim:
 
 ```
 
-```
-
-import posix 
+import posix
 import os
 import terminal
 
@@ -56,4 +50,3 @@ discard freopen(ttyname(c_fileno(stdout)), cstring("r"), stdin)
 ```
 
 Note that c_fdopen and c_freopen should exist in the nim standard library like they do above. I was just having trouble importing them
-```
