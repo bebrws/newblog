@@ -69,23 +69,23 @@ wg genkey | sudo tee clientprivatekey
 cat clientprivatekey
 ```
 
-Now if you are using the OSX Wireguard App you will create a new "empty tunnnel" by clicking the bottom left plus button. Paste in the following replacing <IPAddressOfYourServer> with your VM IP and then replace <ClientPrivateKey> with the value from the clientprivatekey file. <ServerPublicKey> will be replaced with the Server Public Key:
+Now if you are using the OSX Wireguard App you will create a new "empty tunnnel" by clicking the bottom left plus button. Paste in the following replacing IPAddressOfYourServer with your VM IP and then replace ClientPrivateKey with the value from the clientprivatekey file. ServerPublicKey will be replaced with the Server Public Key:
 
 ```
 [Interface]
-PrivateKey = <ClientPrivateKey>
+PrivateKey = ClientPrivateKey
 ListenPort = 21841
 Address = 192.168.2.2/32
 DNS = 1.1.1.1
 
 [Peer]
-PublicKey = <ServerPublicKey>
+PublicKey = ServerPublicKey
 AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = <IPAddressOfYourServer>:51820
+Endpoint = IPAddressOfYourServer:51820
 PersistentKeepalive = 25
 ```
 
-After replacing the values I mentioned and copying this into the Wireguard OSX App you will have a Client Public Key generated. It will be right above the text box you paste the configuration into. Take this value and replace <PublicKeyFromClient> with it. Replace <PrivateKeyfromthe2ndComnmandAbove> with the Server Private Key that was printed out in the last set of commands you ran on the VM. The run the following on your VM:
+After replacing the values I mentioned and copying this into the Wireguard OSX App you will have a Client Public Key generated. It will be right above the text box you paste the configuration into. Take this value and replace PublicKeyFromClient> with it. Replace <PrivateKeyfromthe2ndComnmandAbove with the Server Private Key that was printed out in the last set of commands you ran on the VM. The run the following on your VM:
 
 ```
 cat << EOF >> /etc/wireguard/wg0.conf
@@ -94,12 +94,12 @@ Address = 192.168.2.1
 PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; ip6tables -A FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE; ip6tables -D FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 ListenPort = 51820
-PrivateKey = <PrivateKeyfromthe2ndComnmandAbove>
+PrivateKey = PrivateKeyfromthe2ndComnmandAbove
 DNS = 1.1.1.1
 
 
 [Peer]
-PublicKey = <PublicKeyFromClient>
+PublicKey = PublicKeyFromClient
 AllowedIPs = 192.168.2.2/32
 EOF
 
