@@ -1,0 +1,61 @@
+---
+slug: fznim
+title: FZNim - My fzf like library and clone writtin in Nim
+date: 2020-08-30
+author: bebrws
+tags:
+  - alacritty
+---
+
+## Introducing FZNim
+
+I love fzf
+
+It has become, by far, the most useful "new" command line tool I have. It can be a godsend when it comes to searching through.. anything. A good example is files and directories.
+
+I always setup a folder named "repos" on my laptop where I store all my code repositories. Because of this I am constantly cd ing into this folder then cd ing into a specific repo folder to start work on a project.
+
+Sometimes I cant rememeber the exact name of a repo or am just feeling lazy and now can save time and mental energy with a quick:
+
+```
+
+function cdr() {
+	cd ~/repos/$(ls ~/repos | fzf)
+}
+
+cdr
+```
+
+With this command I can roughly type the repo I am looking for and jump into my project from anywhere on my laptop. I like this tool so much I thought there would be some use cases that weren't easy to script with fzf.
+
+Maybe you have some more complicated input and output requirements than what can be done with a bash or zsh array of string.
+
+Here is my [Nim clone of fzf, named FZNim](https://github.com/bebrws/fznim) (which can be used as a Nim and therefore C and Objective-C library):
+
+![An animated gif of the fzf like usage of fznim](/static/fznim.gif)
+
+I am working on some more useful fzf like ideas right now an hopefully will have something to show for it soon.
+
+## FZNim code
+
+### Interesting Issues
+
+I ran into a few interesting issues. Like problems [getting keyboard input after piping in input into STDIN](/post/GettingSTDINAfterPipe) or needing to write [my own fuzzy string search in nim](/post/nimFuzzySearch).
+
+### Terminal Colors
+
+Coloring the terminal output actually ended up being pretty easy.
+
+To get the escape code right I needed to use: "\e[1;" instead of "\033[0;"
+
+To print out a string hello in blue in nim you could use:
+
+```
+echo "\e[1;34mhello\e[00m"
+```
+
+### NCurses or not
+
+I thought about using ncurses here but saw there is a nice terminal import in the Nim standard library
+
+With this I could set cursor position (setCursorPos) and clear the screen (eraseScreen). This was really all I needed.
