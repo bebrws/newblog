@@ -7,7 +7,7 @@ tags:
   - alacritty
 ---
 
-## Re write of the Alacritty Event Loop
+## Re-Write of The Alacritty Event Loop
 
 While getting started on this I found an awesome project named [session-manager](https://github.com/nw0/session-manager).
 
@@ -15,7 +15,13 @@ This provided a great way for me to see how the lower level TTY code and ansi pr
 
 I played around with this for a while, adding support for colors and then upon realizing that most of this session-manager code came from Alacritty, decided that I should give adding tabs to Alacritty a shot.
 
-When digging into the Alacritty source I realized I would need some struct to manage the tabs and Term/PTY struct state throughout the app. Unfortunately this meant passing around an Arc<Mutex<T>> and lots of locking and unlocking.
+When digging into the Alacritty source I realized I would need some struct to manage the tabs and Term/PTY struct state throughout the app. Unfortunately this meant passing around an
+
+```
+Arc<Mutex<T>>
+```
+
+and lots of locking and unlocking.
 
 Luckily this mutex use along with the removal of the use of channels actually lead to performance improvements. I believe this may mostly be due to the simplified process of reading input from the TTY file descriptor. I now just spin off a thread for each tty and in that thread there is a simple loop which reads and then writes directly to the ansi processor, skipping the previous process of sending bytes over a channel and then into an event loop.
 
@@ -25,7 +31,7 @@ The latest build of Alacritty with tabs can be found at [the release page](https
 
 The code is up at [alacritty-tabs](https://github.com/bebrws/alacritty-tabs/). Note that this has only been tested on OSX.
 
-## New functionality
+## New Functionality
 
 Ability to jump back up to the last time the return key was pressed
 

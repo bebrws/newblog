@@ -9,8 +9,9 @@ import {
   listProjectContent,
   ProjectContent,
 } from "../../lib/projects";
-import { countPosts, listPostContent, PostContent } from "../../lib/posts";
+import { countPosts, listPostContent } from "../../lib/posts";
 import { listTags, TagContent } from "../../lib/tags";
+import { Content } from "../../lib/content";
 import React from "react";
 import PostList from "../../components/PostList";
 
