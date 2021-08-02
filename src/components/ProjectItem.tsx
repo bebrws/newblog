@@ -6,9 +6,9 @@ import { parseISO } from "date-fns";
 type Props = {
   post: Content;
 };
-export default function PostItem({ post }: Props) {
+export default function ProjectItem({ post }: Props) {
   return (
-    <Link href={"/posts/" + post.slug}>
+    <Link href={"/projects/" + post.slug}>
       <a>
         <Date date={parseISO(post.date)} />
         <h2>{post.title}</h2>

@@ -6,11 +6,12 @@ import OpenGraphMeta from "../../../components/meta/OpenGraphMeta";
 
 import PostList from "../../../components/PostList";
 import config from "../../../lib/config";
-import { countPosts, listPostContent, PostContent } from "../../../lib/posts";
+import { countPosts, listPostContent } from "../../../lib/posts";
+import { Content } from "../../../lib/content";
 import { listTags, TagContent } from "../../../lib/tags";
 
 type Props = {
-  posts: PostContent[];
+  posts: Content[];
   tags: TagContent[];
   page: number;
   pagination: {

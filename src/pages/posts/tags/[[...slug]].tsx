@@ -5,12 +5,13 @@ import OpenGraphMeta from "../../../components/meta/OpenGraphMeta";
 
 import TagPostList from "../../../components/TagPostList";
 import config from "../../../lib/config";
-import { countPosts, listPostContent, PostContent } from "../../../lib/posts";
+import { countPosts, listPostContent } from "../../../lib/posts";
+import { Content } from "../../../lib/content";
 import { getTag, listTags, TagContent } from "../../../lib/tags";
 import Head from "next/head";
 
 type Props = {
-  posts: PostContent[];
+  posts: Content[];
   tag: TagContent;
   page?: string;
   pagination: {
@@ -45,7 +46,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     pages: Math.ceil(countPosts(slug) / config.posts_per_page),
   };
   const props: {
-    posts: PostContent[];
+    posts: Content[];
     tag: TagContent;
     pagination: { current: number; pages: number };
     page?: string;

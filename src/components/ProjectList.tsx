@@ -1,10 +1,10 @@
 import React from "react";
-import { PostContent } from "../lib/posts";
-import PostItem from "./PostItem";
+import { Content } from "../lib/content";
+import ProjectItem from "./ProjectItem";
 import Pagination from "./Pagination";
 
 type Props = {
-  projects: PostContent[];
+  projects: Content[];
   pagination: {
     current: number;
     pages: number;
@@ -17,7 +17,7 @@ export default function ProjectList({ projects, pagination }: Props) {
         <ul className={"post-list"}>
           {projects.map((it, i) => (
             <li key={i}>
-              <PostItem post={it} />
+              <ProjectItem post={it} />
             </li>
           ))}
         </ul>

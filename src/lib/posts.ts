@@ -2,20 +2,13 @@ import fs from "fs";
 import matter from "gray-matter";
 import path from "path";
 import yaml from "js-yaml";
+import { Content } from "./content";
 
 const postsDirectory = path.join(process.cwd(), "content/posts");
 
-export type PostContent = {
-  readonly date: string;
-  readonly title: string;
-  readonly slug: string;
-  readonly tags?: string[];
-  readonly fullPath: string;
-};
+let postCache: Content[];
 
-let postCache: PostContent[];
-
-export function fetchPostContent(): PostContent[] {
+export function fetchPostContent(): Content[] {
   if (postCache) {
     return postCache;
   }
@@ -75,7 +68,7 @@ export function listPostContent(
   page: number,
   limit: number,
   tag?: string
-): PostContent[] {
+): Content[] {
   return fetchPostContent()
     .filter((it) => !tag || (it.tags && it.tags.includes(tag)))
     .slice((page - 1) * limit, page * limit);
