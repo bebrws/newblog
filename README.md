@@ -1,3 +1,9 @@
+# Brad Barrows' blog
+
+My blog. I used a template. The original README.md is below
+
+# Original README contents:
+
 ![Next.js blogging template for Netlify](https://repository-images.githubusercontent.com/284910441/d8efc300-e2ae-11ea-9596-b01e3844e39d)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/c6f44d34-0570-4ca0-9d3d-cabdaa2b3afb/deploy-status)](https://app.netlify.com/sites/nextjs-netlify-blog-template/deploys)
@@ -111,7 +117,3 @@ as following instructions:
 ## License
 
 MIT
-
-
-
-
