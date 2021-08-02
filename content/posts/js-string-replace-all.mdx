@@ -1,0 +1,16 @@
+---
+slug: js-string-replace-all
+title: Modify String prototype for replaceAll
+date: 2020-11-14
+author: bebrws
+tags:
+  - javascript
+---
+
+## String replace all
+
+```
+String.prototype.replaceAll = function (find, replace) {
+  return this.replace(new RegExp(find, 'g'), replace);
+};
+```
