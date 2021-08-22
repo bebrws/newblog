@@ -1,0 +1,123 @@
+---
+slug: clip-path-vs-svg
+title: Using CSS Clip Path or SVGs
+date: 2021-08-22
+author: bebrws
+tags:
+  - React
+  - CSS
+  - SVG
+---
+
+## Creating a scalable SVG or Clip Path element
+
+The other day I was working on creating a tag element. I was informed about CSS clip-path which I had not heard of before.
+
+This is a pretty great solution. But I don't know much CSS and also don't know much about passing in variables easily other than by using a style tag or something similar.
+
+The correct clip-path solution would probably be like the SVG solution I came up with.
+
+However I opted for the SVG alternative.
+
+One negative with SVGs is that the text element styling appears to be slightly different than regular text styling in HTML.
+
+For example sizing is slightly larger in SVGs possibly?
+
+### Clip Path code:
+
+First I created a [clip-path version of the tag](https://codepen.io/bebrws/pen/LYLPBRJ)
+
+!["CSS Clip Path Tag"](../static/clip-path-tag.jpg)
+
+#### CSS
+
+```
+.tagBackground {
+    width: 450px;
+    height: 200px;
+  color: yellow;
+  background-color: brown;
+  clip-path: polygon(0 33%, 0 66%, 16% 100%, 100% 100%, 100% 0, 16% 0);
+  position: relative;
+}
+
+.tag-circle {
+  clip-path: circle(25%);
+  background-color: white;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 33%;
+  left: 4%;
+}
+
+span {
+    color: yellow;
+    font-size: 4rem;
+    position: absolute;
+    top: 28%;
+    left: 32%;
+}
+```
+
+#### HTML
+
+```
+<div class='tagBackground'>
+  <span>30% OFF</span>
+  <div class="tag-circle">
+  </div>
+</div>
+```
+
+### SVG React code:
+
+Then I created [the SVG React component which scales](https://codepen.io/bebrws/pen/QWgLZqX)
+
+!["React SVG Scalable Tag"](../static/react-svg-tag.jpg)
+
+```
+import React, { Component } from "https://cdn.skypack.dev/react@17.0.1";
+import { render } from "https://cdn.skypack.dev/react-dom@17.0.1";
+
+
+function App({width}) {
+    const height = width/3;
+
+    const middle = height / 2;
+    const topMiddle = middle - (middle*.20);
+    const bottomMiddle = middle + (middle*.20);
+
+    const sideCut = width *.075;
+
+    const d = `0,${topMiddle},0,${bottomMiddle},${sideCut},${height},${width},${height},${width},0,${sideCut},0’`;
+    const ppath = `M${d}Z`;
+
+    return (
+      <>
+        <br />
+        <svg
+          width={`${width}px`}
+          height={`${height}px`}
+          viewBox={`0 0 ${width} ${height}`}
+        >
+          <rect width={`${width}`} height={`${height}`} fill="#efefef" />
+          <path
+            d={ppath}
+            fill="brown"
+          />
+          <circle fill="white" cx={`${width * .1}`} cy={`${middle}`} r={`${width * .03}`} />
+          <text font-size={"2rem"} x={`${width* .25}`} y={`${middle + middle * .125}`} fill="white">30% OFF</text>
+        </svg>
+      </>
+    );
+}
+
+render(<App width={400} />, document.getElementById('root'));
+```
+
+#### HTML:
+
+```
+<div id="root"></div>
+```
