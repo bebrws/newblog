@@ -1,0 +1,71 @@
+---
+slug: creating-iphone-ringtones
+title: Creating iPhone Ringtones with a Cello and FFMPEG
+date: 2022-03-30
+author: bebrws
+tags:
+  - zsh
+---
+
+## A very useful post about making iPhone ringtones
+
+Messing around with my Cello I realized I would much rather here this than my ringtone options I had.
+
+So I recorded the audio on my phone and sent it to myself. This produced an m4a file.
+
+So how do I get this thing in the right format and looped correctly and on my phone?
+
+Well FFMPEG can do all of this from the command line.
+
+So first off, as you are working on your ringtone and want to here what you have, it is easiest to just play it from the command line with:
+
+```
+    afplay someFile.m4a
+```
+
+So I made a function to get audio from second 2 up to second 4 (seen in the atrim argument below).
+Play this 50 times (the orignal time + 49 times you see in the aloop argument).
+Then you have to calculate the size of the output. I believe this then is:
+2 seconds of audio _ 50 times = 100 seconds of audio
+100 seconds of audio _ 48000 samples per second = 480000 samples ( == 100\*48000 you see in the size argument )
+
+```
+function trimAndLoopRingtone(){
+    # Trim and Loop sound
+    ffmpeg -i $1 -filter_complex " \
+        [0:a] \
+            atrim=2:4,asetpts=PTS-STARTPTS, \
+            asetrate=48000,aloop=49:size=100*48000 \
+        [outa]" -map "[outa]" -c:a aac "looped$1"
+}
+```
+
+And I ran:
+
+```
+    trimAndLoopRingtone celloAudio.m4a
+```
+
+to get a file named: _loopedcelloAudio.m4a_
+
+Then I needed to cut the duration of this down to be below 40 seconds (Apple limits ringtones to 40 seconds):
+
+```
+function trimDuratonToBelow40() {
+    ffmpeg -i $1 -ss 00:00:00 -to 00:00:38 -c:v copy -c:a copy duration$1
+}
+```
+
+Then I needed to convert this m4a file to an m4r file:
+
+```
+function convertToRingtoneM4R() {
+    ffmpeg -i $1 -acodec copy -f ipod ringtone.m4r
+}
+```
+
+Now you have you own fancy custom ringtone. But you have to get this onto your phone
+and in a way the you can find the ringtone in your settings (Settings -> Sounds & Haptics ).
+
+So you can open up Music.app, plug in your phone, open up your phone in the left hand side of Music.app and drag the m4r file in there.
+Or dragging it into the IPhone in Finder might have worked as well. I tried both :)
