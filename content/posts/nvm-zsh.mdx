@@ -1,0 +1,40 @@
+---
+slug: nvm-zsh
+title: ZSH hook on directory change to update NVM Node version automatically
+date: 2022-03-31
+author: bebrws
+tags:
+  - zsh
+  - Node.js
+  - Node
+  - NVM
+  - Shell Scripting
+  - JS
+---
+
+## Automatically having NVM set the Node version by directory using the .nvmrc file
+
+It seems like NVM is the Node version manager of choice for Node.js.
+
+I didn't want to have to remember to set the Node version manually every time I changed directory so I wrote this helpful ZSH
+hook on directory change and added it to my zshrc.
+
+```
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+    function set_nvm_version() {
+        emulate -L zsh
+        [ -s "`pwd`/.nvmrc" ] && nvm use
+    }
+    chpwd_functions=(${chpwd_functions[@]} "set_nvm_version")
+```
+
+Now every time I change directories ZSH will check to see if a .nvmrc exists in the directory and if it does it will run
+
+```
+    nvm use
+```
+
+to take set the Node version. Very helpful if you are forgetful :)
