@@ -4,11 +4,11 @@
 
 [[redirects]]
   from = "/posts/alacritty"
-  to = "/posts/alacritty-tabs"
+  to = "/projects/alacritty"
   status = 301
 [[redirects]]
   from = "/posts/alacrittytabs"
-  to = "/posts/alacritty-tabs"
+  to = "/projects/alacritty"
   status = 301
 [[redirects]]
   from = "/posts/kubernetesaliasesfunctions"
@@ -16,7 +16,7 @@
   status = 301
 [[redirects]]
   from = "/posts/jsflatmapusage"
-  to = "/"
+  to = "/posts"
   status = 301
 [[redirects]]
   from = "/posts/pythonlistcomprehensionsinjs"
@@ -24,7 +24,7 @@
   status = 301
 [[redirects]]
   from = "/posts/chromedevtools"
-  to = "/"
+  to = "/posts"
   status = 301
 [[redirects]]
   from = "/posts/githubstats"
@@ -40,9 +40,9 @@
   status = 301
 [[redirects]]
   from = "/blog/2019/07/01/system-preferences-security-and-privacy-osx"
-  to = "/posts/wireguard"
+  to = "/posts"
   status = 301
 [[redirects]]
   from = "/blog/2019/07/01/system-preferences-security-and-privacy-osx/"
-  to = "/"
+  to = "/posts"
   status = 301
