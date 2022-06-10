@@ -1,4 +1,48 @@
 [build]
   command = "rm -rf dist && npm run-script export"
   publish = "dist"
-  
+
+[[redirects]]
+  from = "/posts/alacritty"
+  to = "/posts/alacritty-tabs"
+  status = 301
+[[redirects]]
+  from = "/posts/alacrittytabs"
+  to = "/posts/alacritty-tabs"
+  status = 301
+[[redirects]]
+  from = "/posts/kubernetesaliasesfunctions"
+  to = "/posts/kubernetes-aliases-functions"
+  status = 301
+[[redirects]]
+  from = "/posts/jsflatmapusage"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/posts/pythonlistcomprehensionsinjs"
+  to = "/posts/python-list-comp-js"
+  status = 301
+[[redirects]]
+  from = "/posts/chromedevtools"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/posts/githubstats"
+  to = "https://www.npmjs.com/package/githubrepostatistics"
+  status = 301
+[[redirects]]
+  from = "/blog/2019/12/14/wireguard"
+  to = "/posts/wireguard"
+  status = 301
+[[redirects]]
+  from = "/blog/2019/12/14/wireguards/"
+  to = "/posts/wireguard"
+  status = 301
+[[redirects]]
+  from = "/blog/2019/07/01/system-preferences-security-and-privacy-osx"
+  to = "/posts/wireguard"
+  status = 301
+[[redirects]]
+  from = "/blog/2019/07/01/system-preferences-security-and-privacy-osx/"
+  to = "/"
+  status = 301
