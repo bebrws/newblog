@@ -14,7 +14,7 @@ export default function Index() {
             Brad Barrows
             {/* <span className="fancy"></span> */}
           </h1>
-          <h2>Projects and Notes.</h2>
+          <h2>Projects and Notes</h2>
           <SocialList />
         </div>
       </div>
