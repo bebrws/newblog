@@ -15,19 +15,21 @@ tags:
 
 ## The Hypothetically Frustrating World of JAMF MDM
 
-If I was to hypothetically have at one point worked at a company that used *JamF Self Service Desk* to manage their Macs, I believe all my hypothetically co-workers agreed or would agree that this was pretty annoying, sometimes frustrating, and worst of all a huge time sink.
+If I was to hypothetically have at one point worked at a company that used *JamF Self Service Desk* to manage their Macs, I believe all my hypothetical co-workers would have agreed that our MDM solution and lack of ability to use root/sudo when needed would lead to pretty annoying situations and worst of all, be a huge time sink. This can be especially troublesome under deadlines.
 
-At this hypothetical company they did not want to trust users with *sudo* access. Which I can understand and do not want to waste my typing on the pros and cons of.
+At this hypothetical company they did not want to trust users with *sudo* access. Which I can understand and do not want to waste my typing out my opinions on the pros and cons. Especially when this topic is something I don't spend a ton of time thinking about these days and have no professional experience with.
 
-The unfortunate fact of the matter is that sudo, even with, for example, a properly installed package manager writing to a user's directory was just causing frustration and loss of productivity. This hypothetical company did trust some user's enough to grant them sudo access for a short period of time however using a JamF "app" (I am not sure what they call the scripts they have in the Self Service Desk and don't want to look it up). Now even with this trusts issues occurred in our hypothetical world all the time. JamF Self Service Desk is incredibly buggy and "apps" would just disappear at random.
+The unfortunate fact of the matter is that sudo, even with, for example, a properly installed package manager can still be needed for many day to day tasks to get tasks completed. And yes, even if homebrew is correctly configured and writing to a user's directory. What if you need to install Docker and/or it needs to update? It requires admin access every update. 
 
-Hours would then be spent waiting for the sudo access app to re appear so that an engineer could continue working on his laptop. While waiting he might be forced to interrupt or ask for the help of another team member.
+This hypothetical company did trust engineers enough to grant them sudo access for a short period of time however using a JamF "app" (I am not sure what they call the scripts they have in the Self Service Desk and don't want to look it up). Now even with this "app"" issues occurred in our hypothetical world all the time. All due, I believe to JamF Self Service Desk bugs. We would often find that this admin privledges "app" would just disappear for hours or a day at a time. No rain dance could make it return.
+
+Hours would then be spent waiting for the sudo access app to re appear so that an engineer could continue working on his laptop unless he was able to pair with other engineers remotely. However while waiting he might also be forced to interrupt or ask for the help of another team member that is busy if no one is available to pair.
 
 ## The Solution
 
-Hypothetically, being a curious person, I would have noticed that both in JamF and in Console.app I could see messaging and logs saying that JamF was running some script every time I requested and received sudo access. This would have been incredibly enticing.
+Hypothetically, being a curious person, I would have noticed that both in JamF and in Console.app I could see messaging and logs saying that JamF was running some script every time I requested and received sudo access. This would have been enticing.
 
-Next, a decision  would need to be made between the huge number of tools that could be used to get to the next step, finding the sudo access script.
+Next, a decision would need to be made between the huge number of tools that could be used to get to the next step, finding the sudo access script.
 
 ## The Tools
 
@@ -46,23 +48,36 @@ The easiest and most trustworthy solution if you don't want to compile your own 
 
 Personally, I think the most powerful and interesting tool that could be used in this situation (once sudo access is granted) is knox which opens and configures /dev/auditpipe which will stream an incredibly detailed audit log of system events.
 
+And I should also mention Frida although I don't think it would be a good fit for this situation as I wouldn't want to weaken the security of the OS (disable SIP). But it sure would be easy to figure out how all this works with any number of scripts and tooling built around it.
+
+If you haven't played around with it before I would recommend trying it out. It is a great tool for any number of things.. from reverse engineering and debugging to developing dynamically injected libraries to modify the behavior of other processes. Or maybe just creating helpful scripts. I used to use it to automatically find the chrome debugger window/tab, or open one if needed, bring it to the forefront, etc... 
+
 ## The Process
 
-Hypothetically if we wanted to learn more we would want to see what JamF is doing to give us sudo access right? Well we know it is running some script. But how and where is this script? Wouldn't it be nice if this script was a file that we find? 
+Hypothetically if we wanted to learn more about how this admin access script works we would want to see what JamF is doing right? Well we know it is running some script. But how and where is this script? Wouldn't it be nice if this script was simply a file that we could find? 
 
-Well using one of the File Monitor/syscall tracing/audit logging/etc tools we could hypothetically see that JamF is running a script which it downloads to a temporary folder, runs, then deletes quickly. All of the tools I listed above (and more) would give enough information to easily figure this out.
+Using one of the File Monitor/syscall tracing/audit logging/etc tools you would see that JamF downloaded a script to a temporary folder, ran it, and then deleted it shortly after. 
 
-So in this hypothetical situation you could do something like ask JamF for sudo access, (once you already have sudo if you need to use tooling that requires it) then you run a script you wrote that repeatedly quickly searches the tmp directory for the script in question and copies it to your home directory.
+All of the tools I listed above (and more) would give enough information to easily figure this out.
+
+If you had already asked JamF for admin access and requested it again then you could writing and run a short script that repeatedly and quickly searches the tmp directory for this admin script to copy it to your home directory (while JamF is in the process of downloading this script from some server and running it).
 
 ## The Solution
-Hypotheticall this script would have just used the dseditgroup tool to temporarily add the user to the admin group, delay, and then remove them from that group. Now if you have root/sudo and you can edit this script which also has the required permissions to use the dseditgroup tool to make these changes to your user's gropu then you could just remove the part that removes your user from the admin group.
+
+In this hypotheticall this script would have used the dseditgroup tool to temporarily add the user to the admin group, delay, and then remove them from that group. Now if you have admin access (part of the admin group which can use sudo) and you can edit this script which also has the required permissions to use the dseditgroup tool to make these changes to your user's group then you could just remove the part that removes your user from the admin group.
+
+## Visudo
+
+But why not just add yourself to the sudoers file and be done with it!?
+
+This was attempted but didn't work in this hypothetical situation.
 
 ## My Opinion on MDM
 
-I get it, there are so many good reasons for MDM. But wow, it is such a time suck and productivity killer sometimes. Not to mention resource hog and destroyer of system settings at time. I could go on and on. It would be great if companies could just find an acceptable level or risk that still allows their employees to at least have root access on their dev machines.
+I get it, there are so many good reasons for MDM. But wow, it is such a time suck and productivity killer sometimes. Not to mention resource hog and destroyer of system settings and network routes at times. I could go on and on. It would be great if companies could just find an acceptable level of risk that still allows their employees to at least have root access on their dev machines. MDM and related software has even caused issues which have taken up very important hours of my colleagues and mine. It is often hard or impossible to know right away if an issue stemming from this software is causing the problem you are seeing when you are trying to get work done.
 
 ## Why Write This?
 
-Because I think all engineers should have lower level knowledge of how the operating systems they develop on and deploy to work. And with this knowledge comes the ability to quickly debug issues, write more secure code, and generally be more productive.
+My above stance on MDM, I thought it was a fun breakdown of some interesting and useful tools, and because I think engineers would benefit by having lower level knowledge of how operating systems they develop on and deploy to work. With this knowledge comes the ability to quickly debug issues, write more secure code, and generally be more productive.
 
-And maybe this post might help instill some interest in topics like syscalls, auditing, and logging in general.
+And maybe this post might help instill some interest in topics like syscalls, auditing, and logging in general. Who knows..
