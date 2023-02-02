@@ -50,11 +50,9 @@ Personally, I think the most powerful and interesting tool that could be used in
 
 And I should also mention Frida although I don't think it would be a good fit for this situation as I wouldn't want to weaken the security of the OS (disable SIP). But it sure would be easy to figure out how all this works with any number of scripts and tooling built around it.
 
-If you haven't played around with it before I would recommend trying it out. It is a great tool for any number of things.. from reverse engineering and debugging to developing dynamically injected libraries to modify the behavior of other processes. Or maybe just creating helpful scripts. I used to use it to automatically find the chrome debugger window/tab, or open one if needed, bring it to the forefront, etc... 
-
 ## The Process
 
-Hypothetically if we wanted to learn more about how this admin access script works we would want to see what JamF is doing right? Well we know it is running some script. But how and where is this script? Wouldn't it be nice if this script was simply a file that we could find? 
+To learn more about how this admin access script works we would want to see what JamF is doing right? Well we know it is running some script. But how and where is this script? Is it ever written to file?
 
 Using one of the File Monitor/syscall tracing/audit logging/etc tools you would see that JamF downloaded a script to a temporary folder, ran it, and then deleted it shortly after. 
 
@@ -74,10 +72,4 @@ In this hypothetical situation this alone didn't work.
 
 ## My Opinion on MDM
 
-I get it, there are so many good reasons for MDM. But wow, it is such a time suck and productivity killer sometimes. Not to mention resource hog and destroyer of system settings and network routes at times. I could go on and on. It would be great if companies could just find an acceptable level of risk that still allows their employees to at least have root access on their dev machines. MDM and related software has even caused issues which have taken up very important hours of my colleagues and mine. It is often hard or impossible to know right away if an issue stemming from this software is causing the problem you are seeing when you are trying to get work done.
-
-## Why Write This?
-
-My above stance on MDM, I thought it was a fun breakdown of some interesting and useful tools, and because I think engineers would benefit by having lower level knowledge of how operating systems they develop on and deploy to work. With this knowledge comes the ability to quickly debug issues, write more secure code, and generally be more productive.
-
-And maybe this post might help instill some interest in topics like syscalls, auditing, and logging in general. Who knows..
+I get it, there are so many good reasons for MDM. But wow, it is such a time suck and productivity killer sometimes. Not to mention resource hog and destroyer of system settings and network routes at times. I could go on and on. It would be great if companies could find an acceptable solution (level of risk) that still allows their employees to at least have root access on their dev machines. MDM and related software has caused issues colleagues and I have wasted hours debugging.
