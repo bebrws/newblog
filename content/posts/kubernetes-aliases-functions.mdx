@@ -48,8 +48,13 @@ before hand.
     function kLogsContainer() {
         # The first argument to this function should be the container name
         # kubectl get pods -o name | fzf --preview="kubectl logs {} --container $1 | tail -20" --preview-window=up:80%
-
-        kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace} {.metadata.name}{"\n"}' | fzf --preview="kubectl logs {2} --namespace {1} --container $1" --preview-window=up:80% --preview-label=\"Logs for container $1\""
+        local container
+        container=$1
+        if [[ ! -z "${container// }" ]]; then
+            kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace} {.metadata.name}{"\n"}' | fzf --preview="echo kubectl logs {2} --namespace {1} --container $container" --preview-window=up:80% --preview-label="Logs for container $1"
+        else
+            print "Usage: kLogsContainer <container name>"
+        fi
     }
 
     function kexSh() {
