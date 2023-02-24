@@ -177,3 +177,21 @@ I also had to make sure I had:
 ```
 export PYTORCH_ENABLE_MPS_FALLBACK=1
 ```
+
+## Other things I did that might have helped
+
+Install nightly:
+```
+pip install --pre torch --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+```
+
+```
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch-nightly
+
+```
+
+## Testing PyTorch + CUDA
+
+```
+python -c 'import torch; print torch.cuda.is_available()'\
+```
