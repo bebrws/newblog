@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Script from 'next/script'
 import Navigation from "./Navigation";
 
 type Props = {
@@ -8,30 +7,24 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <div className="root">
-      <Script src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2" />
-
-      <Script id="show-banner" strategy="afterInteractive">
-      {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-154810525-2');
-      `}
-      </Script>
-
-
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-BZKS5D8HPF" />
-
-      <Script id="show-banner" strategy="afterInteractive">
-      {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-BZKS5D8HPF');
-      `}
-      </Script>      
       <Head>
+
+        <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-154810525-2');
+        ` }}></script>
+        <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-BZKS5D8HPF"></script>
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-BZKS5D8HPF');
+        ` }}></script>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="manifest" href="/site.webmanifest" />
