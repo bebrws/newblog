@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Script from 'next/script'
 import Navigation from "./Navigation";
 
 type Props = {
@@ -7,6 +8,16 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <div className="root">
+      <Script src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2" />
+
+      <Script id="show-banner" strategy="afterInteractive">
+      {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-154810525-2');
+      `}
+      </Script>
       <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

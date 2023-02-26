@@ -9,9 +9,7 @@ import yaml from "js-yaml";
 import { parseISO } from "date-fns";
 import PostLayout from "../../components/PostLayout";
 
-import InstagramEmbed from "react-instagram-embed";
-import YouTube from "react-youtube";
-import { TwitterTweetEmbed } from "react-twitter-embed";
+
 
 export type Props = {
   title: string;
@@ -23,7 +21,7 @@ export type Props = {
   source: MdxRemote.Source;
 };
 
-const components = { InstagramEmbed, YouTube, TwitterTweetEmbed };
+const components = { };
 const slugToPostContent = ((postContents) => {
   let hash = {};
   postContents.forEach((it) => (hash[it.slug] = it));
