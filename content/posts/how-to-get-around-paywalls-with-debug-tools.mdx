@@ -1,6 +1,6 @@
 ---
 slug: how-to-get-around-paywalls-with-debug-tools
-title: Getting around website paywalls with devtools alone
+title: Getting Around Website Paywalls with Devtools Alone
 date: 2023-02-24
 author: bebrws
 tags:
@@ -14,7 +14,7 @@ tags:
   - hack
 ---
 
-# Everyone hates paywalls
+# Everyone Hates Paywalls
 
 While opening up dev tools in any browser and removing a paywall div is easy, I ever knew that there was an easy way to actually view the rest of the content on the page.
 
@@ -23,3 +23,28 @@ The trick is that you find the content in the DOM you are looking for. This can 
 So the first step is to delete the paywall div, then the second step is to find the divs with the text your interested in. Then you right click on that div and click scroll into view.
 
 ![Describing pods](/static/paywalls.gif)
+
+## Useful Tips from Hacker News Comments
+
+### From: drewtato
+```
+Usually on these sites, there'll be an `overflow: hidden` element that's holding all the content. If you can find and disable that CSS line, it'll work as normal. Or just save it to the Wayback Machine and read it through that.
+reply
+```
+	
+### From: prettyStandard
+```
+Not sure if this is exactly right, but something like this should obviate the need to find the element holding all the content.
+* { overflow: visible !important; }
+```
+
+### From: batperson
+```
+In the case of Washington Post it just has a "position: fixed" style on the <body> element. That's usually the case with most of these scroll locking sites, one of the root parent elements will have some CSS style that you can click off.
+```
+
+### From: start123
+```
+I just use Firefox's reader view. Does the same with just a click. If it doesn't work, just refresh in reader view and it should load properly.
+reply
+```
