@@ -1,7 +1,7 @@
 ---
 slug: running-GPTJ-on-M1-Macbook
 title: Running GPTJ (EleutherAI/gpt-j-6B) on a M1 Macbook
-date: 2023-02-24
+date: 2023-02-26
 author: bebrws
 tags:
   - Machine Learning
@@ -19,26 +19,28 @@ tags:
 # Running GPTJ (EleutherAI/gpt-j-6B) on a M1 Macbook
 
 ![Running GPT locally on a M1 Macbook](/static/gpt.gif)
-*(Actual runtime on my 64GB RAM Apple M1 Max Macbook was 15 minutes)*
-*(The first answer I got back from this prompt was actually more concise but the answer in this video is actually a better, more thorough one)*
+*Actual runtime on my 64GB RAM Apple M1 Max Macbook was 15 minutes. The first answer I got back from this prompt was actually more concise but the answer in this video is actually a better, more thorough one*
 
-So I am blown away by how helpful GitHub CoPilot and ChatGPT from OpenAI is.
+## ML - CoPilot and ChatGPT
 
-And I have no previous experience with Machine Learning really. At least past a surface level.
+It is amazing how helpful GitHub CoPilot / ChatGPT can be sometimes. And I have no previous experience with Machine Learning really. At least past a surface level.
 
-I was able to get some simple tests setup on a GPU instance on AWS. But I wanted to try it out on my M1 Macbook.
+I wanted to learn more and really my goal is to create something like [DocsGPT](https://github.com/arc53/DocsGPT) which will analyze your codebase's code and documentation and be able to provide in depth answers specific to your codebase. I tried some simple tests setup on a GPU instance on AWS but this was going to be very expensive and I of course would prefer to get this all running locally on my M1 Macbook.
 
-And I just read that PyTorch JUST added support for M1 Macbooks. So I figured I would give it a shot.
+## PyTorch has M1 Macbook Support!
+
+After looking around I found that PyTorch JUST recently added support for M1 Macbooks.
 
 Below is the documentation I used to get it working.
 
 NOTE: 
-
-    Most of this is coming from this [blog post](https://lazycoder.ro/posts/using-gpt-neo-on-m1-mac/)
+    Most of this is coming from (copied from) this [blog post](https://lazycoder.ro/posts/using-gpt-neo-on-m1-mac/)
     I will be updating the same information and it will be more up to date in the [repository](https://github.com/bebrws/gptj6b-happy-on-m1/)
+    I just had to do a few different things which I document toward the end to get this working on my machine. Most importantly, this was failing to run due to a lack of CUDA support. To fix this I needed to install pytorch-nightly (which can be done a few ways). And then PyTorch doesn't supprt the M1 "mps" device so I needed to set the environment variable PYTORCH_ENABLE_MPS_FALLBACK=1
+    All of this is documented below.
 
 
-## Sources and what I followed to get here:
+## Sources and What I Followed To Get Here:
 ```
 https://lazycoder.ro/posts/using-gpt-neo-on-m1-mac/
 https://github.com/huggingface/transformers/blob/ba0e370dc1713b0ddd9b1be0ac31ef1fdc7bdf76/docs/source/en/model_doc/gptj.mdx?plain=1#L62
@@ -52,7 +54,7 @@ PreRequirements:
 * Make sure you have the latest rust installed via rustup
 * You will need to have brew installed llvm, cmake, and pkgconfig as well
 
-Steps:
+### Steps:
 
 ```
 # set up conda for fish
@@ -109,7 +111,7 @@ To get around this:
 export PYTORCH_ENABLE_MPS_FALLBACK=1
 ```
 
-## Testing install
+### Testing Install:
 
 ```
 import tensorflow as tf
@@ -117,7 +119,7 @@ import tensorflow as tf
 print("GPUs: ", len(tf.config.experimental.list_physical_devices('GPU')))
 ```
 
-Run the actual code!!!:
+### Run the actual code:
 ```
 #!/usr/bin/env python3
 # export PYTORCH_ENABLE_MPS_FALLBACK=1
@@ -131,18 +133,6 @@ tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 print("Created tokenizer")
 prompt = (
     "How do I create a thread in GoLang?"
-)
-tougherprompt = (
-    """
-function reverse_array() {
-    # Usage: reverse_array "array"
-    shopt -s extdebug
-    f()(printf '%s\\n' "${BASH_ARGV[@]}"); f "$@"
-    shopt -u extdebug
-}
-
-# Please explain how the bash shell code above works.
-    """
 )
 
 input_ids = tokenizer(prompt, return_tensors="pt").input_ids
@@ -182,19 +172,20 @@ I also had to make sure I had:
 export PYTORCH_ENABLE_MPS_FALLBACK=1
 ```
 
-## Other things I did that might have helped
+### Other Things I Did That Might Have Helped:
 
-Install nightly:
-```
-pip install --pre torch --extra-index-url https://download.pytorch.org/whl/nightly/cpu
-```
-
+Install nightly.
+I believe this is what finally worked:
 ```
 conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch-nightly
 
 ```
+Although the documentation (I believe) and what I tried before doing the command above was:
+```
+pip install --pre torch --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+```
 
-## Testing PyTorch + CUDA
+### Testing PyTorch + CUDA:
 
 ```
 python -c 'import torch; print torch.cuda.is_available()'\
