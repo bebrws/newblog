@@ -31,6 +31,12 @@ So the first step is to delete the paywall div, then the second step is to find 
 Usually on these sites, there'll be an `overflow: hidden` element that's holding all the content. If you can find and disable that CSS line, it'll work as normal. Or just save it to the Wayback Machine and read it through that.
 reply
 ```
+
+I looked into it and I believe the above could be done with the following:
+
+```
+$x("//div[contains(@style,'overflow: hidden')]")
+```
 	
 ### From: prettyStandard
 ```
