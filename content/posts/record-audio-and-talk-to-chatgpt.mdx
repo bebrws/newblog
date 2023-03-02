@@ -32,7 +32,7 @@ Save this as file: voiceToChatGPT.zsh
 ```
 #!/usr/bin/env zsh
 export OPENAI_API_KEY="YOUR_OPENAPI_KEY_HERE"
-ffmpeg -y -f avfoundation -i ":3" -t 10  audiocapture.mp3 # stops recording on control c
+ffmpeg -y -f avfoundation -i ":1" -t 10  audiocapture.mp3 # stops recording on control c
 
 # Read the resulting transcript from the output file
 TRANSCRIPT=$(openai api audio.transcribe -f audiocapture.mp3 | jq ".text")
@@ -60,11 +60,15 @@ It will record for 10 seconds which is the parameter ``` -t 10 ``` from the firs
 
 Find a way to record audio until your done with your prompt/idea
 
-# issues
+# Possible Issue and Solution
 
 To find your audio device to record with run:
 
 ```
 ffmpeg -f avfoundation -list_devices true -i ""
 ```
-
+Then change the 
+```
+-i ":3"
+```
+from the first ffmpeg command.
