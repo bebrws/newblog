@@ -1,0 +1,48 @@
+---
+slug: record-audio-and-talk-to-chatgpt
+title: Use FFMPEG (OSX/Linux) to Record Audio And OpenAI ChatGPT to Answer Questions
+date: 2023-03-01
+author: bebrws
+tags:
+  - OpenAI
+  - ChatGPT
+  - Whisper
+  - AI
+  - Machine Learning
+---
+
+# Quick script to record audio and send it off to ChatGPT
+
+This script records 10 seconds of audio, saves it to an MP3 file and then sends it off to ChatGPT all from your terminal with one command.
+It requires you set your OPENAPI Key on the second line.
+
+```
+#!/usr/bin/env zsh
+export OPENAI_API_KEY="YOUR_OPENAPI_KEY_HERE"
+ffmpeg -y -f avfoundation -i ":3" -t 10  audiocapture.mp3 # stops recording on control c
+
+# Read the resulting transcript from the output file
+TRANSCRIPT=$(openai api audio.transcribe -f audiocapture.mp3 | jq ".text")
+
+echo "Whisper API transcript: $TRANSCRIPT"
+
+openai api chat_completions.create  -m gpt-3.5-turbo -g user "$TRANSCRIPT ###"
+```
+
+Save this as file: voiceToChatGPT.zsh and make it executable
+
+```
+chmod +x voiceToChatGPT.zsh
+```
+
+Then run it:
+
+```
+./voiceToChatGPT.zsh
+```
+
+It will record for 10 seconds which is the parameter ``` -t 10 ``` from the first ffmpeg command.
+
+# Improvement
+
+Find a way to record audio until your done with your prompt/idea
