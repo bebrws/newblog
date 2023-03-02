@@ -16,6 +16,17 @@ tags:
 This script records 10 seconds of audio, saves it to an MP3 file and then sends it off to ChatGPT all from your terminal with one command.
 It requires you set your OPENAPI Key on the second line.
 
+First install openai cli
+```
+pip install openai
+```
+and install ffmpeg (OSX):
+```
+brew install ffmpeg
+```
+
+
+Save this as file: voiceToChatGPT.zsh
 ```
 #!/usr/bin/env zsh
 export OPENAI_API_KEY="YOUR_OPENAPI_KEY_HERE"
@@ -29,8 +40,8 @@ echo "Whisper API transcript: $TRANSCRIPT"
 openai api chat_completions.create  -m gpt-3.5-turbo -g user "$TRANSCRIPT ###"
 ```
 
-Save this as file: voiceToChatGPT.zsh and make it executable
 
+Make it executable:
 ```
 chmod +x voiceToChatGPT.zsh
 ```
