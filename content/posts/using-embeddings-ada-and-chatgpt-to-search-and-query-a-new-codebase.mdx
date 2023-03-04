@@ -15,6 +15,17 @@ tags:
 
 ![Running GPT locally on a M1 Macbook](/static/searchgpt.gif)
 
+## Example of it working better than ChatGPT alone
+
+So the ChatCompletion API that openai has is so new that to use it you must build and install the openai-python repo from source.
+I was pretty sure ChatGPT wouldn't know about this yet and when asking at https://chat.openai.com/chat I found I was right:
+
+![ChatGPT doesn't know about this yet](/static/chatgpt-completion-ex.png)
+
+But when using the tool I have written here, searching through the openai-python codebase (creating embeddings for all python code in this repo and finding the best ones to include in the ChatCompletion/ChatGPT prompt) it works great:
+
+![With embeddings we can get information on this](/static/chatcompletionworks.png)
+
 ## Where is this?
 
 The repo is [here](https://github.com/bebrws/openai-search-codebase-and-chat-about-it).
