@@ -1,0 +1,34 @@
+---
+slug: unlocking-my-front-door-p1
+title: Unlocking My Front Door P1
+date: 2022-03-20
+author: bebrws
+tags:
+  - reverse engineering
+  - ios
+  - HTTPS
+  - HTTP
+  - proxy
+  - mitm
+  - AWS
+  - AWS Cognito
+  - Cognito
+  - Sniffing
+---
+
+## Getting Control - What's the point?
+
+### Problem: I move somewhere with a fancy iOS enabled door lock. No SIRI/iOS integration though
+
+#### Solution 1: Watch HTPS traffic and see what this iOS app does
+
+## MITM HTTPS Proxy
+
+First off, I of course decrypted the app, dissassembled, debugged and went searching for ways to swizzle something so I could call directly into some function that would toggle the lock/unlock.
+
+This turns out to be a hassle for me because this app is written in Swift/SwiftUI with minimal Objective-C. The dependencies were really the only thing written in Objective-C which meant the tooling and knowledge I had learned and used years ago wouldn't work well here. At least to me knowledge.
+
+Using Frida and doing a Cursory glance of the classes available I find Myself staring at a long list of mangled Swift names. For example:
+`"_TtGC7Combine16PublishedSubjectGSqC7Kwikset30LockSettingToggleItemViewModel__"`
+
+So I decided to go with a different approach. I would watch the traffic and see what the app was doing. I would then try to replicate that in my own app.
