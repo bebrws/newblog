@@ -1,0 +1,72 @@
+---
+slug: ios-aws-cognito-reverse-engineering
+title: Reverse engineering an iOS application to allow for integration with shortcuts and Siri - Recreate AWS Cognito authentication and sending fake UITouch events
+date: 2023-02-26
+author: bebrws
+tags:
+  - Reverse engineering
+  - iOS
+  - aws
+  - cognito
+  - frida
+  - lldb
+  - osx
+  - Siri
+  - shortcuts
+  - UITouch
+  - SwiftUI
+  - Deep linking
+  - IOS URLScheme
+---
+
+# Stuck With a Smart Lock That Only Works With Google or Alexa? Let's Fix That!
+
+## Introduction
+
+So for my safety I will try to obscure company names and info as much as possible. Although I don't think I did anything wrong? I'm honestly not sure where the line is drawn on what is legal with stuff like this.
+
+So I moved into a new apartment with a smart lock that has an iOS app which is nice. But it takes a while to load the app and then press the button to lock and unlock the door and I really just wanted to be able to tell Siri to do it if I had full hands... And I love poking around iOS anyways.
+
+I will try to go through my process in the order I went in (mostly) becuase I learned a lot along the way. Recreating this blog post from my notes.
+
+The summary would be that, as someone suggested, the easy way to do something like this is definately to just sniff the network traffic and recreate it. But I wanted to learn more about iOS and how to reverse engineer it so I went the hard way at first.
+
+So originally, I started did use software like Charles Proxy basically to look at the network traffic. And what did I find?
+
+A really nice simple JSON API that uses a JWT token for auth to lock and unlock the door.
+
+So to show how easy it looked at first to use this API here is a curl showing me using the API to lock the door:
+
+```bash
+curl -X PATCH "https://$SOMECOMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/$PROBMYDEVICEID/status" -H "User-Agent: Kwikset/5 CFNetwork/1404.0.5 Darwin/22.3.0" -H "Content-Type: application/json" -H "Accept: application/json" -H "Accept-Language: en-US,en;q=0.9" -H "Authorization: Bearer $KBEARER" -H "Accept-Encoding: gzip, deflate, br" -d "{\"action\": \"lock\", \"source\": \"{\\\"name\\\":\\\"$MYNAME\\\",\\\"device\\\":\\\"iPhone\\\"}\"}"
+```
+
+So all I need to do is send the JSON below to some URL with an AUTH token basically.
+
+```
+{"action": "lock", "source": "{\"name\":\"Brad\",\"device\":\"iPhone\"}"}
+```
+
+Now I did poke around the rest of the HTTPS traffic I intercepted and saw that there were multiple requests before this. And one of them contained the AUTH token. So I knew right away there was some process happening to get the JWT that was unfortunely looking a little complicated.
+
+So at first I was hoping I could just find some object in the heap that contained the AUTH token and use that via Frida (and it's oh so amazing API with functionality like pulling all objects of any type from memory!). But all the AUTH tokens I was finding were not working.
+
+I should also mention that my original plan was to add an IOS URLScheme to the application so I could just create a Shortcut Siri would use that would open a URL to lock and unlock my door.
+
+At first I tried a number of things. Like how I used create iOS tweaks. Making a custom dylib in xCode and I manually add to the main executable using install_name_tool that swizzles it's way into whatever new functionality I want.
+
+For those thay may need an explanation. A dylib is a dynamically linked library. Meaning it is a binary that the operating system or really dyld will load into memory when an application starts.
+
+So I needed a decrypted copy of the application I was going to be modifying/debugging/etc. There are some websites that actually provide this service and work which was surprising but I did find my old iPhone 6s and was able to use Checkra!n and PAlera1n on an iPhone 7 to get them jailbroken. At this point what worked best for me was [frida-ios-dump](https://github.com/jkhda456/frida-ios-dump)
+
+Now any executable will have a list of dynamically linked libraries it loads at runtime. You can list those with:
+
+```
+otool -L $EXE_NAME_HERE
+```
+
+or to get a more detailed breakdown that includes information such as the path where the binary will look for the dylibs:
+
+```
+otool -l $EXE_NAME_HERE
+```
