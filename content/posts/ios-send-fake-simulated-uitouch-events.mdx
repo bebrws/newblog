@@ -1,0 +1,65 @@
+---
+slug: ios-send-fake-simulated-uitouch-events
+title: Scripting Fake UITouch Events Using Frida and Lyft Hammer
+date: 2023-05-12
+author: bebrws
+tags:
+  - Reverse engineering
+  - iOS
+  - aws
+  - cognito
+  - frida
+  - lldb
+  - osx
+  - Siri
+  - shortcuts
+  - UITouch
+  - SwiftUI
+  - Deep linking
+  - IOS URLScheme
+---
+
+# Simulating or Sending Fake UITouch Events
+
+I was having a ton of trouble reverse engineering this Swift app to get it to send a request to lock and unlock my door.
+
+Long story short, it had some code to refresh the JWT it had in memory that I couldn't figure out how to trigger. And the JWT I could find was always old.
+
+So I had the crazy idea of why not just modify the app so that when it opens, it waits a little bit for the app to load and then sends a fake touch event to the screen to press the button that triggered the request to lock/unlock the door.
+
+Now there are a number of example's of how to do this. One by the great Frida creator himself.
+
+If you just want a super nice and concise implementation of how this can be done checkout his [repo here](https://github.com/nowsecure/frida-uikit)
+
+However, before I found this I had only found Lyft's [Hammer repo](https://github.com/lyft/Hammer)
+
+Hammer is a little more complicated but has some useful functionality like the ability to wait for the touch event to be handled. So if you wanted to reliably script a chain of touch events you would probably want to use Hammer.
+
+What ended up being the big issue here for me was the use of the XCTest framework.
+
+I am pretty sure the XCTest framework is NOT supposed to be EVER deployed to an iOS app on your phone. Just for testing in simulator. Although I am not sure about this.
+
+What I can say is that it is a dynamically linked library that has a ton of dependencies that your phone won't have. So if you do build a dylib from this Hammer repo. Inject the dylib into the app and then try to use it from Frida like I did. You won't be able to becuase XCTest has soooo many dependencies.
+
+XCTest depends on XCTestCore which I think depended on XCTestSupport etc etc... There just a huge tree of dependencies basically coming off of XCTest.
+
+NOTE: I did try just commenting out all the XCTest related code so I could remove the XCTest dependency. Neutering the wait functionality and this did work. I was able to create a dylib without any required dependencies where I could still send fake touch events.
+
+I wanted that "wait for touch event to be registered" functionality though and went about trying to get all the dependencies in place.
+
+This lead me to writing a tool that looks at a dynamically linked library and locates all of its dependencies from your machine, copies them into a folder and updates the rpath so they can find each other.
+
+Ironically, after I did all this work I found there were some repos out there already doing similar, if not the same thing... Frustrating I didn't find this before.
+
+This is all documented here and I would checkout [the README](https://github.com/bebrws/fixDynamicLibPaths) if you are interested in a tool to help get a dependcy tree built when you have a depency like XCTest you want to inject into an iOS app.
+
+Since Hammer is a Swift app though I had to create a whole Swift project with a bridging header to Objective C so that I could create an Objective C class with class methods I could easily call from Frida. [This can be found here](https://github.com/bebrws/dylibForSendingKeyboardTouchEvents/blob/main/HandleURLScheme/BBEvent.h). Note that is a mess and has left over code form when I was trying to swizzle.
+
+After injecting the dylib with my wrapper around Hammer and all of its XCTest deps I was able to script touch events using Frida with:
+
+```
+ObjC.classes["HandleURLScheme.BBEvent"]["+ sendTouchWindowAtX:y:"](0,0)
+
+```
+
+Note that 0,0 is the center of the screen
