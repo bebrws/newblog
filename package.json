@@ -4,7 +4,6 @@
     "dev": "next dev",
     "deploy": "npx gh-pages -d docs -t true",
     "build": "next build",
-    "postbuild": "next-on-netlify",
     "start": "next start",
     "export": "next build && next export -o ./docs && touch ./docs/.nojekyll && echo 'bbarrows.com' > ./docs/CNAME",
     "test": "jest"
