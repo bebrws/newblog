@@ -556,9 +556,9 @@ async function sendLockUnlockRequest(action) {
         },
         body: `{"action": "${action}", "source": "{\\"name\\\":\\\"Bradley\\\",\\\"device\\\":\\\"iPhone\\\"}"}`
     });
-    const responseFromKwikset = await response.json();
-    console.log("response from lock/unlock:", responseFromKwikset);
-    return responseFromKwikset;
+    const responseFromAppName = await response.json();
+    console.log("response from lock/unlock:", responseFromAppName);
+    return responseFromAppName;
 }
 
 async function emailAuthCode(smsCode) {
