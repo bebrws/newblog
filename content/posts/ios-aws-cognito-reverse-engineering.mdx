@@ -1,7 +1,7 @@
 ---
 slug: ios-aws-cognito-reverse-engineering
 title: Reverse engineering an iOS application to allow for integration with shortcuts and Siri - Recreate AWS Cognito authentication and sending fake UITouch events
-date: 2023-02-26
+date: 2023-05-12
 author: bebrws
 tags:
   - Reverse engineering
@@ -21,7 +21,11 @@ tags:
 
 # Stuck With a Smart Lock That Only Works With Google or Alexa? Let's Fix That!
 
-## Introduction
+I really should have written this up sooner so it was still fresh in my head. Sorry this is a bit of a mess of information but the AWS Cognito example might be useful to some. And the Frida Gadget scripting to add a URLScheme could be helpful.
+
+I am going to make another post for how I was able to use a library by [Lyft called Hammer](https://github.com/lyft/Hammer) to send fake UITouch events as well next.. and maybe one on just all the lldb commands I learned and what I thought was really helpful.
+
+## Introduction - IOS URLScheme and Frida and some lldb
 
 So for my safety I will try to obscure company names and info as much as possible. Although I don't think I did anything wrong? I'm honestly not sure where the line is drawn on what is legal with stuff like this.
 
@@ -38,7 +42,7 @@ A really nice simple JSON API that uses a JWT token for auth to lock and unlock 
 So to show how easy it looked at first to use this API here is a curl showing me using the API to lock the door:
 
 ```bash
-curl -X PATCH "https://$SOMECOMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/$PROBMYDEVICEID/status" -H "User-Agent: Kwikset/5 CFNetwork/1404.0.5 Darwin/22.3.0" -H "Content-Type: application/json" -H "Accept: application/json" -H "Accept-Language: en-US,en;q=0.9" -H "Authorization: Bearer $KBEARER" -H "Accept-Encoding: gzip, deflate, br" -d "{\"action\": \"lock\", \"source\": \"{\\\"name\\\":\\\"$MYNAME\\\",\\\"device\\\":\\\"iPhone\\\"}\"}"
+curl -X PATCH "https://$SOMECOMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/$PROBMYDEVICEID/status" -H "User-Agent: AppName/5 CFNetwork/1404.0.5 Darwin/22.3.0" -H "Content-Type: application/json" -H "Accept: application/json" -H "Accept-Language: en-US,en;q=0.9" -H "Authorization: Bearer $KBEARER" -H "Accept-Encoding: gzip, deflate, br" -d "{\"action\": \"lock\", \"source\": \"{\\\"name\\\":\\\"$MYNAME\\\",\\\"device\\\":\\\"iPhone\\\"}\"}"
 ```
 
 So all I need to do is send the JSON below to some URL with an AUTH token basically.
@@ -57,9 +61,29 @@ At first I tried a number of things. Like how I used create iOS tweaks. Making a
 
 For those thay may need an explanation. A dylib is a dynamically linked library. Meaning it is a binary that the operating system or really dyld will load into memory when an application starts.
 
-So I needed a decrypted copy of the application I was going to be modifying/debugging/etc. There are some websites that actually provide this service and work which was surprising but I did find my old iPhone 6s and was able to use Checkra!n and PAlera1n on an iPhone 7 to get them jailbroken. At this point what worked best for me was [frida-ios-dump](https://github.com/jkhda456/frida-ios-dump)
+So I needed a decrypted copy of the application I was going to be modifying/debugging/etc. There are some websites that actually provide this service and work which was surprising but I did find my old iPhone 6s and was able to use Checkra!n and PAlera1n on an iPhone 7 to get them jailbroken. At this point what worked best for me was [frida-ios-dump](https://github.com/AloneMonkey/frida-ios-dump)
 
-Now any executable will have a list of dynamically linked libraries it loads at runtime. You can list those with:
+Note that instead of having to install usbmuxd/iproxy at this point, if your on the same network you can just use the ip address:
+
+```
+./dump.py -H 192.168.1.87 -p 22 AppName
+```
+
+NOTE: From here on out I'll just refer to the iOS app as AppName
+
+After running this dump you should end up with an unencrypted ".ipa" file in the same folder. A ipa file type is a zip file that contains the application and all of it's data/metadata.
+
+So you can change the extension from .ipa to .zip. And unzip it right there.
+
+Inside will be a folder named Payload. And inside there will be AppName.App.
+
+Now just like a .App on OSX you can right click and show package contents to see what all the app really contains.
+
+Now the most important file will be the binary itself. Which normally is also named AppName (no file extension) and will be an amr64 binary built for iOS.
+
+There is also a Frameworks folder which will contain a number of frameworks, from my understanding basically just dylibs with a lot more information like header files, that the binary loads at runtime.
+
+So any executable will have a list of dynamically linked libraries it loads at runtime. You can list those with:
 
 ```
 otool -L $EXE_NAME_HERE
@@ -70,3 +94,769 @@ or to get a more detailed breakdown that includes information such as the path w
 ```
 otool -l $EXE_NAME_HERE
 ```
+
+It is important to use the lowercase -l version so you can see where rpath points to in some cases. I believe in most cases it will just be the Frameworks directoy.
+So if you are going to add your own dylib you could for example use a tool like [insert_dylib](https://github.com/tyilo/insert_dylib).
+
+For example, I build my own DYLIB which was at first, attempting to swizzle the older handleURL methods on iOS AppDelegate (this no longer works btw)..
+
+But to insert your dylib you would do somethign like:
+
+```
+insert_dylib --strip-codesig --inplace '@executable_path/Frameworks/libhandleURLSwizzleObjC.dylib' ~/Payload/AppName.app/AppName
+cp ~/libhandleURLSwizzleObjC.dylib ~/Payload/AppName.app/Frameworks
+```
+
+And in your dylib code (you can create a dylib in xcode by creating a static library, and then going to build options and changing the library type to dynamic, you may also want to change the extension from .a to .dylib as well) you will want to add a constructor function.
+
+This function is what gets called when the dylib is loaded into memory and is your chance to "swizzle" or replace existing functions with your own. This way you can add/modify existing functionality in an application.
+
+And these days you just use this tool called [objection](https://github.com/sensepost/objection) to then handle signing everything and converting your Payload folder into an ipa for you.
+
+And then another tool [ios-deploy](https://github.com/ios-control/ios-deploy) to send the app to your iPhone. Jailbroken or not. And start a debugging session with lldb. And Objection by default injects frida so you have can connect to frida and poke around as well!
+
+It is all very user friendly as pretty easy to get started with.
+
+## Getting IOS URLScheme to Work
+
+Even though I didn't end up going this route I finaly figured out a cool way to make it work and wanted to document it. So with the newer iOS SDKs and SwiftUI and all the older handleURL method on AppDelegate is no longer called I beleive with a URLScheme.
+
+First off I needed to update my iOS apps plist file though so it would handle urls. Like AppName://unlockdoor
+
+To do so I scripted:
+
+```
+head -n4 ~/Payload/AppName.app/Info.plist > ~/Payload/AppName.app/Info.plist-2
+echo """    <key>CFBundleURLTypes</key>
+    <array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>AppName</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.AppName.ble-wifi</string>
+		</dict>
+	</array>""" >> ~/Payload/AppName.app/Info.plist-2
+tail -n+5 ~/Payload/AppName.app/Info.plist >> ~/Payload/AppName.app/Info.plist-2
+mv ~/Payload/AppName.app/Info.plist-2 ~/Payload/AppName.app/Info.plist
+```
+
+The important part is that the CFBundleURLSchemes contains the string for the url proto if I remember right and then the CFBundleURLName has to have the same Bundle of the App.
+There is a lot of documentation on this part too so I won't go into too much detail here.
+
+What I think is really cool is that the Frida Gadget, the Frida dylib, that is injected into the App will look for a script to run. So you can create apps with Frida injected and a script included in the Payload/App folder so that you don't need to write a dylib in objective-c or something and can create deployable packagable apps using Frida for tweaks! Pretty amazing.
+
+The documentation for [Frida Gadgets is here](https://frida.re/docs/gadget/). Definately check that out. It's a great feature I never knew about.
+
+So along with using this feature or Frida I ended up figuring out which method I needed to implement to handle IOS URLSchemes with ios 15.7.2 and probably later.
+
+You have to find the UIWindowScene and add a method "- scene:openURLContexts:". This is actually what is trigger with IOS URLSchemes on these newer iOS versions.
+
+I have a super hacky way of finding the UIWindowScene.. and I don't know why I didn't just use ObjC.choose or something.. But this is my Frida Gagdet script:
+
+```
+rpc.exports = {
+    init(stage, parameters) {
+        console.error('[init]', stage, JSON.stringify(parameters));
+
+        var globalar = null;
+
+        var NSLog = new NativeFunction(Module.findExportByName('Foundation', 'NSLog'), 'void', ['pointer', '...']);
+        var NSString = ObjC.classes.NSString;
+        var str = NSString.stringWithFormat_("[*] BRAD IN FRIDA GADGET");
+        NSLog(str);
+        console.error("[*] BRAD IN FRIDA GADGET");
+
+
+        var NSJSONSerialization = ObjC.classes.NSJSONSerialization;
+        var NSUTF8StringEncoding = 4;
+
+        var NSURL = ObjC.classes.NSURL;
+        // var NSError = ObjC.classes.NSError;
+
+        function convertNSObjectToJSString(obj) {
+            var valid = NSJSONSerialization.isValidJSONObject_(obj);
+            if (!valid) return null;
+            const NSJSONWritingPrettyPrinted = 1;
+            var errorPtr = Memory.alloc(Process.pointerSize);
+            Memory.writePointer(errorPtr, NULL); // initialize to NULL
+            var data = NSJSONSerialization.dataWithJSONObject_options_error_(obj, NSJSONWritingPrettyPrinted, errorPtr);
+            var error = Memory.readPointer(errorPtr);
+            if (error.isNull()) {
+                var str = NSString.alloc().initWithData_encoding_(data, NSUTF8StringEncoding);
+                return str.toString();
+            } else {
+                var errorObj = new ObjC.Object(error); // now you can treat errorObj as an NSError instance
+                console.error(errorObj.toString());
+                return null;
+            }
+        }
+
+
+        function getCurrentJWT() {
+            var awsMobileClientPtr = Number(ObjC.chooseSync(ObjC.classes["AWSMobileClient.AWSMobileClient"])[0].handle);
+            var awsMobileClientDictPtrStr = Number(awsMobileClientPtr + 0x0000000000000088).toString(16);
+            var awsMobileClientDictPtr = new NativePointer("0x" + awsMobileClientDictPtrStr);
+            var dictPtr = awsMobileClientDictPtr.readPointer()
+            var dictObj = new ObjC.Object(dictPtr);
+            var dstr = dictObj.toString();
+            console.error("String argument: " + dstr);
+            var regex = /.*("eyJ.*").*/;
+            var jwt = JSON.parse(dstr.match(regex)[1]);
+            return jwt;
+        }
+
+        function lockUnlockDoor(action) {
+            var jwt = getCurrentJWT();
+            console.error("Got JWT: " + jwt);
+
+            var actionParsed = (action == "lock" || action == "unlock") ? action : "lock";
+            var url = "https://SOMECOMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/PROBMYDEVICEID/status";
+            var nsurl = NSURL.alloc().initWithString_(url);
+            var urlRequest = ObjC.classes.NSMutableURLRequest.alloc().initWithURL_(nsurl);
+
+            var actString = "{\"action\": \"" + actionParsed + "\", \"source\": \"{\\\"name\\\":\\\"Brad\\\",\\\"device\\\":\\\"iPhone\\\"}\"}";
+            console.error(`\n\nBEB - actString: ${actString} ${actString.length}\n\n`);
+            var userUpdate = NSString.stringWithFormat_(actString);
+            console.error(`\n\nBEB - userUpdate: ${userUpdate.toString()} ${userUpdate.length()}\n\n`);
+
+            urlRequest.setHTTPMethod_("PATCH");
+            urlRequest.setValue_forHTTPHeaderField_("Bearer " + jwt, "Authorization");
+            urlRequest.setValue_forHTTPHeaderField_(`${actString.length}`, "Content-Length");
+            urlRequest.setValue_forHTTPHeaderField_("application/json", "Content-Type");
+            urlRequest.setValue_forHTTPHeaderField_("application/json", "Accept");
+            urlRequest.setValue_forHTTPHeaderField_("en-US,en;q=0.9", "Accept-Language");
+            urlRequest.setValue_forHTTPHeaderField_("gzip, deflate, br", "Accept-Encoding");
+            urlRequest.setValue_forHTTPHeaderField_("appName/5 CFNetwork/1404.0.5 Darwin/22.3.0", "User-Agent");
+            urlRequest.setValue_forHTTPHeaderField_("keep-alive", "Connection");
+
+            var data1 = userUpdate.dataUsingEncoding_(NSUTF8StringEncoding);
+
+            urlRequest.setHTTPBody_(data1);
+
+            var session = ObjC.classes.NSURLSession.sharedSession();
+
+            console.error("Setup request and is about to make it");
+            var dataTask = session.dataTaskWithRequest_completionHandler_(urlRequest, new ObjC.Block({
+                retType: 'void',
+                argTypes: ['pointer', 'pointer', 'pointer'],
+                implementation: function (data, response, error) {
+                    var dataStr = NSString.alloc().initWithData_encoding_(data, NSUTF8StringEncoding);
+                    var respObj = new ObjC.Object(response);
+                    var errorObj = new ObjC.Object(error);
+                    console.error("data: ", dataStr);
+                    console.error("response code: ", respObj.statusCode());
+                    console.error("error: ", errorObj.toString());
+
+                    // var respObj = new ObjC.Object(response);
+                    // console.error("data as JSON string: ", convertNSObjectToJSString(data));
+
+                }
+            }));
+            dataTask.resume();
+        }
+
+
+        function setIntercept() {
+            var scenes = ObjC.classes.UIApplication.sharedApplication().connectedScenes();
+
+            var winSceneRegex = /UIWindowScene: (0x[a-fA-F0-9]+)/
+            var scenesPtr = ptr(scenes.toString().match(winSceneRegex)[1]);
+            var windowScene = ObjC.Object(scenesPtr);
+            try {
+                if (!scenes) {
+                    console.error("Couldn't file UIWindowScene on sharedApplication");
+                } else {
+                    Interceptor.attach(windowScene.delegate()["- scene:openURLContexts:"].implementation, {
+                        onEnter(args) {
+                            // ObjC: args[0] = self, args[1] = selector, args[2-n] = arguments
+                            const arg2Str = new ObjC.Object(args[2]);
+                            console.error("String argument: " + arg2Str.toString());
+                            NSLog(NSString.stringWithFormat_("[*] BRAD scene:openURLContexts: argument 2: " + arg2Str.toString()));
+
+                            const arg3Str = new ObjC.Object(args[3]);
+                            console.error("String argument: " + arg3Str.toString());
+                            NSLog(NSString.stringWithFormat_("[*] BRAD scene:openURLContexts: argument 3: " + arg3Str.toString()));
+
+                            globalar = arg3Str;
+                            var appNameActionFromURLRegex = /URL: appName:\/\/(\S+)/; ///.*URL: appName: \/\/([a-z]*);.*/;
+                            console.error(arg3Str.toString().match(appNameActionFromURLRegex));
+                            var action = arg3Str.toString().match(appNameActionFromURLRegex)[1];
+
+                            lockUnlockDoor(action);
+                        }
+                    });
+                    console.error("[*]WindowScene() intercept placed");
+                    NSLog(NSString.stringWithFormat_("[*]WindowScene() intercept placed"));
+                }
+            }
+            catch (err) {
+                console.error("[*]BRAD Exception: " + err.message);
+                NSLog(NSString.stringWithFormat_("[*]BRAD Exception: " + err.message));
+            }
+        }
+
+        setTimeout(setIntercept, 1000); // IDK why I wanted to wait to add this method. I was thinking maybe it could take a while for the UIWindowScene to get created
+        console.error("[*]BRAD SETTIMEOUT");
+        NSLog(NSString.stringWithFormat_("[*]BRAD SETTIMEOUT"));
+
+
+    },
+    dispose() {
+        console.error('[dispose]');
+    }
+};
+
+```
+
+I save this as appName.js in the Frameworks folder.
+
+In the Frameworks folder I ALSO create the Frida Gadget config to run the script. It is a file named: FridaGadget.config
+
+```
+{
+  "interaction": {
+    "type": "script",
+    "path": "appName.js",
+    "on_change": "reload"
+  }
+}
+```
+
+I figure this code could be useful if someone wants to try something similar.
+
+NOTE: That if you are trying to get the JWT from AWS like I was in the code above. It probably won't work often unless the app refreshes it's token often.
+
+The app I was using DIDNT. So this route didn't work. And triggering the app to run its refresh token code was taking forever to figure out.
+
+So now back to actually getting something working.
+
+## AWS Cognito Reverse engineering
+
+So this app actually has a server that handles the requests to lock and unlock the door. And it uses AWS Cognito to handle generation and refreshing of the JWT.
+
+I couldn't find any working examples of using AWS Cognito as a client and I thought this might be helpful for someone trying to do something similar. My code maybe messy but it works and I have invested too much time in it as it is so I am calling it good.
+
+So first off. I used Frida to poke around. And I see that AWS and something called AWS Cognito is being used from the loaded Frameworks. I findout that Cognito is used for auth. Also I saw in the decoded JWT via [https://jwt.io/](https://jwt.io/) that scope of the jwt is "aws.cognito.signin.user.admin". So I know now that this app is using Cognito for auth.
+
+Then I think I was just using Frida's ObjC.chooseSync and grabbing objects and I found some useful information. I also was using lldb and found some information I needed later for basically re creating the AWS Cognito login flow.
+
+So when I run the iod-deploy I used the configuration that automatically starts the app and gives you an lldb session.
+
+I think I started by looking at what I could break on that was AWSCognito related with the command:
+
+```
+image lookup -r -n .*AWSCognito.*
+```
+
+This uses regex to search for anything AWSCognito related. Any methods on the classes that have the string AWSCognito will be listed.
+
+I think I realized by looking at other AWS Cognito client implementations that didn't work that I needed to get a few bits of information.
+
+So I set breakpoints in lldb (using Frida again would have probably been easier but I am just documenting stuff I learned here)
+
+```
+breakpoint set -r '\[AWSCognitoIdentityUserPoolConfiguration .*\]$
+breakpoint set -r '\[AWSCognitoIdentityUserPool .*\]$
+```
+
+I am pretty sure I hit the following breakpoint:
+
+```
+
+  Summary: AWSAppSync`AWSAppSync.AWSCognitoUserPoolsAuthProviderAsync.getLatestAuthToken() -> Swift.String        Address: AWSAppSync[0x0000000000027200] (AWSAppSync.__TEXT.__text + 131900)
+```
+
+And then I started printing out arguments to this method call:
+
+```
+
+po (SEL)$arg2
+
+po $arg1
+
+expression -l objc -O -- [$arg1 userPoolConfiguration]
+
+expression -l objc -O -- [[$arg1 userPoolConfiguration] poolId]
+
+```
+
+The last one of these got me the poolId for AWSCognito account I needed to login with to get a JWT and refresh token so I could send lock and unlock commands.
+
+NOTE: That the poolId will probably be in a format like this:
+
+```
+us-east-1_6B31234KN
+```
+
+Then I also needed something called the clientID. This can actually be found in the requests from the HTTPS requests I dumped to JSON.
+
+I also needed to find this information which I got with Frida:
+
+```
+var awsccp = [];
+ObjC.choose(ObjC.classes['AWSCognitoCredentialsProvider'], {
+  onMatch: function (serv) {
+    console.log('Found AWSCognitoCredentialsProvider', serv);
+    awsccp.push(serv);
+  },
+  onComplete: function () {
+    console.log('Finished AWSCognitoCredentialsProvider search');
+  }
+});
+
+console.log(awsccp);
+
+
+console.log(awsccp.getIdentityId())
+<AWSTask: 0x2867bf380; completed = YES; cancelled = NO; faulted = NO; result = us-east-1:47021234-ffff-4fff-afff-ffffbca71a1c>
+
+```
+
+And then I had enough info to basically re create the server that the iPhone app used to send my login credentials to which would talk with AWS Cognito and get a JWT and refresh token. I wanted to have my own so that I could get a JWT whenever I want. And I found out that I can just basically refresh my JWT forever so I really just need to get that JWT and I refresh every 30 minutes I beleive it was. The code is below:
+
+```
+const fullUserPoolId = 'us-east-1_5F3ufo6uFF'
+const userPoolId = '5F3ufo6uFF'
+const ClientId = 'ffuabckjpfffd1ab7881m6g88s'
+const username = "myemail@gmail.com";
+const password = "MyPassword";
+
+import * as AWS from 'aws-sdk';
+import AmazonCognitoIdentity, { CognitoRefreshToken, CognitoAccessToken } from 'amazon-cognito-identity-js';
+
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+
+import * as http from 'http';
+import * as url from 'url';
+
+
+
+const rl = readline.createInterface({ input, output });
+
+
+// // import type { ICognitoUserData } from 'amazon-cognito-identity-js';
+
+// const cognitoUserPool = ;
+
+// const cognitoUserData /*: ICognitoUserData*/ = {
+//     Username: username,
+//     Pool: cognitoUserPool,
+//     Storage: undefined // ICognitoStorage ?
+// }
+
+var cognitoRefreshToken = null;
+var cognitoAccessToken = null;
+
+var authenticationData = {
+    Username: username,
+    Password: password,
+};
+var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+    authenticationData
+);
+var poolData = {
+    UserPoolId: fullUserPoolId, // Your user pool id here
+    ClientId: ClientId, // Your client id here
+};
+var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+var userData = {
+    Username: username,
+    Pool: userPool,
+};
+var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+cognitoUser.setAuthenticationFlowType('CUSTOM_AUTH');
+
+
+
+function refreshToken() {
+    const refreshFromGlobal = (cognitoRefreshToken || process.env.APPNAME_REFRESH_TOKEN);
+    console.log("Refreshing tokens. What I have globally and in env is:", refreshFromGlobal)
+    if (refreshFromGlobal) {
+        cognitoUser.refreshSession(cognitoRefreshToken || new CognitoRefreshToken({ RefreshToken: process.env.APPNAME_REFRESH_TOKEN }), (err, session) => {
+            if (err) {
+                console.error("Error refreshing tokens", err)
+            } else {
+                console.log("Refreshed tokens", session)
+                // SO LAME, now accessToken and refreshToken are lower case to start..
+                const { accessToken, refreshToken } = session;
+                if (refreshToken) {
+                    cognitoRefreshToken = refreshToken;
+                } else {
+                    console.log("No refresh token after refresh");
+                }
+                if (accessToken) {
+                    cognitoAccessToken = accessToken;
+                } else {
+                    console.log("No access token after refresh");
+                }
+            }
+        })
+    } else {
+        console.error("No refresh token to refresh", refreshFromGlobal)
+    }
+}
+
+function startHTTPServer() {
+
+    setInterval(() => {
+        refreshToken();
+    }, 1000 * 60 * 30)
+
+    console.log(`Starting HTTP Server`)
+    // Configure our HTTP server to respond with Hello World to all requests.
+    var server = http.createServer(function (request, response) {
+        console.log(`HTTP handling request: ${request}\n\n\n\nWith response: ${response}`)
+        //    var name=request.getParameter('name');
+        //    console.log(name);
+        const action = url.parse(request.url, true).query['action'];
+        if (action) {
+            const actionParsed = (action == 'lock' || action == 'unlock') ? action : 'lock';
+            sendLockUnlockRequest(actionParsed).then((res) => {
+                response.writeHead(200, { "Content-Type": "text/plain" });
+                response.end(`Handling action for ${actionParsed}. Response: ${JSON.stringify(res)}\n`);
+            })
+        } else {
+            response.writeHead(500, { "Content-Type": "text/plain" });
+            response.end(`Invalid request\n`);
+        }
+    });
+    // Listen on port 8000, IP defaults to 127.0.0.1
+    server.listen(8000);
+}
+
+
+async function sendLockUnlockRequest(action) {
+    if (action != 'lock' && action != 'unlock') {
+        console.error(`Invalid action: ${action} sent to sendLockUnlockRequest`);
+        return
+    }
+
+    console.log("Makeing request with:", {
+        method: "PATCH", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Authorization': `Bearer ${cognitoAccessToken.getJwtToken()}`,
+            'Accept-Encoding': 'gzip, deflate, br'
+        },
+        body: "{\"action\": \"" + action + "\", \"source\": \"{\\\"name\\\":\\\"Brad\\\",\\\"device\\\":\\\"iPhone\\\"}\"}"
+    });
+    console.log("body: ", "{\"action\": \"" + action + "\", \"source\": \"{\\\"name\\\":\\\"Brad\\\",\\\"device\\\":\\\"iPhone\\\"}\"}")
+    const response = await fetch('https://COMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/PROBMYDEVICEID/status', {
+        method: "PATCH", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Authorization': `Bearer ${cognitoAccessToken.getJwtToken()}`,
+            'Accept-Encoding': 'gzip, deflate, br'
+        },
+        body: `{"action": "${action}", "source": "{\\"name\\\":\\\"Bradley\\\",\\\"device\\\":\\\"iPhone\\\"}"}`
+    });
+    const responseFromKwikset = await response.json();
+    console.log("response from lock/unlock:", responseFromKwikset);
+    return responseFromKwikset;
+}
+
+async function emailAuthCode(smsCode) {
+    return new Promise((resolve, reject) => {
+        cognitoUser.sendCustomChallengeAnswer('answerType:verifyCode,medium:phone,codeType:login,code:' + smsCode, {
+            mfaRequired: function (result) {
+                console.log("result from mfaRequired 2:", result);
+            },
+            selectMFAType: function (result) {
+                console.log("result from selectMFAType 2:", result);
+            },
+            mfaSetup: function (result) {
+                console.log("result from mfaSetup 2:", result);
+            },
+            totpRequired: function (result) {
+                console.log("result from totpRequired 2:", result);
+            },
+            newPasswordRequired: function (result) {
+                console.log("result from newPasswordRequired 2:", result);
+            },
+            associateSecretCode: function (result) {
+                console.log("result from associateSecretCode 2:", result);
+            },
+            inputVerificationCode: function (result) {
+                console.log("result from inputVerificationCode 2:", result);
+            },
+            associateSecretCode: function (result) {
+                console.log("result from associateSecretCode 2:", result);
+            },
+            onSuccess: function (cognitoUserSession) {
+                console.log("result from sending Custom Answer 2:", cognitoUserSession);
+                cognitoAccessToken = cognitoUserSession.getAccessToken();
+                cognitoRefreshToken = cognitoUserSession.getRefreshToken();
+                console.log('Got tokens: ', cognitoUserSession);
+                startHTTPServer();
+                // TODO: Send curl to open door form here with
+            },
+            onFailure: function (err) {
+                console.log("err:", err)
+            },
+            customChallenge: function (challengeParameters) {
+                // TODO: From here do I initAuth again for PASSWORD_VERIFIER
+                console.log("challengeParameters from sending Custom Answer 2:", challengeParameters)
+            }
+        });
+    })
+}
+
+async function emailAuthInit() {
+    return new Promise((resolve, reject) => {
+        cognitoUser.authenticateUser(authenticationDetails, {
+
+            customChallenge: function (challengeParameters) {
+                console.log("challengeParameters:", challengeParameters)
+                cognitoUser.sendCustomChallengeAnswer('answerType:generateCode,medium:phone,codeType:login', {
+                    onSuccess: function (result) {
+                        console.log("result from sending Custom Answer 1:", result)
+                    },
+                    onFailure: function (err) {
+                        console.log("err:", err)
+                    },
+                    customChallenge: function (challengeParameters) {
+                        console.log("challengeParameters from sending Custom Answer:", challengeParameters)
+                        resolve(challengeParameters);
+                        // TODO This code I think comes from SMS!
+
+
+                    }
+                });
+
+            },
+
+            onSuccess: function (result) {
+                var accessToken = result.getAccessToken().getJwtToken();
+
+                console.log(`\naccessToken from cogintoUser authenticateUser: ${accessToken}\n`);
+
+                //POTENTIAL: Region needs to be set if not already set previously elsewhere.
+                AWS.config.region = 'us-east-1';
+                const k = `cognito-idp.<region>.amazonaws.com/${userPoolId}`;
+                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                    IdentityId: 'us-east-1:ffff0a60-ffff-4fff-fffc-ffffbca71ffc', // your identity pool id here
+                    Logins: {
+                        // Change the key below according to the specific region your user pool is in.
+                        // cognito-idp.us-east-1.amazonaws.com
+                        [k]: result
+                            .getIdToken()
+                            .getJwtToken(),
+                    },
+                });
+
+                console.log(`sessionToken:  ${AWS.config.credentials.sessionToken}`);
+                console.log(`secretAccessKey:  ${AWS.config.credentials.secretAccessKey}`);
+                //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
+                // AWS.config.credentials.refresh(error => {
+                //     if (error) {
+                //         console.error(error);
+                //     } else {
+                //         // Instantiate aws sdk service objects now that the credentials have been updated.
+                //         // example: var s3 = new AWS.S3();
+                //         console.log('Successfully logged!');
+                //     }
+                // });
+            },
+
+            onFailure: function (err) {
+                console.log(err.message || JSON.stringify(err));
+            },
+        });
+    });
+}
+
+if (process.env['APPNAME_ACCESS_TOKEN'] && process.env['APPNAME_REFRESH_TOKEN']) {
+    cognitoAccessToken = new CognitoAccessToken({ AccessToken: process.env['APPNAME_ACCESS_TOKEN'] });
+    cognitoRefreshToken = new CognitoRefreshToken({ RefreshToken: process.env['APPNAME_REFRESH_TOKEN'] });
+    console.log(`Got tokens from env: `, cognitoAccessToken.getJwtToken(), "\nRefresh:", cognitoRefreshToken.getToken());
+    startHTTPServer();
+} else {
+    console.log(`No tokens in ENV getting them via Cognito`);
+    await emailAuthInit();
+    const smsCode = await rl.question('What is the SMS Code: ');
+    await emailAuthCode(smsCode);
+}
+```
+
+The really tricky part was looking at the HTTPS dumped requests and figuring out what kind of AWS Cogntio requests I needed to make and what strings to pass. But this was all reverse engineerable from the information in the request bodies and by reading the AWS Cognito library source code.
+
+Basically if you find yourself trying to write something similar where you want to recreate an AWS Cognito login flow and see requests that have in the body:
+
+1. A request with AuthFlow: CUSTOM_AUTH
+2. Then a request with ChallengeName: PASSWORD_VERIFIER
+3. Then a request with ChallengeResponses: PASSWORD_CLAIM_SECRET_BLOCK
+4. Then ChallengeName: CUSTOM_CHALLENGE
+5. ChallengeResponses: \"ANSWER\":\"answerType:generateCode,medium:phone,codeType:login\"
+6. "{\"ChallengeName\":\"CUSTOM_CHALLENGE\",\"ChallengeParameters\":{\"challengeType\":\"code\"}
+
+Then the above code should be hackable to get something working for you.
+
+My auth flow required authorizing via my username and password then doing 2fa using my phone number which was already in their system somehow.
+Because I started getting a text with a code after I passed the first part of the Cogntio verification with the email and password.
+
+Hopefully my Cognito client code above is helpful for someone.
+
+I figured out a bunch of other interesting stuff that I think is useful but I'll have to put that into another post.. this post is already a mess of information and is probably hard to follow.
+
+I did figure out how to send fake touch events. So in this case I could script having the app open then wait a second for the app to load and send touch event to the middle of the screen just to hit the lock or unlock button.
+
+The hackiest of hacks but it's really cool sending these fake touch events. I'll write a post about that next.
+
+### Just some lldb notes:
+
+Ever be steppin and you step INTO a jump/function call and just want to get back to where you were?
+
+```
+thread step-out
+```
+
+will get you back!
+
+And you can use it to jump over call or bl instructions as well.
+
+So my LLDB flow was mostly:
+
+1. Search for possible places to set breakpoints with:
+
+```
+image lookup -r -n .*AWSCognito.*
+```
+
+AWSCognito being something related to whatever you want to learn more about. Maybe its refreshToken or something..
+
+2. Then I check that list it generates and see how ridiculously long it is. If I am going to be setting to many breakpoints I work that regex down to be more specific and then set breakpoints with:
+
+```
+br set -r  .*refreshToken.*
+```
+
+Then when I hit a breakpoint I would read all the variables and pointers I could. I would check the backtrace to see whats going on:
+
+```
+bt
+```
+
+and from there I could select different "frames" or functions called to get to my breakpoint:
+
+```
+frame select SOMENUMBERHERE
+```
+
+I would check the registers at each frame:
+
+```
+register read --all
+```
+
+Although they obviously made the most sense down at the frame you break into.
+
+For each frame your in if you want to see the full dissassembly of the current function run:
+
+```
+di -f
+```
+
+3. Just start printing out all the info.
+
+LLDB has nice aliases for the registers that contain function call arguments and can be printed out with:
+
+```
+po $arg1
+po $arg2
+etc...
+```
+
+4. Accessing data on objects I found:
+
+```
+expression -l objc -O -- [$arg1 userPoolConfiguration]
+```
+
+5. Creating variables in LLDB:
+
+```
+expression -l objc -O -- NSURL *$url = [NSURL URLWithString:@"appName://"];
+```
+
+Would create an NSUrl with the lldb variable name $url.
+Then I could test that my method was in fact swizzed correctly with:
+
+```
+expression -l objc -O -- [[UIApplication sharedApplication].delegate application:[UIApplication sharedApplication] handleOpenURL:$url];
+```
+
+More examples of variables:
+
+```
+expression id $delegate = (id)[[UIApplication sharedApplication] delegate]
+expression id $keyWindow= (id)[$delegate window]
+expression id $root = (id)[$keyWindow rootViewController]
+po $root
+```
+
+6. Got a sneaking suspicion some address is really a pointer? Want to see if its an object?
+   Cast it as an (id) and po it:
+
+```
+po (id)0x7facaada2c80
+```
+
+7. IMPORTANT - You can use
+
+```
+command script import lldb.macosx.heap
+```
+
+in lldb to get access to some realllllly helpful heap functions. Similar to what Frida provides for searching the heap for objects. Huuuuuuge for me.
+
+8. My .lldbinit file:
+
+```
+command script import lldb.macosx.heap
+type summary add --category swift --summary-string "Unmanaged Contains: ${var._value%@}" Swift.Unmanaged<AnyObject>
+command script import /Users/bbarrows/lldb/load_swift.py
+# to run lldb "shell" scripts
+command alias shsource command source
+# to run a shell command, like `open`
+command alias shellcmd platform shell
+# tell lldb to assume swift, not objc
+settings set target.language Swift
+command alias clear-lang settings clear target.language
+command alias swiftui_script load_swift /Users/bbarrows/lldb/helpers.swift
+#command script import  /Users/bbarrows/repos/MyLLDB/python/sbt.py
+command alias eco expression -l objective-c -O --
+command alias ecs expression -l swift -O --
+command alias br breakpoint
+command alias rr register read
+command alias rra register read
+command regex ims 's/(.+)/image lookup -rn %1/'
+command regex z 's/(.+)/breakpoint set -r %1/'
+command regex mr 's/(.+) (.+)/memory read --size 8 --format x --count %2 %1/'
+command regex pos  's/(.+)/po (const char *)%1/'
+command regex posc  's/(.+)/expression -l swift -O -- unsafeBitCast(0x7f8c7b002b30, to: %1.self)/'
+```
+
+### Useful tools
+
+Best tool I think for dumping headers these days is [ktool](https://github.com/cxnder/ktool)
+Really nice GUI too and handles the MachO sections that are causing the older header dump tools to fail.
+
+I also probably learned the most and got the farthest just using lldb and Frida BUT attaching xCode to your running process and then using the xCode Memory Graph was super helpful to figure out what was related to what and what information I could find. For example, I had some Swift class with private properties or whatever that I couldn't access but I was able to figure out the offset from the object handle and get a reference to its JWT that way.
+
+For me Frida and lldb are the most useful tools other then, in this case, just using a tool like Charles Proxy for dumping the https session. I actually was using another tool called Quantum I think but same idea and I can't remember the name now. Surge 5 also works fine.. But it's pretty buggy and has poort documentation especially if your trying to do stuff like have your mac control it on your phone.
+
+# Summary
+
+I poked around a lot trying a lot of different things. I was hoping to just hook or add and implementation for handling IOS URLSchemes so I could script opening the app and have it lock and unlock the door.
+
+I couldn't find a good way to get a JWT that was always valid. The application will run some Swift code that I wasn't able to track down in a relatively sane amount of time so I gave up on getting the JWT and refresh token from the heap/app.
+
+I ended up looking at the HTTPS requests. Figuring out it was using AWS Cognito. And then re creating my own service that just mimicks whats the lock company does to get me a JWT for their lock control server.
+
+Now I have a service running that I logged into once, it refreshes the JWT every 30 min, and I can send HTTPS requests to it to lock and unlock my door with a Siri/Shortcut I created.
