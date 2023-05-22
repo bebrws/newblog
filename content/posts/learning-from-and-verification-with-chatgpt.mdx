@@ -1,0 +1,273 @@
+---
+slug: learning-from-and-verification-with-chatgpt
+title: Learning From and Verification with ChatGPT
+date: 2023-02-06
+author: bebrws
+tags:
+  - GoLang
+  - ChatGPT
+  - Learning
+  - Machine Learning
+  - ML
+---
+
+# Hopping on the ChatGPT Bandwagon and My Previous Use of Chatgpt and Github Copilot
+
+## CoPilot
+
+So I have had access to GitHub CoPilot for a year or two and it has definately been helpful in a lot minor ways (mundane tasks) and once with a surprisingly helpful solution spanning 50 lines of code that only needed minor changes. 
+It is usually just nice for work such as being able to automtically write out some parameters I just wrote the documentation for above.
+
+Once though I had created a few constant lists and functions which made different HTTP API requests. I had written one for block that iterated over one of the lists and used one of the functions I had written to get data I would later need to combine with results from future requests.
+CoPilot then actually suggested a chunk of code, about 50 lines long correctly iterating over another lists also including an inner for loop needed to get data for each of the results from the outer for loop.
+
+I am still inpressed by CoPilot from that day. Everyone was in a rush to get some data migrated from one service to another and I had to write scripts to extract data from one API, massage it into a new shape, correlate that data with data from other requests to the API, and then populate the new service with this data.
+
+I believe I only had to make changes on 2 or 3 lines of that code.
+
+It has also been helpful with languages I am less familiar with or learning. Often I will be writing Rust code and sort through the different suggestions by CoPilot just to to learn how others would have gone about the same task.
+
+## ChatGPT
+
+Now everyone knows how amazing ChatGPT is. My favorite examples involve reverse engineering. For example, a Ghidra plugin that will help name variables at the C pseudocode level or explain one of the functions that Ghidra created pseudocode for. Down to the level of what "kind" of function it is, what it is used for. For exxample, taking a function comprised of a handful of for loops and conditionals and figuring out it is a memcpy operation.
+
+I have realized that it is also much faster for me to research topics I don't have enough experience with or knowledge in. 
+The best part being that you can get a great answer right away without sorting through a bunch of search results and then easily drill down into topics mentioned there by asking further questions.
+
+Or in one case recently, helping me to understand best practices in GoLang for specific tasks.
+
+I was reading through some GoLang code making heavy use of goroutines. 
+I realized this function was just iterating over a list of values, asynchronously collecting the results, and then returning the reaults once all of the async operations had finished. 
+
+In JS, an example of something "similar" with NodeJS could be:
+
+```
+
+  async function makeAPIRequestToGetUserProfile(userId) { /* make http request, etc.. */ }
+  const userIds = [0, 1, 2];
+  const profileDataOfUsers = await Promise.all(userIds.map( id => makeAPIRequestToGetUserProfile(id) ));
+
+```
+
+The existing implementation I read used a few GoLang primitves that I had not used before. I have not written a ton of GoLang code, have a lot I could learn, and when I am using GoLang for work I am often worried about whether or not I am following best practices.
+
+Reading this GoLang function I was able to make assumptions and by reading the amazingly well documented GoLang code base's inline documentation, then further determine exactly how the function worked.
+
+Now I still wanted to verify my understanding and I was curious if the pattern used in this code was what would be considered as following GoLang best practices.
+
+So next I asked ChatGPT to write me a function that did what I had determined the code I was reading did.
+
+I was then given an amazing response which gave me an example making use of all the same GoLang synchronization and concurrency primitives. What I appreciated the most was that this result was a simple example that allowed me to focus on the GoLang primitives and patterns.
+
+The result was so close to the code I had been reading that I was also able to realize I had missed some functionality in my first "mental summary" of how this code worked.
+
+Not only was it spawning threads/goroutines to collect data in parallel but it also was checking to see if it should stop by checking the passed Context.
+
+### The First Attempt
+
+So with my first ChatGPT question being:
+
+```
+  Write me an example GoLang function that collects results from multiple goroutines and returns the list of results
+```
+
+I recieved a nice example:
+
+```
+  package main
+
+  import (
+    "fmt"
+    "sync"
+  )
+
+  func worker(id int, wg *sync.WaitGroup, results chan int) {
+    defer wg.Done()
+    results <- id * 2
+  }
+
+  func collectResults(n int) []int {
+    var wg sync.WaitGroup
+    results := make(chan int, n)
+
+    for i := 0; i < n; i++ {
+      wg.Add(1)
+      go worker(i, &wg, results)
+    }
+
+    wg.Wait()
+    close(results)
+
+    var resultList []int
+    for res := range results {
+      resultList = append(resultList, res)
+    }
+
+    return resultList
+  }
+
+  func main() {
+    resultList := collectResults(10)
+    fmt.Println(resultList)
+  }
+```
+
+The description of the code by ChatGPT was also somewhat helpful. Although reading the GoLang codebase's inline documentation provided a much better understanding and was easy to find with VSCode taking me directly to the definiton.
+ChatGPT's code description:
+
+```
+  This example uses a sync.WaitGroup to wait for all the goroutines to complete and a channel results to collect the results from each goroutine. The function worker takes an ID and a WaitGroup pointer, and sends its result to the results channel. The collectResults function starts n worker goroutines, waits for all of them to finish using the WaitGroup, closes the results channel, and collects all the results into a slice.
+``
+
+### Same Question, Different Results
+
+When asking the same question I actually get a slightly different implementation:
+
+```
+
+  package main
+
+  import (
+    "fmt"
+    "sync"
+  )
+
+  func collectResults(n int) []int {
+    var wg sync.WaitGroup
+    results := make([]int, 0, n)
+    resultCh := make(chan int)
+
+    for i := 0; i < n; i++ {
+      wg.Add(1)
+      go func(i int) {
+        defer wg.Done()
+        resultCh <- i
+      }(i)
+    }
+
+    go func() {
+      wg.Wait()
+      close(resultCh)
+    }()
+
+    for res := range resultCh {
+      results = append(results, res)
+    }
+
+    return results
+  }
+
+  func main() {
+    results := collectResults(5)
+    fmt.Println(results)
+  }
+
+
+```
+
+Getting this different result was actually really helpful. The first thing I saw, and was actually wondering about with other code I read, was that there was a separate goroutine dedicated to just waiting for the WaitGroup count to decrement to 0 before closing the channel:
+
+```
+    go func() {
+      wg.Wait()
+      close(resultCh)
+    }()
+```
+
+Without seeing this different result I would not have learned that unless you create a "buffered" channel sending on the channel will block. As the docs say, that:
+```
+  Sends to a buffered channel block only when the buffer is full.
+```
+
+This is why the first response from ChatGPT was a little simpler and didn't require the extra goroutine. It creates a channel, buffered to size n:
+
+```
+  results := make(chan int, n)
+```
+
+### Getting Slightly More Complicated
+
+Now I wanted to see how close of an example I could get to the code I was reading. The code I was reading also took a Context and checked for cancellation.
+Building on my previous ChatGPT question with:
+
+```
+  The function collectResults should use a GoLang Context and check if it was cancelled to stop the process of collecting results.
+```
+
+The result I get back is exactly what I was hoping for, if not better. Illustrating how Context can be used to check for cancellation.
+
+
+```
+  package main
+
+  import (
+    "context"
+    "fmt"
+    "sync"
+  )
+
+  func collectResults(ctx context.Context, n int) []int {
+    var wg sync.WaitGroup
+    results := make([]int, 0, n)
+    resultCh := make(chan int)
+
+    for i := 0; i < n; i++ {
+      wg.Add(1)
+      go func(i int) {
+        defer wg.Done()
+        select {
+        case <-ctx.Done():
+          return
+        case resultCh <- i:
+        }
+      }(i)
+    }
+
+    go func() {
+      wg.Wait()
+      close(resultCh)
+    }()
+
+    for {
+      select {
+      case <-ctx.Done():
+        return results
+      case res, ok := <-resultCh:
+        if !ok {
+          return results
+        }
+        results = append(results, res)
+      }
+    }
+  }
+
+  func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    results := collectResults(ctx, 5)
+    fmt.Println(results)
+  }
+
+```
+
+The explanation by ChatGPT is also great and had I not already read the documentation would have been enough information to understand how this code works:
+
+```
+  In this example, the collectResults function creates a channel resultCh for collecting results from the goroutines, launches n number of goroutines, each sending its index to the channel, and increments a wait group for each goroutine. It also includes a select statement with the Context's Done channel to check if the Context has been cancelled and return early if so. Then, it launches a goroutine that waits for all goroutines to finish and closes the result channel. Finally, the main function collects the results from the channel by range over it with a select statement that also checks the Context's Done channel to return early if the Context is cancelled.
+```
+
+### Asking for an Explanation for the Original Code
+
+I also tried asking for an explanation of the original code (just one function) which contained references to types and interfaces defined elsewhere.
+
+What I think is most impressive here is that it was able to infer how some interfaces were used just from the name scheme. 
+The rest of the actual explanation was perfect as well.
+
+### In summary
+
+I would probably save a lot of time if I just spent a little time practicing querying/prompting ChatGPT when researching something.
+Google is so full of poorly written Medium posts, all with duplicate content, that researching can be done quicker and more accurately with ChatGPT in many cases.
+
+Specifically with GoLang, the documentation in the code and official documentation online is well written/done that I should probably just never leave those resources.
+But I plan on trying to take more advantage of this personally.
