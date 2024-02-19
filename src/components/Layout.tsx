@@ -10,6 +10,7 @@ export default function Layout({ children }: Props) {
       <Head>
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
+          
           function loadBevySnake() {
             setTimeout(function() {
             var element = document.getElementById('bevy-portal');
