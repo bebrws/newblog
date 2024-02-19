@@ -10,7 +10,7 @@ export default function Layout({ children }: Props) {
       <Head>
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
-          document.addEventListener('DOMContentLoaded', function() {
+          function loadBevySnake() {
             setTimeout(function() {
             var element = document.getElementById('bevy-portal');
                   if (element) {
@@ -22,9 +22,12 @@ export default function Layout({ children }: Props) {
                   document.head.appendChild(script);
             } else {
                     console.log('Element with id "bevy-portal" does not exist.');
+                    loadBevySnake();
             }
           }, 500);
-        });
+        }
+
+        loadBevySnake();
       ` }}></script>
         <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>
         <script type="text/javascript" dangerouslySetInnerHTML={{
