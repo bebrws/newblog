@@ -2,6 +2,7 @@
   "name": "my-app",
   "scripts": {
     "dev": "next dev",
+    "predploy": "npm run build",
     "deploy": "npx gh-pages -d docs -t true",
     "build": "next build",
     "start": "next start",

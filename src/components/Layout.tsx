@@ -11,6 +11,7 @@ export default function Layout({ children }: Props) {
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
           document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
             var element = document.getElementById('bevy-portal');
                   if (element) {
                     console.log('Element with id "bevy-portal" exists. Adding script tag.');
@@ -22,6 +23,7 @@ export default function Layout({ children }: Props) {
             } else {
                     console.log('Element with id "bevy-portal" does not exist.');
             }
+          }, 500);
         });
       ` }}></script>
         <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>

@@ -1,2 +1,4 @@
-npm run build
-npm run deploy
+npx next build
+git add *
+git commit -av
+git push origin master
