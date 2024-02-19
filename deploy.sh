@@ -1,2 +1,2 @@
-npm run-script export && netlify deploy --prod      
-
+npm run build
+npm run deploy
