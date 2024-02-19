@@ -20,6 +20,59 @@ Someone has taken the time to document how to create your own [Bevy based DI sys
 
 There is also an unofficial Bevy book that is really helpful [here](https://bevy-cheatbook.github.io/programming/intro-data.html)
 
+## Bevy and ECS
+
+ECS is documented [here](https://bevyengine.org/learn/quick-start/getting-started/ecs/)
+It describes some of the basic concepts of how the Bevy game engine works. Combined with a powerful dependency injection (DI) system, Bevy is powerful, easy to work with, and fun to use.
+
+For my snake game I only needed the concept of three entities really: the snake, the food, and the snake's body.
+
+This is done by the C part of ECS. I create a Component for each. This allows me to, later on, using the DI/query system executed on each game loop, to find all the entities of a certain type and do something with them.
+
+On setup, I create the snake and the food using a spawn command. It takes a tuple where I can provide multiple Components that make up whatever entity I am creating.
+
+Each of the described objects above have a visual aspect for example, so each have a 2D mesh (which includes a transform/translation aka location).
+
+Here is where I create the SnakeHead for example:
+
+```
+    let head_mesh = Mesh2dHandle(meshes.add(Rectangle::new(OBJECT_SIZE, OBJECT_SIZE)));
+    let box_color = Color::rgb(0.8, 0.2, 0.1);
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: head_mesh,
+            material: materials.add(box_color),
+            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+            ..default()
+        },
+        SnakeHead {
+            direction: Direction::Up,
+        },
+    ));
+```
+
+The most amazing part of Bevy though that I have found so far is its "query"/DI system. With types and traits, I can query for all the entities of a certain type and do something with them each step of the game loop.
+
+This is the function signature I have for checking for collisions for ex:
+
+```
+fn check_collisions(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut apple_query: Query<(&mut Transform), (With<Apple>, Without<SnakeHead>, Without<SnakeBody>)>,
+    mut snake_head_query: Query<(&mut Transform, &mut SnakeHead)>,
+    mut snake_body_query: Query<(&mut Transform, Entity), (With<SnakeBody>, Without<SnakeHead>)>,
+```
+
+This function signature can be however long.
+
+The DI system will provide me with whatever objects I need. Commands, meshes, materials, etc.. As well as decipher a simple to work with type system to provide me with all the entities that match a specific query.
+
+For example, with the snake body. I want to be able to move each one and also remove them if the snake crashes. To move them I just need their Transform (part of what was provided from the MaterialMesh2dBundle during setup) and the Entity itself so I can send a command to despawn them or remove body parts from the game.
+
+The DI injection system that powers all this is amazing to me. I had no idea this could be accomplished in Rust until someone from the Bevy Discord chat kindly pointed me to this documentation which breaks down [how it all works](https://promethia-27.github.io/dependency_injection_like_bevy_from_scratch/chapter1/system.html).
+
 # My Snake Clone
 
 Can be found [here](https://github.com/bebrws/bevy-snake)
@@ -35,3 +88,4 @@ Can be found [here](https://github.com/bebrws/bevy-snake)
     cursor="auto"
   ></canvas>
 </>
+```
