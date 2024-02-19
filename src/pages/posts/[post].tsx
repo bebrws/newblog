@@ -21,7 +21,7 @@ export type Props = {
   source: MdxRemote.Source;
 };
 
-const components = { };
+const components = {};
 const slugToPostContent = ((postContents) => {
   let hash = {};
   postContents.forEach((it) => (hash[it.slug] = it));

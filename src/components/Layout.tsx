@@ -8,7 +8,22 @@ export default function Layout({ children }: Props) {
   return (
     <div className="root">
       <Head>
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+          document.addEventListener('DOMContentLoaded', function() {
+            var element = document.getElementById('bevy-portal');
+                  if (element) {
+                    console.log('Element with id "bevy-portal" exists. Adding script tag.');
 
+                  var script = document.createElement('script');
+                  script.type = 'module';
+                  script.src = '../static/load-bevy-snake.js';
+                  document.head.appendChild(script);
+            } else {
+                    console.log('Element with id "bevy-portal" does not exist.');
+            }
+        });
+      ` }}></script>
         <script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-154810525-2"></script>
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
