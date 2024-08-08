@@ -1,0 +1,47 @@
+---
+slug: osx-binary-patching
+title: How to patch a binary and get it to run on OSX
+date: 2024-08-08
+author: bebrws
+tags:
+  - osx
+  - reverse-engineering
+  - binary
+  - hex
+  - patching
+  - security
+---
+
+## Getting a patched binary to run on OSX
+
+Say you are reverse engineering some application on OSX and have modified the
+binary in a hex editor. You can't just run the binary because OSX has a
+number of security features.
+
+First off I have gatekeeper disabled on my machine. You can do this by running:
+
+```
+sudo spctl --master-disable
+```
+
+Although I do not believe this is necessary if you codesign the binary after patching.
+
+So after patching the binary I codesign the binary with an ID I get from the following list:
+
+```
+security find-identity -v -p codesigning
+```
+
+Then take the ID from the above command and run the following command:
+
+```
+sudo codesign --force --sign {ID FROM ABOVE} patched-binary
+```
+
+Then I had to unquarantine the binary by running:
+
+```
+xattr -d com.apple.quarantine patched-binary
+```
+
+Then I was able to run the binary.
