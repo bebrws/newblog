@@ -1,4 +1,4 @@
 npm run export
 git add *
-git commit -av
+git commit -am "$(date)"
 git push origin master
