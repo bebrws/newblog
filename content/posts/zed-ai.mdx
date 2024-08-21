@@ -1,0 +1,95 @@
+---
+slug: zed-ai
+title: Zed AI Alternative or My Approach Prior to Zed AI
+date: 2024-08-20
+author: bebrws
+tags:
+  - Zed
+  - Editor
+  - AI
+  - RAG 
+  - LLM
+  - Scripting
+  - Shell
+---
+
+# My Zed AI Before there was Zed AI
+
+## RAG AKA Context? and my Shell Script
+
+So the [Zed IDE](https://zed.dev) just released a [huge blog post](https://zed.dev/blog/zed-ai) about [Zed AI](https://zed.dev/ai). And this is actually a really nice feature.
+
+I really like how it’s implemented (easy to use), how it is supposed to be extendable, but mostly just how easy it is to use, especially with a huge number of different APIs/LLMs. It is super easy to configure and then select a different LLM to answer your question. However, what I have been looking for is a way to easily provide more context to the LLM. I wanted to be able to open some random repository and ask the LLM a question about the code, maybe even ask it to implement support for Arm64 (SENinja cough cough… which actually worked pretty well).
+
+So, the major feature for me is the ability to easily add files/folders to your prompt’s context. You can use this /file command to select files or folders, and all of that content is added to the beginning of the prompt as it appears. It is really easy to use, and I love it.
+
+Before this, I was doing the following:
+
+```shell
+#!/usr/bin/env bash
+
+# Function to check if a file is binary
+is_binary() {
+    file --mime-encoding "$1" | grep -q binary
+}
+
+# Function to get file type
+get_file_type() {
+    file -b "$1"
+}
+
+# Get all tracked files. Change this line if you only want to include certain files or folders like "*.py" or "src/"
+files=$(git ls-files)
+
+# Write header
+echo "Below is the combined text of all files in the git repository $(basename $(git rev-parse --show-toplevel))"
+echo "The list of files include is listed below ending in a new line with just the following characters: \"~~~~~~~~~~\""
+echo "$(git ls-files)"
+echo "~~~~~~~~~~"
+echo -e "\n\n\n\n"
+echo "Each file is preceded by a delimiter containing metadata about the file."
+echo "The metadata lines all begin and end in the strings \"===\""
+echo "The metadata lines which separate each file contain 3 different lines of metadata"
+echo "The first is the filename which is prefixed by the string \"=== FILE: \" and ending in the string \"===\""
+echo "The second is the file type which is prefixed by the string \"=== TYPE: \" and ending in the string \"===\""
+echo "The third is the line above the start of the actual file contents. It will always be the string \"=== BEGIN FILE CONTENT ===\""
+echo -e "\n\n--- BELOW WE START THE LISTING OF FILE METADATA FOLLOWED BY THE FILE CONTENT ---"
+
+# Process each file
+while IFS= read -r file; do
+    if [ -f "$file" ] && ! is_binary "$file"; then
+        file_type=$(get_file_type "$file")
+
+        echo ""
+        echo "=== FILE: $file ==="
+        echo "=== TYPE: $file_type ==="
+        echo "=== BEGIN FILE CONTENT ==="
+        cat "$file"
+        echo "=== END FILE CONTENT ==="
+    fi
+done <<<"$files"
+
+echo "--- END FILE COMPILATION ---"
+```
+
+I had this script named gatherRepoSource, and although I couldn’t easily select file by file or folder by folder with a nice GUI, I could change this line:
+```
+files=$(git ls-files)
+```
+
+to say something like:
+```
+files=$(git ls-files | grep \.py)
+```
+to only inlude python files for example.
+
+I would then just run this from any repository I was working in and pipe this out to a file (it was chmod +x and in $PATH):
+```
+gatherRepoSource > PromptContext.txt
+```
+
+I could then either drag and drop that file into Claude, for example, or copy and paste the contents into another LLM and follow that content with my actual question.
+
+It actually worked really well.
+
+I think Zed’s implementation is obviously a much nicer approach than using something like this script, and I am excited to have this tool. It is actually a little scary how effective it is, but the future is coming, and all I can do is try to embrace it and move with it.
