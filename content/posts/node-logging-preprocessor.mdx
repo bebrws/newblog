@@ -1,0 +1,113 @@
+---
+slug: node-logging-preprocessor
+title: A NodeJS “Preprocessor” Can Add Any Functionality Including Easy Logging
+date: 2024-08-23
+author: bebrws
+tags:
+  - NodeJS
+  - preprocessor
+  - logging
+  - extend
+  - hack 
+  - customize
+---
+
+# PreProcessors
+
+So most languages have what are called preprocessors. This is a compilation step where your source code is taken and modified before it is actually compiled.
+
+For exmaple, a C preprocessor is a tool that processes source code before the actual compilation begins. It handles directives that begin with #, such as #include to include files, #define to create macros, and #ifdef for conditional compilation. The preprocessor replaces macros (all those #define lines), includes the contents of header files, and conditionally compiles code, producing a modified source file that is then passed to the compiler.
+
+In other languages, macros are usually great ways to re use code without needing a function and as a result inlinnig the code defined by the macro.
+
+# NodeJS and Preprocessors
+
+NodeJS doesn't have any sort of preprocessor step.
+IT does however have an option to run a file before execution. And with this you can do some things like maybe alias console.log to a function cl:
+```
+global.cl = console.log
+```
+
+But I was having issues where I would write some code for LeetCode and maybe leave in a few console.log calls which severely slows down execution time.
+
+I also wanted a way that would amke it easier to log out different values without having to write so much code.
+
+To do so I created my own NodejS "PreProcessor" which will add the ability for me to easily log out anything I want with a comment starting with:
+`//log - ` followed by whatever statements I want logged.
+
+This way, when I run locally, I can see the output of the logs, but when I submit to LeetCode or anywhere else for that matter, the log lines are just ignored.
+
+I also created a shell/zsh alias so that this preprocessor is only used when I run `nodelog` instead of `node`. Just to be safe and not mess with my actual node setup.
+
+## Setup:
+
+I created this file in `~/.config/nodelog.js` and added the following code:
+
+```javascript
+const fs = require("fs");
+const vm = require("vm");
+
+function preprocessAndRunJavaScript(inputFile) {
+  // Read the content of the input file
+  const fileContent = fs.readFileSync(inputFile, "utf-8");
+
+  // Regular expression to match lines with the `// log -` pattern
+  const logRegex = /\/\/\s*log\s*-\s*(.+)/g;
+
+  // Replace matched lines with the corresponding console.log statement
+  const processedContent = fileContent.replace(logRegex, (match, p1) => {
+    const variables = p1.split(",");
+    const logStatement = variables.map((v) => `" ${v}: ", ${v}`).join(", ");
+    return `console.log(${logStatement});`;
+  });
+
+  // Create a new script from the processed content
+  const script = new vm.Script(processedContent);
+
+  // Run the script in the current context
+  script.runInThisContext();
+  process.exit(0);
+}
+
+// Get the file path from the command line arguments
+const inputFile = process.argv[1];
+
+if (!inputFile) {
+  console.error("Please provide an input file");
+  process.exit(1);
+}
+preprocessAndRunJavaScript(inputFile);
+```
+
+Then I edited my `~/.zshrc` file to include:
+```bash
+function nodelog() {
+    NODE_OPTIONS="$NODE_OPTIONS --require $HOME/.config/nodelog.js" node $@
+}
+
+```
+
+## Running/Using
+
+Now I can write code like (filename is `dailyTemperatures.js`):
+
+```javascript
+var dailyTemperatures = function (temps) {
+    const memo = {};
+    const answer = [];
+    for (let i = 1; i < temps.length; i++) {
+        // log - temps[i], temps[i - 1], i
+etc...
+```
+
+I use my `nodelog` alias:
+```bash
+nodelog dailyTemperatures.js
+```
+
+And in the console I see:
+```
+temps[i]:  80   temps[i - 1]:  34   i:  1
+```
+
+And best of all, I no longer need to worry about removing any console.log statements if I am just hacking through a LeetCode problem anymore.
