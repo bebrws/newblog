@@ -12,6 +12,26 @@ tags:
   - customize
 ---
 
+# The Problem and Solution?
+
+Ever forget one of these:
+![An image showing a console.log statement that was supposed to be removed from the submitted LeetCode test runner](/static/forgotten-consolelog.png)
+A console.log statement that needs to be removed before submitting from the LeetCode test runner.
+Yes, I know we should all be good enough to not need to ever use console.log statements, or to even iterate for that matter but sometimes I find myself tired and working on a project and just want to double check my data structure is in the correct state.
+
+The issue however, is that I find it very annoying to:
+* Have to remove these console.log statements all the time when submitting to the LeetCode test runner
+* Sometimes I want to keep them around in case I want to come back and iterate on this data structure or algorithm later
+* It isn't always clear right away if your submission passes but is incrediblys slow if you just forgot to remove a console.log or if your code is sub par
+
+Hence the creation of `nodelog`! A NodeJS preprocessor that will not only allow you to console.log anything that has a String representation but that uses comments to dictate what to log so that whenever the code is ran without the preprocessor, the log statements are ignored.
+
+Behold:
+
+![An animated gif showing the usage of the NodeJS "preprocessor"](/static/nodelog720.mov.gif)
+
+And all this requires is a single Javascript file which is only ran whenever you use whichever alias you use to include this file. In this example, I use `nodelog` as my alias which usesa a NodeJS argument to require a Javascript file before running the actual code.
+
 # PreProcessors
 
 So most languages have what are called preprocessors. This is a compilation step where your source code is taken and modified before it is actually compiled.
