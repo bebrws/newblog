@@ -1,0 +1,74 @@
+---
+slug: zsh-run-last-command-empty-prompt
+title: ZSH Setup to Run the Last Command/Prompt After Sending a Few Empty Lines
+date: 2024-08-26
+author: bebrws
+tags:
+  - ZSH
+  - shell
+  - zsh-setup
+  - scripting
+---
+
+![A gif showing this shell script in action where after sending 2 empty command prompts the last non empty command prompt is run](/static/repeat-command.mov.gif)
+
+# Why do this? What does this do?
+
+After running a command in the terminal, I often find myself needing to run the same command again. This is especially true when I am working on a project and need to run the same command multiple times in a row.
+
+Or maybe I am remoting into my laptop from my phone and need to run a command that is too long to type out.
+
+I want an easy way to run the last command again without having to type it out or use the up arrow key to find it.
+
+So this script keeps track of the last non-empty command or ZSH prompt/buffer and runs it whenever I send a few empty lines by pressing the enter key 2 times in a row.
+
+This count feels like a safe number of required empty lines before running the last command. It is unlikely that I would accidentally run the last command by sending a few empty lines in a row. While being easy and quick enough to do that I can deal with the previous mentioned issues easily.
+
+# Setup
+I am on a Mac so I am using the `$HOME/.config` directory. I created a file at: `$HOME/.config/zsh-rerun-on-empty-prompt.zsh` with the contents:
+    
+```zsh
+
+# Initialize variables
+export EMPTY_PROMPT_COUNT=0
+export LAST_COMMAND=""
+
+# Ignore new lines from "control-c"
+function TRAPINT() {
+    export EMPTY_PROMPT_COUNT=0
+}
+
+# Function to be called before each prompt
+function preexec() {
+  export EMPTY_PROMPT_COUNT=0
+  if [[ -n $1 ]]; then
+    export LAST_COMMAND=$1
+  fi
+}
+
+# Function to be called after each command
+function precmd() {
+  if [[ $EMPTY_PROMPT_COUNT -eq 4 && -n $LAST_COMMAND ]]; then
+    echo "Executing: $LAST_COMMAND"
+    eval "$LAST_COMMAND"
+    export EMPTY_PROMPT_COUNT=0
+  elif [[ -z $BUFFER ]]; then
+    export EMPTY_PROMPT_COUNT=$((EMPTY_PROMPT_COUNT+1))
+  else
+    export EMPTY_PROMPT_COUNT=0
+  fi
+}
+
+# Set up the hooks
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec preexec
+add-zsh-hook precmd precmd
+```
+
+Then I added the following to my `$HOME/.zshrc` file:
+
+```zsh
+source $HOME/.config/zsh-rerun-on-empty-prompt.zsh
+```
+
+Pretty simple to do! 
