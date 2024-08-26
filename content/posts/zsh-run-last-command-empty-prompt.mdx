@@ -36,6 +36,7 @@ export LAST_COMMAND=""
 # Ignore new lines from "control-c"
 function TRAPINT() {
     export EMPTY_PROMPT_COUNT=0
+    return 1 # Make sure to return 1 so that control-c still takes effect
 }
 
 # Function to be called before each prompt
