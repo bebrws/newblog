@@ -15,31 +15,31 @@ tags:
   - shortcuts
   - UITouch
   - SwiftUI
-  - Deep linking
+  - Deep linking    
   - IOS URLScheme
 ---
 
 # Stuck With a Smart Lock That Only Works With Google or Alexa? Let's Fix That!
 
-I really should have written this up sooner so it was still fresh in my head. Sorry this is a bit of a mess of information but the AWS Cognito example might be useful to some. And the Frida Gadget scripting to add a URLScheme could be helpful.
+I should have written this up sooner while it was still fresh in my mind. Apologies for the scattered information, but the AWS Cognito example might be helpful to some. Additionally, the Frida Gadget scripting to add a URL Scheme could be beneficial.
 
 I am going to make another post for how I was able to use a library by [Lyft called Hammer](https://github.com/lyft/Hammer) to send fake UITouch events as well next.. and maybe one on just all the lldb commands I learned and what I thought was really helpful.
 
+## Why the Obscure Blog Post and Code?
+
+Apologies, but I’ve obscured company names and details. Unfortunately, you won’t be able to directly use this work if you have the same door lock as me, but if you’re smart enough to recognize the same libraries and network requests, you should be able to gather the necessary information and recreate a useful server/tool to control your door as you wish.
+
 ## Introduction - IOS URLScheme and Frida and some lldb
 
-So for my safety I will try to obscure company names and info as much as possible. Although I don't think I did anything wrong? I'm honestly not sure where the line is drawn on what is legal with stuff like this.
+I moved into a new apartment with a smart lock that has an iOS app, which is convenient. However, it takes a while to load the app and press the button to lock and unlock the door. I really just wanted to be able to tell Siri to do it if my hands were full. Plus, I enjoy exploring iOS.
 
-So I moved into a new apartment with a smart lock that has an iOS app which is nice. But it takes a while to load the app and then press the button to lock and unlock the door and I really just wanted to be able to tell Siri to do it if I had full hands... And I love poking around iOS anyways.
+I’ll try to go through my process in the order I followed (mostly) because I learned a lot along the way, recreating this blog post from my notes.
 
-I will try to go through my process in the order I went in (mostly) becuase I learned a lot along the way. Recreating this blog post from my notes.
+To summarize, as someone suggested, the easiest way to achieve this would be to sniff the network traffic and recreate it. But I wanted to learn more about iOS and reverse engineering, so I initially took the harder route.
 
-The summary would be that, as someone suggested, the easy way to do something like this is definately to just sniff the network traffic and recreate it. But I wanted to learn more about iOS and how to reverse engineer it so I went the hard way at first.
+I started by using software like Charles Proxy to examine the network traffic. What did I find? A straightforward JSON API that uses a JWT token for authentication to lock and unlock the door.
 
-So originally, I started did use software like Charles Proxy basically to look at the network traffic. And what did I find?
-
-A really nice simple JSON API that uses a JWT token for auth to lock and unlock the door.
-
-So to show how easy it looked at first to use this API here is a curl showing me using the API to lock the door:
+To demonstrate how easy it initially seemed to use this API, here’s a cURL command showing me using the API to lock the door:
 
 ```bash
 curl -X PATCH "https://$SOMECOMPANYID.execute-api.us-east-1.amazonaws.com/prod_v1/devices/$PROBMYDEVICEID/status" -H "User-Agent: AppName/5 CFNetwork/1404.0.5 Darwin/22.3.0" -H "Content-Type: application/json" -H "Accept: application/json" -H "Accept-Language: en-US,en;q=0.9" -H "Authorization: Bearer $KBEARER" -H "Accept-Encoding: gzip, deflate, br" -d "{\"action\": \"lock\", \"source\": \"{\\\"name\\\":\\\"$MYNAME\\\",\\\"device\\\":\\\"iPhone\\\"}\"}"
@@ -51,39 +51,39 @@ So all I need to do is send the JSON below to some URL with an AUTH token basica
 {"action": "lock", "source": "{\"name\":\"Brad\",\"device\":\"iPhone\"}"}
 ```
 
-Now I did poke around the rest of the HTTPS traffic I intercepted and saw that there were multiple requests before this. And one of them contained the AUTH token. So I knew right away there was some process happening to get the JWT that was unfortunely looking a little complicated.
+As I continued to examine the intercepted HTTPS traffic, I saw that there were multiple requests before this one, and one of them contained the AUTH token. I realized there was a process happening to obtain the JWT, which looked a bit complicated.
 
-So at first I was hoping I could just find some object in the heap that contained the AUTH token and use that via Frida (and it's oh so amazing API with functionality like pulling all objects of any type from memory!). But all the AUTH tokens I was finding were not working.
+At first, I hoped I could just find some object in the heap that contained the AUTH token and use that via Frida (and its amazing API with functionality like pulling all objects of any type from memory!). However, none of the AUTH tokens I found were working.
 
-I should also mention that my original plan was to add an IOS URLScheme to the application so I could just create a Shortcut Siri would use that would open a URL to lock and unlock my door.
+I should also mention that my original plan was to add an iOS URL Scheme to the application so I could create a Siri Shortcut that would open a URL to lock and unlock my door.
 
-At first I tried a number of things. Like how I used create iOS tweaks. Making a custom dylib in xCode and I manually add to the main executable using install_name_tool that swizzles it's way into whatever new functionality I want.
+I tried several things, such as creating iOS tweaks, making a custom dylib in Xcode, and manually adding it to the main executable using install_name_tool, then swizzling it to add new functionality.
 
-For those thay may need an explanation. A dylib is a dynamically linked library. Meaning it is a binary that the operating system or really dyld will load into memory when an application starts.
+For those who may need an explanation: a dylib is a dynamically linked library, meaning it’s a binary that the operating system (or more specifically, dyld) loads into memory when an application starts.
 
-So I needed a decrypted copy of the application I was going to be modifying/debugging/etc. There are some websites that actually provide this service and work which was surprising but I did find my old iPhone 6s and was able to use Checkra!n and PAlera1n on an iPhone 7 to get them jailbroken. At this point what worked best for me was [frida-ios-dump](https://github.com/AloneMonkey/frida-ios-dump)
+So, I needed a decrypted copy of the application I was going to modify/debug/etc. Some websites surprisingly provide this service, but I found my old iPhone 6s and was able to use Checkra1n and Palera1n on an iPhone 7 to get them jailbroken. At this point, what worked best for me was frida-ios-dump.
 
-Note that instead of having to install usbmuxd/iproxy at this point, if your on the same network you can just use the ip address:
+Instead of installing usbmuxd/iproxy, if you’re on the same network, you can just use the IP address:
 
 ```
 ./dump.py -H 192.168.1.87 -p 22 AppName
 ```
 
-NOTE: From here on out I'll just refer to the iOS app as AppName
+NOTE: From here on out, I’ll refer to the iOS app as AppName.
 
-After running this dump you should end up with an unencrypted ".ipa" file in the same folder. A ipa file type is a zip file that contains the application and all of it's data/metadata.
+After running this dump, you should end up with an unencrypted “.ipa” file in the same folder. An ipa file type is a zip file that contains the application and all its data/metadata.
 
-So you can change the extension from .ipa to .zip. And unzip it right there.
+You can change the extension from .ipa to .zip and unzip it right there.
 
-Inside will be a folder named Payload. And inside there will be AppName.App.
+Inside, you’ll find a folder named Payload, and inside that, there will be AppName.App.
 
-Now just like a .App on OSX you can right click and show package contents to see what all the app really contains.
+Just like a .App on macOS, you can right-click and show package contents to see what the app really contains.
 
-Now the most important file will be the binary itself. Which normally is also named AppName (no file extension) and will be an amr64 binary built for iOS.
+The most important file will be the binary itself, which is normally also named AppName (with no file extension) and will be an arm64 binary built for iOS.
 
-There is also a Frameworks folder which will contain a number of frameworks, from my understanding basically just dylibs with a lot more information like header files, that the binary loads at runtime.
+There is also a Frameworks folder that will contain a number of frameworks, which are essentially dylibs with additional information, like header files, that the binary loads at runtime.
 
-So any executable will have a list of dynamically linked libraries it loads at runtime. You can list those with:
+Any executable will have a list of dynamically linked libraries it loads at runtime. You can list those with:
 
 ```
 otool -L $EXE_NAME_HERE
@@ -95,35 +95,37 @@ or to get a more detailed breakdown that includes information such as the path w
 otool -l $EXE_NAME_HERE
 ```
 
-It is important to use the lowercase -l version so you can see where rpath points to in some cases. I believe in most cases it will just be the Frameworks directoy.
-So if you are going to add your own dylib you could for example use a tool like [insert_dylib](https://github.com/tyilo/insert_dylib).
+It’s important to use the lowercase -l option so you can see where rpath points in some cases. In most cases, it will just be the Frameworks directory.
 
-For example, I build my own DYLIB which was at first, attempting to swizzle the older handleURL methods on iOS AppDelegate (this no longer works btw)..
+So, if you’re going to add your own dylib, you could, for example, use a tool like insert_dylib.
 
-But to insert your dylib you would do somethign like:
+For example, I built my own dylib, which initially attempted to swizzle the older handleURL methods on the iOS AppDelegate (this no longer works, by the way).
+
+To insert your dylib, you would do something like:
 
 ```
 insert_dylib --strip-codesig --inplace '@executable_path/Frameworks/libhandleURLSwizzleObjC.dylib' ~/Payload/AppName.app/AppName
 cp ~/libhandleURLSwizzleObjC.dylib ~/Payload/AppName.app/Frameworks
 ```
 
-And in your dylib code (you can create a dylib in xcode by creating a static library, and then going to build options and changing the library type to dynamic, you may also want to change the extension from .a to .dylib as well) you will want to add a constructor function.
+In your dylib code (you can create a dylib in Xcode by creating a static library and then changing the library type to dynamic in build options; you may also want to change the extension from .a to .dylib), you will want to add a constructor function.
 
-This function is what gets called when the dylib is loaded into memory and is your chance to "swizzle" or replace existing functions with your own. This way you can add/modify existing functionality in an application.
+This function is called when the dylib is loaded into memory, and it’s your chance to “swizzle” or replace existing functions with your own, allowing you to add or modify existing functionality in an application.
 
-And these days you just use this tool called [objection](https://github.com/sensepost/objection) to then handle signing everything and converting your Payload folder into an ipa for you.
+These days, you can use a tool called objection to handle signing everything and converting your Payload folder into an ipa for you.
 
-And then another tool [ios-deploy](https://github.com/ios-control/ios-deploy) to send the app to your iPhone. Jailbroken or not. And start a debugging session with lldb. And Objection by default injects frida so you have can connect to frida and poke around as well!
+Then, you can use another tool, ios-deploy, to send the app to your iPhone, whether jailbroken or not, and start a debugging session with LLDB. Objection by default injects Frida, so you can connect to Frida and poke around as well!
 
-It is all very user friendly as pretty easy to get started with.
+It’s all very user-friendly and pretty easy to get started with.
 
 ## Getting IOS URLScheme to Work
 
-Even though I didn't end up going this route I finaly figured out a cool way to make it work and wanted to document it. So with the newer iOS SDKs and SwiftUI and all the older handleURL method on AppDelegate is no longer called I beleive with a URLScheme.
+Even though I didn’t end up going this route, I finally figured out a cool way to make it work and wanted to document it. With the newer iOS SDKs and SwiftUI, the older handleURL method on AppDelegate is no longer called (I believe) with a URL Scheme.
 
-First off I needed to update my iOS apps plist file though so it would handle urls. Like AppName://unlockdoor
+First off, I needed to update my iOS app’s plist file so it would handle URLs like AppName://unlockdoor.
 
-To do so I scripted:
+To do so, I scripted:
+
 
 ```
 head -n4 ~/Payload/AppName.app/Info.plist > ~/Payload/AppName.app/Info.plist-2
@@ -334,9 +336,11 @@ So now back to actually getting something working.
 
 ## AWS Cognito Reverse engineering
 
-So this app actually has a server that handles the requests to lock and unlock the door. And it uses AWS Cognito to handle generation and refreshing of the JWT.
+So this app actually uses an AWS service called Cognito that handles the all the auth. The 2FA and JWT related work is all handled by Cognito.
 
-I couldn't find any working examples of using AWS Cognito as a client and I thought this might be helpful for someone trying to do something similar. My code maybe messy but it works and I have invested too much time in it as it is so I am calling it good.
+The documentation for AWS Cognito was IMO actually pretty bad. Especially when it came to less conventional uses like the way I could tell this iOS application was using it.
+
+I couldn't even find any working examples of using AWS Cognito as a client and I thought this might be helpful for someone trying to do something similar. My code maybe messy but it works and I have invested too much time in it as it is so I am calling it good. You're gonna have to deal with the mess the code and thig post is until I get a lot of time on my hands.
 
 So first off. I used Frida to poke around. And I see that AWS and something called AWS Cognito is being used from the loaded Frameworks. I findout that Cognito is used for auth. Also I saw in the decoded JWT via [https://jwt.io/](https://jwt.io/) that scope of the jwt is "aws.cognito.signin.user.admin". So I know now that this app is using Cognito for auth.
 
@@ -391,6 +395,8 @@ us-east-1_6B31234KN
 ```
 
 Then I also needed something called the clientID. This can actually be found in the requests from the HTTPS requests I dumped to JSON.
+
+**Ironically** I found just MITM this whole thing to be the easiest way to reverse engineer everything. But I wanted to practice my lldb/debugger skills anyway so I spent plenty of time trying to force that route.
 
 I also needed to find this information which I got with Frida:
 
