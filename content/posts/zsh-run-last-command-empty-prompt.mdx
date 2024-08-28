@@ -1,6 +1,6 @@
 ---
 slug: zsh-run-last-command-empty-prompt
-title: ZSH Setup to Run the Last Command/Prompt After Sending a Few Empty Lines
+title: ZSH Plugin to Re-Execute the Last Command After Some Number of Empty Prompts
 date: 2024-08-26
 author: bebrws
 tags:
@@ -8,6 +8,12 @@ tags:
   - shell
   - zsh-setup
   - scripting
+  - zsh-Plugin
+  - zsh
+  - plugin
+  - efficiency
+  - productivity
+  - lazy 
 ---
 
 ![A gif showing this shell script in action where after sending 2 empty command prompts the last non empty command prompt is run](/static/repeat-command.mov.gif)
@@ -20,27 +26,31 @@ Or maybe I am remoting into my laptop from my phone and need to run a command th
 
 I want an easy way to run the last command again without having to type it out or use the up arrow key to find it.
 
-So this script keeps track of the last non-empty ZSH command prompt/buffer and runs it whenever I send a few empty lines by pressing the enter key 2 times in a row.
+So as I say in the [README.md](https://github.com/bebrws/zsh_reexec) I have created A ZSH Plugin which will re-execute the last command you entered after so many empty commands.
+The plugin uses an ENV variable named REEXEC_PROMPT_COUNT to determine how many empty commands to execute before re-executing the last command which was not empty.
+The default count for empty prompts (controlled by an ENV variable) is set to 3. So starting at 0, hitting enter 4 times should rexecute the last command you typed with the default of 3 (it is counting zero based).
 
-This count feels like a safe number of required empty lines before running the last command. It is unlikely that I would accidentally run the last command by sending a few empty lines in a row. While being easy and quick enough to do that I can deal with the previous mentioned issues easily.
+The default count feels like a safe number of required empty lines before running the last command. It is unlikely that I would accidentally run the last command by sending a few empty lines in a row. While being easy and quick enough to do that I can deal with the previous mentioned issues easily.
 
 # Setup
-I am on a Mac so I am using the `$HOME/.config` directory. I created a file at: `$HOME/.config/zsh-rerun-on-empty-prompt.zsh` with the contents:
-    
+I have moved the usage and installation instructions to the [repo here](https://github.com/bebrws/zsh_reexec).
+
+At the point of writing or really updating this blog post the contents of the plugin were as follows:
+
 ```zsh
+# Plugin to re-execute the last command after a specified number of empty prompts
 
-# Initialize variables
-export EMPTY_PROMPT_COUNT=0
-export LAST_COMMAND=""
+# Function to initialize variables
+function _reexec_init() {
+  export EMPTY_PROMPT_COUNT=0
+  export LAST_COMMAND=""
 
-# Ignore new lines from "control-c"
-function TRAPINT() {
-    export EMPTY_PROMPT_COUNT=0
-    return 1 # Make sure to return 1 so that control-c still takes effect
+  # Set default value for REEXEC_PROMPT_COUNT if not already set
+  : ${REEXEC_PROMPT_COUNT:=3}
 }
 
 # Function to be called before each prompt
-function preexec() {
+function _reexec_preexec() {
   export EMPTY_PROMPT_COUNT=0
   if [[ -n $1 ]]; then
     export LAST_COMMAND=$1
@@ -48,28 +58,28 @@ function preexec() {
 }
 
 # Function to be called after each command
-function precmd() {
-  if [[ $EMPTY_PROMPT_COUNT -eq 4 && -n $LAST_COMMAND ]]; then
+function _reexec_precmd() {
+  if [[ $EMPTY_PROMPT_COUNT -eq $REEXEC_PROMPT_COUNT && -n $LAST_COMMAND ]]; then
     echo "Executing: $LAST_COMMAND"
     eval "$LAST_COMMAND"
     export EMPTY_PROMPT_COUNT=0
   elif [[ -z $BUFFER ]]; then
-    export EMPTY_PROMPT_COUNT=$((EMPTY_PROMPT_COUNT+1))
+    export EMPTY_PROMPT_COUNT=$((EMPTY_PROMPT_COUNT + 1))
   else
     export EMPTY_PROMPT_COUNT=0
   fi
 }
 
 # Set up the hooks
-autoload -Uz add-zsh-hook
-add-zsh-hook preexec preexec
-add-zsh-hook precmd precmd
+function _reexec_setup_hooks() {
+  autoload -Uz add-zsh-hook
+  add-zsh-hook preexec _reexec_preexec
+  add-zsh-hook precmd _reexec_precmd
+}
+
+# Initialize and set up hooks when the plugin is loaded
+_reexec_init
+_reexec_setup_hooks
 ```
 
-Then I added the following to my `$HOME/.zshrc` file:
-
-```zsh
-source $HOME/.config/zsh-rerun-on-empty-prompt.zsh
-```
-
-Pretty simple to do! 
+Follow the [instructions here](https://github.com/bebrws/zsh_reexec?tab=readme-ov-file#installation) and you easily or lazily be rerunning whatever your working on in no time.
