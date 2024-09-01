@@ -1,0 +1,31 @@
+---
+slug: osx-sonoma-14-6-1-mac-catalyst-build-run-locally
+title: How To Build and Run Mac Catalyst Apps Locally on macOS Sonoma 14.6.1 with Xcode 15.4
+date: 2024-09-01
+author: bebrws
+tags:
+  - zsh
+---
+
+# The Hassle of Building Mac Catalyst Apps To Run Locally
+If you create a build of an iOS app with Mac Catalyst enabled, it doesn’t matter what your build target is—you will not get an IPA file built for you by just “Building.” You will only be able to run your Mac Catalyst build from Xcode. If you look at the contents of the built app bundle, you’ll see that it is not a standard Mac app build; rather, it is an app bundle similar to what you would normally find in an IPA.
+
+You can try to use applesign to create your own IPA with a valid profile and signature, or you can “Archive” your build instead.
+
+![Archiving the Build](/static/catalyst-1.png)
+
+Then, select *Custom* for distribution.
+
+![Archiving the Build](/static/catalyst-2.png)
+
+Select *Debugging* for method of distribution.
+
+![Archiving the Build](/static/catalyst-3.png)
+
+And finally, but most importantly, set iCloud Environment to *Development* and App Thinning *must* be *Mac* only.
+
+![Archiving the Build](/static/catalyst-4.png)
+
+The IPA produced will be signed, allowing you to simply double-click it and install your Mac Catalyst app locally without any further hassle.
+
+I could have sworn previous versions of Xcode/macOS built Mac Catalyst apps with a Mac app bundle, but I could be wrong. I’m just glad I found this solution.
