@@ -8,6 +8,7 @@ import fs from "fs";
 import yaml from "js-yaml";
 import { parseISO } from "date-fns";
 import PostLayout from "../../components/PostLayout";
+import CustomHeading from "../../components/CustomHeading";
 
 export type Props = {
   title: string;
@@ -19,7 +20,15 @@ export type Props = {
   source: MdxRemote.Source;
 };
 
-const components = { };
+const components = {
+  h1: (props) => <CustomHeading as="h1" {...props} />,
+  h2: (props) => <CustomHeading as="h2" {...props} />,
+  h3: (props) => <CustomHeading as="h3" {...props} />,
+  h4: (props) => <CustomHeading as="h4" {...props} />,
+  h5: (props) => <CustomHeading as="h5" {...props} />,
+  h6: (props) => <CustomHeading as="h6" {...props} />,
+};
+
 const slugToPostContent = ((postContents) => {
   let hash = {};
   postContents.forEach((it) => (hash[it.slug] = it));

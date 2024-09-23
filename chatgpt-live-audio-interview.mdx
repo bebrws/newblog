@@ -13,6 +13,21 @@ tags:
   - Hack
 ---
 
+# First, The Repo and Explanation
+
+*While this program works, I wouldn't even consider trying to use something like this for a number of reasons. I just wanted to see if I could do it. Especially when I saw that there options out there to do this sort of thing. Very proffessional and expensive solutions.*
+I actually think something like this would ruin an interview. You would lose your train of thought. But given that.. here it is:
+
+## Quick Summary
+
+The application listens for 2 key phrases. One starts the prompt that will be sent to ChatGPT and the other let's the app know when your finished with your prompt. It continues to listen but also sends your prompt off to ChatGPT. Displaying the response back in the terminal. Could this help someone cheat on some interview question? Probably. Will it get someone a job? Higgghhllly doubtful. 
+
+When you interview you need to respond quickly and can't afford to lose your train of thought considering if some response from an LLM is right or not. In a longer lasting coding challenge.. yeah it could help I bet.
+
+![An image of me generating this blog post from audio](/static/cheatgpt.png)
+
+[Is right here](https://github.com/bebrws/whisper-stream-gpt)
+
 # Using Whisper.CPP to Listen *Live* and Question ChatGPT - Possibly Cheating an Interview
 
 In today's digital age, the job search process has become more competitive than ever before. As a recent job seeker, I found myself overwhelmed with the sheer number of applicants vying for the same positions. It seemed like no matter how hard I tried, I just couldn't stand out from the crowd.
@@ -37,15 +52,15 @@ I need you to write a blog post about me searching for a job and coming across s
 I thought it would be ironic to have it write the blog post about this too as I don't really care to put anymore effort into this.
 
 Give it a try though.
-You just download a model from (Hugging Face)[https://huggingface.co/ggerganov/whisper.cpp/tree/main], and then run the application with the model path as an argument.
+~~You just download a model from [Hugging Face](https://huggingface.co/ggerganov/whisper.cpp/tree/main), and then run the application with the model path as an argument.~~ 
 
 I even provided 2 scripts to make and run the application in the repository.
 ```bash
-./makeStreamGPT.sh
+./makeStreamGPT.sh # will download the model and build the application
 
 # And to run
 
-./runStreamGPT.sh
+./runStreamGPT.sh Should start listening to your microphone and outputting the text to the console.
 ```
 
 Good luck out there.. The world is a scary place right now for me as a software engineer. Job security wise.
