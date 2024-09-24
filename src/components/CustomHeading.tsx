@@ -1,7 +1,7 @@
 import React from "react";
-import { HeadingProps } from "types/mdx";
+// import { HeadingProps } from "@types/mdx";
 
-const CustomHeading = ({ as: Tag, children }: HeadingProps) => {
+const CustomHeading = ({ as: Tag, children }: { as: React.ElementType; children: React.ReactNode }) => {
   const encode = (str: string) => {
     return str.replace(/[^\w]/g, (c) => `%${c.charCodeAt(0).toString(16)}`);
   };
@@ -9,8 +9,8 @@ const CustomHeading = ({ as: Tag, children }: HeadingProps) => {
   const encodedTitle =
     typeof children === "string"
       ? encode(children as string)
-      : children
-        .flatMap((c) => (c?.props?.children ? c.props.children : ""))
+      : React.Children.toArray(children)
+        .flatMap((c) => (React.isValidElement(c) && c.props?.children ? c.props.children : ""))
         .join("");
 
   return (
