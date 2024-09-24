@@ -1,5 +1,5 @@
 import React from "react";
-import { HeadingProps } from "@types/mdx";
+import { HeadingProps } from "types/mdx";
 
 const CustomHeading = ({ as: Tag, children }: HeadingProps) => {
   const encode = (str: string) => {
