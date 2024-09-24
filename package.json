@@ -9,6 +9,13 @@
     "export": "next build && next export -o ./docs && touch ./docs/.nojekyll && echo 'bbarrows.com' > ./docs/CNAME",
     "test": "jest"
   },
+  "compilerOptions": {
+    "types": [
+      "node",
+      "webpack-env",
+      "mdx"
+    ]
+  },
   "dependencies": {
     "@mapbox/rehype-prism": "^0.6.0",
     "@netlify/plugin-nextjs": "^3.7.1",
