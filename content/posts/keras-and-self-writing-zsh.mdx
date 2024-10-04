@@ -96,7 +96,7 @@ n. The response needs to be zsh script I can pipe into zsh itself.
    read "prompt?Enter your prompt for ChatGPT: "
 
    # Simulate sending the prompt to ChatGPT and getting a response
-   response=$(echo "$prompt" | sgpt --no-md --role zsh)
+   response=$(echo "$prompt" | sgpt --no-md --role zsh | grep -v "\`")
 
    echo "Response: $response"
    read "confirm?Do you want to write this response to $HOME/zsh/gpt.zsh? (y/n): "
