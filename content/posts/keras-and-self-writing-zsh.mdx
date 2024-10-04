@@ -1,0 +1,114 @@
+---
+slug: nim-cli-tools
+title: Learning Neural Networks with Keras/TF and Playing Around with ChatGPT
+date: 2024-10-04
+author: bebrws
+tags:
+  - Neural Networks
+  - AI
+  - ChatGPT
+---
+
+# Two Quick Useful Things to Share
+
+## A Hack for Learing Neural Networks With Keras 
+I am following along and I have found some really [great tools](https://github.com/paulgavrikov/visualkeras) to help with the learning process. 
+Along with the IBM Keras Neural Network course I am about to finish
+
+First off I wanted to see the shape of the data at different points in the Sequential model I had created.
+And I realized it's actually really easy to extend Keras Layers and create your. So I made quick debug layer to print out the first input it sees.
+This allows me to see the shape of the data as it passes through different layers:
+
+So in my Jupyter notebook, right where I am creating my Keras model I just create my own layer with:
+
+```python
+import functools
+import operator
+import numpy as np
+from keras.src.engine.base_layer import Layer
+from keras.src.engine.input_spec import InputSpec
+from keras.src.utils import conv_utils
+# isort: off
+from tensorflow.python.util.tf_export import keras_export
+# @keras_export("keras.layers.PrintInputs")
+class PrintInputs(Layer):
+
+    def __init__(self, data_format=None, **kwargs):
+        super().__init__(**kwargs)
+        self.count = 0
+
+    def call(self, inputs):
+        if self.count == 0:
+            print(inputs)
+            self.count += 1
+        return inputs
+
+```
+
+This is super helpful and I can place it at any point in the model to see what shape is coming in and out of layers. Ex use:
+
+```python
+
+def convolutional_model():
+    
+    # create model
+    model = Sequential()
+    model.add(Conv2D(16, (5, 5), activation='relu', input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    
+    model.add(Conv2D(8, (2, 2), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    
+    
+    model.add(PrintInputs())  ############### RIGHT HERE 
+    model.add(Flatten())
+    model.add(PrintInputs())  ############### RIGHT HERE 
+    model.add(Dense(100, activation='relu'))
+    model.add(Dense(num_classes, activation='softmax'))
+    
+    # Compile model
+    model.compile(optimizer='adam', loss='categorical_crossentropy',  metrics=['accuracy'])
+    return model
+
+```
+
+I can see Flatten does indeed make flatten down to a single dimension from `(None, 5, 5, 8)` to `(None, 200)`
+
+
+## ChatGPT and ZSH Scripting
+
+Now I have always wasted way too much time scripting away tasks with tools like fzf.. But now I can just ask ChatGPT to do it for me.
+I just Tell it what function I want to write and it then shows me the function it came up with, and I can choose whether or not I want to have it written to a file that is loaded automatically.
+It actually works surprisingly well. It's important that you set the System prompt correctly though. I use a tool sgpt or shell gpt I think just to make it easy. Its a quick python install.
+I am not going to spend the time to document clearly how to set this up, but you should be able to figure it out from below:
+
+```ZSH
+
+#sgpt role created with:
+#sgpt --create-role zsh
+#Enter role description: Response only with a valid zsh function or zsh alias that can be added to a zshrc file to complete my request. Do not surround this script with any markdow
+n. The response needs to be zsh script I can pipe into zsh itself.
+#Role "zsh" already exists, overwrite it? [y/N]: y
+
+
+ function gptzsh() {
+   local prompt response confirm
+   read "prompt?Enter your prompt for ChatGPT: "
+
+   # Simulate sending the prompt to ChatGPT and getting a response
+   response=$(echo "$prompt" | sgpt --no-md --role zsh)
+
+   echo "Response: $response"
+   read "confirm?Do you want to write this response to $HOME/zsh/gpt.zsh? (y/n): "
+
+   if [[ "$confirm" == "y" ]]; then
+     echo "$response" > "$HOME/zsh/gpt.zsh"
+     echo "Response written to $HOME/zsh/gpt.zsh"
+   else
+     echo "Response not written to file."
+   fi
+ }
+
+```
+
+Some of this function was even written by ChatGPT.. 
