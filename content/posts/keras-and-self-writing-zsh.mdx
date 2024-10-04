@@ -102,7 +102,7 @@ n. The response needs to be zsh script I can pipe into zsh itself.
    read "confirm?Do you want to write this response to $HOME/zsh/gpt.zsh? (y/n): "
 
    if [[ "$confirm" == "y" ]]; then
-     echo "$response" > "$HOME/zsh/gpt.zsh"
+     echo "\n\n$response" >> "$HOME/zsh/gpt.zsh"
      echo "Response written to $HOME/zsh/gpt.zsh"
    else
      echo "Response not written to file."
