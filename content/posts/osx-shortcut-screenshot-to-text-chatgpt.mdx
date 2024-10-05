@@ -1,0 +1,135 @@
+---
+slug: osx-shortcut-screenshot-to-text-chatgpt
+title: 15 Lines of Python and 1 Shortcut To Get ChatGPT Summaries of Anything
+date: 2024-10-04
+author: bebrws
+tags:
+  - Screenshots
+  - OCR
+  - ChatGPT
+---
+
+![An animated gif shortcut in action](/static/summarize.mov.gif)
+
+# Taking Notes Quickly withOUT Local OCR and JUST ChatGPT
+
+ChatGPT's API is amazing. But it doesn't support uploading images.
+Or not directly at least. 
+
+You CAN base64 encode one though and send that along with your prompt.
+
+So while I am learning about AI/Neural Networks/Deep Learning/etc, ironically, I needed some LLM help to get good searchable notes.
+
+I was just taking screenshots of the videos I was watching and placing them in my Notion notes. But this sucks for a lot of reasons. Mainly I can't search for anything and they can be harder to read than what I can get ChatGPT to generate.
+
+So yes with the App you can go and take a screenshot and open the app and open the file and it's this whole process.
+
+But here is a no click, siri request away, automatic screenshot summarizer. 
+You say "Summarize Screen" and select the parts of the screen you want capture and the script will put the ChatGPT summary into your clipboard and let you know when it's done.
+I should probably remove say with a notification but I'll get to that if it bothers me.
+
+This is quick and dirty. So part 1.
+
+## Python Script
+
+```python
+#!/usr/bin/env python3
+
+import requests
+import os
+import base64
+from pathlib import Path
+import subprocess
+
+
+def capture_screenshot(output_file="screenshot.png"):
+    subprocess.run(["screencapture", "-s", output_file])
+    return output_file
+
+# Define the directory path
+screenshots_dir = Path(os.path.expanduser('~/Documents/Screenshots'))
+
+screenshot_file = Path(os.path.join(screenshots_dir, "scrnsht2md.png"))
+# print("file: ", screenshot_file)
+capture_screenshot(screenshot_file)
+
+b64_img = ""
+with open(screenshot_file, 'rb') as image_file:
+    b64_img = base64.b64encode(image_file.read()).decode('utf-8')
+
+
+api_key = os.environ['OPENAI_API_KEY']
+
+question = "Provide a markdown version of of the provided image, no summary is necessary, just try to represent the text in the image with markdown as accurately as possible"
+
+# This line is for providing base line instructions for any answer
+RuleInstructions = "You are an assistant that summarizes images and responds in markdown"
+
+headers = {
+  "Content-Type": "application/json",
+  "Authorization": f"Bearer {api_key}"
+}
+
+payload = {
+  "model": "gpt-4o-mini",
+  "messages": [
+    {"role": "system", "content": f"{RuleInstructions}."},
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": f"{question}"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": f"data:image/jpeg;base64,{b64_img }",
+            "detail": "auto"
+          }
+        }
+      ]
+    }
+  ],
+  "max_tokens": 300
+}
+
+resp = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+response_json = resp.json()
+
+message_content = response_json['choices'][0]['message']['content']
+
+print(message_content)
+
+
+def copy_to_clipboard(text):
+    process = subprocess.Popen(
+        'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(text.encode('utf-8'))
+    process.wait()  # Ensure the pbcopy process has completed
+    subprocess.run(['say', 'done'])
+
+copy_to_clipboard(message_content)
+```
+
+Place this in your home folder or preferably your local bin folder. Make it executable with chmod +x.
+
+## Create the Shortcut
+
+![The shortcut](/static/shortcut.png)
+
+[Which you can get here](https://www.icloud.com/shortcuts/326062c5fbc54cceba52c24683b04306)
+
+I'ts just a one action Shortcut with a shell script action. Default options. Command is:
+
+I have my python script symlinked to `$HOME/bin/ssmd`  
+
+```bash
+OPENAI_API_KEY="sk-YOURTOKEN" /Users/your-name/bin/ssmd
+```
+
+## Customization
+
+Change the python script prompt and ask it to add further details or relevant information.
+Get creative.
