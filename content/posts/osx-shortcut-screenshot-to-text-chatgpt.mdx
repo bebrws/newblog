@@ -63,7 +63,7 @@ api_key = os.environ['OPENAI_API_KEY']
 question = "Provide a markdown version of of the provided image, no summary is necessary, just try to represent the text in the image with markdown as accurately as possible"
 
 # This line is for providing base line instructions for any answer
-RuleInstructions = "You are an assistant that summarizes images and responds in markdown"
+RuleInstructions = "You are an assistant that summarizes images and responds in markdown without the three tick marks that signify markdown. Just the inner markdown content"
 
 headers = {
   "Content-Type": "application/json",
