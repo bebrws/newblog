@@ -10,7 +10,8 @@ export default function Layout({ children }: Props) {
       <Head>
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
-          
+          let maxAttempts = 0;
+
           function loadBevySnake() {
             setTimeout(function() {
             var element = document.getElementById('bevy-portal');
@@ -23,7 +24,8 @@ export default function Layout({ children }: Props) {
                   document.head.appendChild(script);
             } else {
                     console.log('Element with id "bevy-portal" does not exist.');
-                    loadBevySnake();
+                    maxAttempts++;
+                    if (maxAttempts<15) loadBevySnake();
             }
           }, 500);
         }
