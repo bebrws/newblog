@@ -30,3 +30,140 @@ It is actually really usable and I really like the zoom toggle and scroll button
   Your browser does not support the video tag. This is a video of me demoing the mouse.
 </video>
 
+## Code for Arduino Uno R4
+
+```
+#include <Mouse.h>    // Built-in library for mouse emulation
+#include <Keyboard.h> // Built-in library for keyboard emulation
+
+const int joystickXPin = A1;
+const int joystickYPin = A0;
+const int joystickClickPin = 2;
+const int signalPin = 4; // Define the signal pin
+const int buttonPins[] = {5, 6, 7, 8}; // Pins for additional buttons
+const int numButtons = sizeof(buttonPins) / sizeof(buttonPins[0]);
+
+// Joystick center values and dead zone for stability
+const int centerX = 506;
+const int centerY = 513;
+const int deadzone = 20; // Adjust for joystick sensitivity
+const int scrollThreshold = 5; // Threshold to start scrolling
+
+static unsigned long lastScrollTime = 0;
+unsigned long currentTime = millis();
+const int buttonScrollThreshold = 7; // Threshold to start scrolling
+
+void setup() {
+  // Start the built-in Mouse and Keyboard libraries
+  Mouse.begin();
+  Keyboard.begin();
+
+  // Initialize joystick and button pins
+  pinMode(joystickClickPin, INPUT_PULLUP);
+  pinMode(signalPin, INPUT); // Configure signalPin as input
+  for (int i = 0; i < numButtons; i++) {
+    pinMode(buttonPins[i], INPUT_PULLUP);
+  }
+
+  Serial.begin(9600);
+  Serial.println("Mouse and Keyboard HID initialized");
+}
+
+void loop() {
+  // Read joystick values
+  int xValue = analogRead(joystickXPin);
+  int yValue = analogRead(joystickYPin);
+
+  // Calculate mouse movement
+  int deltaX = map(xValue, 0, 1023, -10, 10);
+  int deltaY = map(yValue, 0, 1023, -10, 10);
+
+  // Check if signalPin is HIGH
+  if (digitalRead(signalPin) == HIGH) {
+    // Hold the Control key and use deltaY for scrolling
+    Keyboard.press(KEY_LEFT_CTRL); // Press Control key
+
+    // Scroll up or down based on deltaY exceeding thresholds
+    if (deltaY > scrollThreshold) {
+      Mouse.move(0, 0, 1); // Scroll up
+      Serial.println("Scrolling up");
+    } else if (deltaY < -scrollThreshold) {
+      Mouse.move(0, 0, -1); // Scroll down
+      Serial.println("Scrolling down");
+    }
+
+    Keyboard.release(KEY_LEFT_CTRL); // Release Control key
+  } else {
+    // Normal mouse movement mode
+    if (abs(xValue - centerX) < deadzone) {
+      deltaX = 0;
+    }
+    if (abs(yValue - centerY) < deadzone) {
+      deltaY = 0;
+    }
+
+    // Move the mouse
+    if (digitalRead(buttonPins[0]) != LOW && (deltaX != 0 || deltaY != 0)) {
+      Mouse.move(deltaX, -deltaY); // Invert Y-axis if needed
+    }
+
+    // Handle right click (buttonPins[0])
+    if (digitalRead(buttonPins[1]) == LOW || digitalRead(buttonPins[0]) == LOW) {
+      currentTime = millis();
+      if (currentTime - lastScrollTime > 100) { // Scroll every 100ms
+          if (deltaY > buttonScrollThreshold) {
+              Mouse.move(0, 0, 1);
+          } else if (deltaY < -buttonScrollThreshold) {
+              Mouse.move(0, 0, -1);
+          }
+          lastScrollTime = millis(); // Update the last scroll time
+      }   
+    }
+
+    // Handle right click (buttonPins[2])
+    if (digitalRead(buttonPins[2]) == LOW) {
+      Mouse.press(MOUSE_RIGHT);
+    } else {
+      Mouse.release(MOUSE_RIGHT);
+    }
+
+    // Handle joystick button click
+    if (digitalRead(buttonPins[3]) == LOW || digitalRead(joystickClickPin) == LOW) {
+      Mouse.press(MOUSE_LEFT); // Joystick button now triggers left click
+      Serial.println("Joystick button pressed - Left click");
+    } else {
+      Mouse.release(MOUSE_LEFT);
+    }    
+
+    // NOTE: This is the inconsistent button so I just made it scroll as well above
+    // if (digitalRead(buttonPins[1]) == LOW) {
+    //     Keyboard.press(KEY_LEFT_GUI); // Press the SUPER/Windows/Command key
+    //     Keyboard.press(' ');          // Press the SPACE key
+    //     delay(100);                   // Optional: small delay to ensure both keys are registered
+    //     Keyboard.releaseAll();        // Release all keys
+    //     Serial.println("SUPER + SPACE triggered");
+    // }    
+
+    // // Handle left click (buttonPins[3])
+    // if (digitalRead(buttonPins[3]) == LOW) {
+    //   Mouse.press(MOUSE_LEFT);
+    // } 
+    // else {
+    //   Mouse.release(MOUSE_LEFT);
+    // }
+  }
+
+  // Optional: Debug information
+  Serial.print("X: ");
+  Serial.print(xValue);
+  Serial.print(" Y: ");
+  Serial.print(yValue);
+  Serial.print(" DX: ");
+  Serial.print(deltaX);
+  Serial.print(" DY: ");
+  Serial.println(deltaY);
+
+  delay(10); // Small delay to control mouse speed
+}
+```
+
