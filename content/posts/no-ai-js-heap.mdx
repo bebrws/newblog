@@ -1,6 +1,6 @@
 ---
 slug: no-ai-js-heap
-title: Easy to Comprehend JS Heap
+title: Short and Easy to Comprehend JavaScript Heap
 date: 2026-09-19
 author: bebrws
 tags:
@@ -11,9 +11,9 @@ tags:
   - Binary Tree
 ---
 
-# Implementing the most Simple Heap With a Binary Tree in JavaScript
+# Implementing the Most Simple Heap With a Binary Tree in JavaScript
 
-This JavaScript heap is implemented as a binary tree backed by an array. The expectation for readers of this blog post is experience creating an array backed binary search tree.
+This JavaScript heap is implemented as a binary tree backed by an array. The expectation for readers of this blog post is experience creating an array backed binary tree.
 However, the purpose of this post is to create the easiest to comprehend heap implementation in JavaScript I could based solely on the definition found on Wikipedia.
 It may not follow some best practices but that is not the goal.
 
@@ -102,44 +102,47 @@ In this example, `85` is appended at index 7. Since `85 > 40`, it first swaps wi
 
 Now here is some code. Starting with a max heap in ~60 lines:
 
-```
+```javascript
 function siftDown(a, startIndex) {
     let curIndex = startIndex;
     while(true) {
         const leftIndex = 2 * curIndex + 1;
         const rightIndex = 2 * curIndex + 2;
 
-        let largest = curIndex;
+        let largestIndex = curIndex;
 
-        if (leftIndex < a.length && a[leftIndex] > a[largest]) largest = leftIndex;
-        if (rightIndex < a.length && a[rightIndex] > a[largest]) largest = rightIndex;
-        if (largest === curIndex) break;
-        const largestVal = a[largest];
-        a[largest] = a[curIndex];
-        a[curIndex] = largestVal;
-        curIndex = largest; 
+        if (leftIndex < a.length && a[leftIndex] > a[largestIndex]) largestIndex = leftIndex;
+        if (rightIndex < a.length && a[rightIndex] > a[largestIndex]) largestIndex = rightIndex;
+        if (largestIndex === curIndex) break;
+
+        const tmp = a[largestIndex];
+        a[largestIndex] = a[curIndex];
+        a[curIndex] = tmp;
+
+        curIndex = largestIndex; 
     }
 }
 
-function siftUp(a, si) {
-    let curIndex = a.length-1;
+function siftUp(a, startIndex) {
+    let curIndex = startIndex;
     const moveUpTree = (i) => Math.floor((i - 1) / 2);
-    do {
+    while(curIndex > 0) {
         const ancestorIndex = moveUpTree(curIndex);
         if (a[curIndex] <= a[ancestorIndex]) {
             break;
         }
+
         const tmp = a[ancestorIndex];
         a[ancestorIndex] = a[curIndex];
         a[curIndex] = tmp;
         
         curIndex = ancestorIndex;
-    } while(curIndex > 0)
+    }
 }
 
 // TODO: Make generic and add comparator
 class MaxHeap {
-    constructor(arr) {
+    constructor(arr=[]) {
         this._a = [...arr];
 
         const beforeLeaves = Math.floor(this._a.length / 2) - 1;
@@ -147,16 +150,18 @@ class MaxHeap {
     }
 
     pop() {
-        const ret = this._a.shift();
+        if (this._a.length === 0) return undefined;
+        if (this._a.length === 1) return this._a.pop();
+        const ret = this._a[0];
 
-        this._a = [this._a.pop(), ...this._a];
-        const beforeLeaves = Math.floor(this._a.length / 2) - 1;
-        for (let i=beforeLeaves; i>=0; i--) siftDown(this._a, i);
+        this._a[0] = this._a.pop();
+        siftDown(this._a, 0);
+
         return ret;
     }
 
     insert(val) {
-        this._a = [...this._a, val];
+        this._a.push(val);
         siftUp(this._a, this._a.length-1);
     }
 
@@ -174,6 +179,17 @@ mh.insert(11);
 mh.insert(10);
 console.log(mh.pop());
 mh.showArr();
+const mhEmpty = new MaxHeap([]);
+console.log(mhEmpty.pop());
+mhEmpty.insert(1);
+mhEmpty.insert(10);
+mhEmpty.insert(3);
+mhEmpty.insert(6);
+mhEmpty.insert(2);
+console.log(mhEmpty.pop());
 ```
 
+Some TDD would be perfect for a longer blog post.
 Leaving the abstraction of this so all that is needed is a comparator to change this from a MaxHeap class to a generic Heap class.
+Also, this implementation expects Number types. NaN, undefined, and mixed types are not rejected and can produce unexpected results.
+
