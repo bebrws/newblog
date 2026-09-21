@@ -9,6 +9,7 @@ import yaml from "js-yaml";
 import { parseISO } from "date-fns";
 import PostLayout from "../../components/PostLayout";
 import CustomHeading from "../../components/CustomHeading";
+import Mermaid from "../../components/Mermaid";
 
 export type Props = {
   title: string;
@@ -27,6 +28,7 @@ const components = {
   h4: (props) => <CustomHeading as="h4" {...props} />,
   h5: (props) => <CustomHeading as="h5" {...props} />,
   h6: (props) => <CustomHeading as="h6" {...props} />,
+  Mermaid,
 };
 
 const slugToPostContent = ((postContents) => {

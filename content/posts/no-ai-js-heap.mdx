@@ -1,0 +1,179 @@
+---
+slug: no-ai-js-heap
+title: Easy to Comprehend JS Heap
+date: 2026-09-19
+author: bebrws
+tags:
+  - JavaScript
+  - Data Structures
+  - Algorithms
+  - Heap
+  - Binary Tree
+---
+
+# Implementing the most Simple Heap With a Binary Tree in JavaScript
+
+This JavaScript heap is implemented as a binary tree backed by an array. The expectation for readers of this blog post is experience creating an array backed binary search tree.
+However, the purpose of this post is to create the easiest to comprehend heap implementation in JavaScript I could based solely on the definition found on Wikipedia.
+It may not follow some best practices but that is not the goal.
+
+A binary tree is considered a **heap** when it satisfies two conditions:
+
+- **Shape property (completeness):** The tree must be a **complete binary tree**. Every level, except possibly the last, is completely filled, and all nodes on the last level are as far left as possible.
+- **Heap property (ordering):** Each node's value must be greater than or equal to its children's values in a max heap, or less than or equal to its children's values in a min heap.
+
+A binary heap does not impose an ordering requirement between its left and right children. You might expect the smaller child to always appear on one side and the larger child on the other, but that is not required. The shape property must still be preserved, but the only ordering constraint is between each parent and its children.
+
+## Constructor and Pop
+
+The starting point for the constructor's loop was confusing to me at first. Why begin just before the middle of the array and call `siftDown` while moving back toward the root?
+
+For a zero-based array of length `n`, every node from index `Math.floor(n / 2)` through `n - 1` is a leaf. Each leaf is already a valid one-node heap, so the last internal node—and therefore the last possible starting point for `siftDown`—is at index `Math.floor(n / 2) - 1`.
+
+<Mermaid
+  title="Why heap construction moves from the last parent to the root"
+  chart={`flowchart TB
+    subgraph ARRAY["Array representation"]
+      direction LR
+      A0["index 0<br/>1"] --- A1["index 1<br/>2"] --- A2["index 2<br/>3"] --- A3["index 3<br/>4"] --- A4["index 4<br/>5"] --- A5["index 5<br/>6"] --- A6["index 6<br/>7"]
+    end
+    subgraph TREE["Complete binary tree"]
+      direction TB
+      N0(("index 0<br/>1")) --> N1(("index 1<br/>2"))
+      N0 --> N2(("index 2<br/>3"))
+      N1 --> N3(("index 3<br/>4"))
+      N1 --> N4(("index 4<br/>5"))
+      N2 --> N5(("index 5<br/>6"))
+      N2 --> N6(("index 6<br/>7"))
+    end
+    ARRAY --- TREE
+    classDef parent fill:#ececec,stroke:#d5d5d5,stroke-width:2px,color:#111;
+    classDef leaf fill:#fde1ce,stroke:#f58220,stroke-width:3px,color:#111;
+    class A0,A1,A2,N0,N1,N2 parent;
+    class A3,A4,A5,A6,N3,N4,N5,N6 leaf;
+    linkStyle 0,1,2,3,4,5 stroke:#ddd,stroke-width:1px;
+    linkStyle 12 stroke:transparent,stroke-width:0px;
+    style ARRAY fill:#fff,stroke:#ddd,stroke-width:1px;
+    style TREE fill:#fff,stroke:#ddd,stroke-width:1px;`}
+/>
+
+Starting with the last parent, `siftDown` compares the node with its children. For a max heap, it swaps with the larger child when that child is larger than the node. For a min heap, it swaps with the smaller child when that child is smaller than the node. The process continues down the tree until the heap property is restored.
+
+Working backward from the last parent to the root turns every subtree into a heap. The same `siftDown` operation is useful after `pop` moves the final array element to the root.
+
+## Insert
+
+To insert a value, start by appending it to the array. Completeness is preserved because the new value becomes the next available leaf.
+
+Then call `siftUp` from the new final index. Compare the leaf with its parent and swap when the heap property is violated. Continue one ancestor at a time until the value reaches its correct place or becomes the root.
+
+<Mermaid
+  title="A newly appended value follows its ancestor path during siftUp"
+  chart={`flowchart TB
+    subgraph TREE["Max-heap insertion after append - before siftUp"]
+      direction TB
+      N0(("index 0<br/>90")) --> N1(("index 1<br/>70"))
+      N0 --> N2(("index 2<br/>80"))
+      N1 --> N3(("index 3<br/>40"))
+      N1 --> N4(("index 4<br/>60"))
+      N2 --> N5(("index 5<br/>50"))
+      N2 --> N6(("index 6<br/>75"))
+      N3 -->|"85 > 40: swap first"| N7(("index 7<br/>85"))
+    end
+    subgraph ARRAY["Array representation"]
+      direction LR
+      A0["0<br/>90"] --- A1["1<br/>70"] --- A2["2<br/>80"] --- A3["3<br/>40"] --- A4["4<br/>60"] --- A5["5<br/>50"] --- A6["6<br/>75"] --- A7["7<br/>85"]
+    end
+    TREE --- ARRAY
+    classDef node fill:#ececec,stroke:#111,stroke-width:2px,color:#111;
+    classDef path fill:#fde1ce,stroke:#f58220,stroke-width:3px,color:#111;
+    classDef inserted fill:#cfe8ff,stroke:#3697f5,stroke-width:4px,color:#111;
+    class N2,N4,N5,N6,A2,A4,A5,A6 node;
+    class N0,N1,N3,A0,A1,A3 path;
+    class N7,A7 inserted;
+    linkStyle 6 stroke:#3697f5,stroke-width:4px;
+    linkStyle 7,8,9,10,11,12,13 stroke:#ddd,stroke-width:1px;
+    linkStyle 14 stroke:transparent,stroke-width:0px;
+    style ARRAY fill:#fff,stroke:#ddd,stroke-width:1px;
+    style TREE fill:#fff,stroke:#ddd,stroke-width:1px;`}
+/>
+
+In this example, `85` is appended at index 7. Since `85 > 40`, it first swaps with the value at index 3, then continues comparing itself with the ancestors at indexes 1 and 0 until the max-heap property is restored.
+
+Now here is some code. Starting with a max heap in ~60 lines:
+
+```
+function siftDown(a, startIndex) {
+    let curIndex = startIndex;
+    while(true) {
+        const leftIndex = 2 * curIndex + 1;
+        const rightIndex = 2 * curIndex + 2;
+
+        let largest = curIndex;
+
+        if (leftIndex < a.length && a[leftIndex] > a[largest]) largest = leftIndex;
+        if (rightIndex < a.length && a[rightIndex] > a[largest]) largest = rightIndex;
+        if (largest === curIndex) break;
+        const largestVal = a[largest];
+        a[largest] = a[curIndex];
+        a[curIndex] = largestVal;
+        curIndex = largest; 
+    }
+}
+
+function siftUp(a, si) {
+    let curIndex = a.length-1;
+    const moveUpTree = (i) => Math.floor((i - 1) / 2);
+    do {
+        const ancestorIndex = moveUpTree(curIndex);
+        if (a[curIndex] <= a[ancestorIndex]) {
+            break;
+        }
+        const tmp = a[ancestorIndex];
+        a[ancestorIndex] = a[curIndex];
+        a[curIndex] = tmp;
+        
+        curIndex = ancestorIndex;
+    } while(curIndex > 0)
+}
+
+// TODO: Make generic and add comparator
+class MaxHeap {
+    constructor(arr) {
+        this._a = [...arr];
+
+        const beforeLeaves = Math.floor(this._a.length / 2) - 1;
+        for (let i=beforeLeaves; i>=0; i--) siftDown(this._a, i);
+    }
+
+    pop() {
+        const ret = this._a.shift();
+
+        this._a = [this._a.pop(), ...this._a];
+        const beforeLeaves = Math.floor(this._a.length / 2) - 1;
+        for (let i=beforeLeaves; i>=0; i--) siftDown(this._a, i);
+        return ret;
+    }
+
+    insert(val) {
+        this._a = [...this._a, val];
+        siftUp(this._a, this._a.length-1);
+    }
+
+    showArr() {
+        console.log(this._a);
+    }
+}
+
+const mh = new MaxHeap([5,2,7,3,1,0,9]);
+mh.showArr();
+console.log(mh.pop());
+console.log(mh.pop());
+console.log(mh.pop());
+mh.insert(11);
+mh.insert(10);
+console.log(mh.pop());
+mh.showArr();
+```
+
+Leaving the abstraction of this so all that is needed is a comparator to change this from a MaxHeap class to a generic Heap class.
