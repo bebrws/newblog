@@ -2,6 +2,26 @@
 
 My blog. I used a template. The original README.md is below
 
+## Starstep
+
+The standalone game lives in `public/games/starstep/` and is copied into the GitHub Pages output at `docs/games/starstep/`. It uses relative asset paths and includes Three.js, fonts, levels, and their licenses; no external service or runtime server is needed.
+
+- Game: https://bbarrows.com/games/starstep/
+- Blog post: https://bbarrows.com/posts/starstep
+- Local Next.js preview: `/games/starstep/index.html`
+
+To update the game from the neighboring `starstep` checkout:
+
+```bash
+npm run starstep:sync
+# Or specify a different source checkout:
+npm run starstep:sync -- /path/to/starstep
+```
+
+This verifies and builds Starstep, then updates only its game directories. The copied files are self-contained, so normal blog builds do not require the Starstep checkout. Edit the game in its original repository and sync again to bring changes here.
+
+Run `npm run export` to rebuild the blog and include the Starstep post. GitHub Pages publishes **`master` → `/docs`**. Review and commit the intended source and exported changes, then push `master` to publish. The older `npm run deploy` command targets a separate `gh-pages` branch and is not the configured publishing source.
+
 # Original README contents:
 
 ![Next.js blogging template for Netlify](https://repository-images.githubusercontent.com/284910441/d8efc300-e2ae-11ea-9596-b01e3844e39d)

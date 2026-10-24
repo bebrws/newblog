@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next build && next export -o ./docs && touch ./docs/.nojekyll && echo 'bbarrows.com' > ./docs/CNAME",
-    "test": "jest"
+    "test": "jest",
+    "starstep:sync": "node scripts/sync-starstep.mjs"
   },
   "compilerOptions": {
     "types": [

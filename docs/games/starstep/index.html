@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#e9e5e3" />
+    <meta
+      name="description"
+      content="A little girl. A floating garden. A staircase to the stars. Play ten thoughtful block-pushing puzzles in a cozy 3D world."
+    />
+    <title>Starstep — A little closer to the stars</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='51' font-size='52'%3E%E2%AD%90%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      { "imports": { "three": "./vendor/three.module.js" } }
+    </script>
+  </head>
+  <body>
+    <div class="sky-glow"></div>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Starstep home"
+        ><span class="brand-star">✦</span> starstep<span class="brand-dot">.</span></a
+      >
+      <button class="journey-button" id="open-levels" aria-label="Choose a level">
+        <span class="tiny-star">✦</span><span id="journey-count">0 / 10 stars</span
+        ><span class="grid-icon">▦</span>
+      </button>
+      <div class="top-actions">
+        <button class="icon-button" id="sound" aria-label="Enable sound" title="Sound">
+          <svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 5 6m0-6-5 6" /></svg></button
+        ><button class="icon-button" id="open-help" aria-label="How to play" title="How to play">
+          ?
+        </button>
+      </div>
+    </header>
+    <main>
+      <aside class="level-info">
+        <div class="eyebrow"><span class="short-line"></span> THE FLOATING GARDENS</div>
+        <div class="level-kicker" id="level-kicker">LEVEL 01 / 10</div>
+        <h1 id="level-title">First<br />Steps</h1>
+        <p id="level-description">
+          Every journey starts with a little step. Build yours toward the star.
+        </p>
+        <button class="hint-button" id="hint-button"><span>☼</span> A little hint</button>
+        <p id="hint-text" hidden></p>
+        <div class="height-legend">
+          <span class="legend-label">YOUR BUILDING BLOCKS</span>
+          <div id="block-legend"></div>
+          <p>Same weight. Different possibilities.</p>
+        </div>
+      </aside>
+      <div
+        id="scene"
+        tabindex="0"
+        aria-label="3D puzzle board. Use arrow keys or WASD to walk. Approach a block to choose Climb onto or Push one tile."
+      >
+        <div id="loading">
+          <span class="loading-star">✦</span>
+          <p>Finding our little garden…</p>
+        </div>
+      </div>
+      <section
+        id="block-actions"
+        class="block-actions"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="block-action-title"
+        aria-describedby="block-action-description"
+        hidden
+      >
+        <div class="block-action-head">
+          <div>
+            <span class="block-action-kicker" id="block-action-kicker">BLOCK · HEIGHT 1</span>
+            <h2 id="block-action-title">Climb or push?</h2>
+          </div>
+          <button id="close-block-actions" class="icon-button" aria-label="Dismiss block actions" title="Dismiss (Esc)">×</button>
+        </div>
+        <p id="block-action-description">Choose an action for the highlighted block.</p>
+        <div class="block-action-options">
+          <button id="climb-block" class="block-action-option" aria-describedby="climb-description" aria-keyshortcuts="1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h6v-6h6V8h6M4 11l7-7M5 4h6v6" /></svg>
+            <span><strong>Climb onto</strong><span id="climb-description"></span></span>
+            <kbd aria-hidden="true">1</kbd>
+          </button>
+          <button id="push-block" class="block-action-option" aria-describedby="push-description" aria-keyshortcuts="2">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6h7v13h-7zM2 12h9m-4-4 4 4-4 4" /></svg>
+            <span><strong>Push one tile</strong><span id="push-description"></span></span>
+            <kbd aria-hidden="true">2</kbd>
+          </button>
+        </div>
+        <button id="cancel-block-actions" class="block-action-cancel">Keep walking <kbd>Esc</kbd></button>
+      </section>
+      <div class="board-tools">
+        <button
+          id="rotate-left"
+          class="icon-button"
+          aria-label="Rotate view left"
+          title="Rotate view left"
+        >
+          ↶</button
+        ><span>VIEW</span
+        ><button
+          id="rotate-right"
+          class="icon-button"
+          aria-label="Rotate view right"
+          title="Rotate view right"
+        >
+          ↷
+        </button>
+      </div>
+      <div class="message" id="message" role="status" aria-live="polite"></div>
+      <section class="play-dock" aria-label="Game controls">
+        <div class="level-navigation">
+          <button id="prev-level" class="nav-arrow" aria-label="Previous level">‹</button>
+          <div>
+            <span class="dock-label">YOUR JOURNEY</span
+            ><span id="dock-level">01 <span>/ 10</span></span>
+          </div>
+          <button id="next-level" class="nav-arrow" aria-label="Next level">›</button>
+        </div>
+        <div class="dock-divider"></div>
+        <div class="move-counter">
+          <strong id="push-count">0</strong><span class="dock-label">PUSHES</span>
+        </div>
+        <div class="history-controls">
+          <button id="undo" class="icon-button" aria-label="Undo last move" title="Undo (Z)">
+            ↶</button
+          ><button id="restart" class="icon-button" aria-label="Restart level" title="Restart (R)">
+            ⟳
+          </button>
+        </div>
+      </section>
+      <div class="keyboard-guide">
+        <span><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or <b>W A S D</b> to move</span
+        ><span class="guide-dot">·</span><span>Approach a block to climb or push</span>
+      </div>
+      <div class="touch-pad" aria-label="Directional controls">
+        <button data-dir="up" aria-label="Move up">↑</button
+        ><button data-dir="left" aria-label="Move left">←</button
+        ><button data-dir="down" aria-label="Move down">↓</button
+        ><button data-dir="right" aria-label="Move right">→</button>
+      </div>
+    </main>
+    <dialog id="levels-dialog">
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">TEN LITTLE ADVENTURES</span>
+          <h2>The floating gardens</h2>
+        </div>
+        <button class="icon-button close-dialog" aria-label="Close level selection">×</button>
+      </div>
+      <p>Take your time. Every star is within reach.</p>
+      <div id="levels-grid"></div>
+    </dialog>
+    <dialog id="help-dialog">
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">A LITTLE GUIDANCE</span>
+          <h2>One step closer.</h2>
+        </div>
+        <button class="icon-button close-dialog" aria-label="Close instructions">×</button>
+      </div>
+      <p>Help our little explorer reach the star by arranging blocks into a staircase.</p>
+      <ol class="help-list">
+        <li>
+          <strong>Walk up to a block.</strong
+          ><span
+            >Use the arrow keys, WASD, or the direction buttons. You can also tap a tile to walk
+            there, or tap a block to approach it.</span
+          >
+        </li>
+        <li>
+          <strong>Choose your next step.</strong
+          ><span
+            >A popup offers Climb onto or Push one tile. Climb or descend one height at a time.
+            To push, stand on the ground with an empty floor tile beyond the block. Unavailable
+            actions explain what is in the way.</span
+          >
+        </li>
+        <li>
+          <strong>Make a path to the star.</strong
+          ><span
+            >Start with the shortest block. Stairs can turn corners and connect to fixed terraces.
+            Blocks cannot be pulled or stacked.</span
+          >
+        </li>
+        <li>
+          <strong>Room to try again.</strong
+          ><span
+            >Press Z to undo and R to restart. Nothing is timed. Rotate the view if something is
+            hidden.</span
+          >
+        </li>
+      </ol>
+      <p class="help-note">
+        Each choice performs one action. Use the buttons, or press 1 to climb and 2 to push
+        while the popup is open. Press Esc or keep walking to dismiss it.
+        Direction keys follow the view: ↑ moves away into the board; → moves toward its right edge.
+      </p>
+      <button class="primary-button close-dialog">Let’s find a star <span>✦</span></button>
+    </dialog>
+    <dialog id="win-dialog" class="win-dialog">
+      <div class="win-star">✦</div>
+      <span class="eyebrow">A LITTLE CLOSER TO THE STARS</span>
+      <h2 id="win-title">You found your star.</h2>
+      <p id="win-description"></p>
+      <div class="win-stats">
+        <div><strong id="win-pushes">0</strong><span>pushes</span></div>
+        <div><strong id="win-moves">0</strong><span>steps</span></div>
+      </div>
+      <button id="continue" class="primary-button">On to the next garden <span>→</span></button
+      ><button id="replay" class="text-button">Stay a little longer</button>
+    </dialog>
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>
